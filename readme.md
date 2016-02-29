@@ -133,15 +133,15 @@ const user = new Schema({
 | ---------------------- | ------------- |
 | `key [string]`         | gets passed to `normalizr`'s constructor |
 | `definitions [object]` | follows `normalizr`'s `define()` call but accepts one of `string: ` name of another schema; `array[string]: ` containing the name of another schema. `array[string]` is the equivalent of `normalizr`'s `arrayOf('schema')`. also accepts one of `normalizr`'s `arrayOf | valuesOf | unionOf` properties      |
-| `properties [object]`  | A collection of properties that follows `json-schema-faker`'s API      |
+| `properties [object]`  | A collection of properties that follow `json-schema-faker`'s API      |
 
 You can additionally specify any of `json-schema-faker`'s schema definitions.
 
-If you would like to exclude `json-schema-faker` from your production build, you can set the `MODELIZR_CHEAP_MOCK` to `true` and pass your bundle through an uglify step.
+If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step.
 
 ### `defineSchemas(schemas)`
 
-This will run a `Schema.define()` all given schemas and return a model containing a few useful methods.
+This will run a `Schema.define()` on all given schemas and return a model containing a few useful methods.
 
 + `schemas [object]` - a collection of schemas
 
@@ -225,3 +225,11 @@ Returns a mocked request that mimics the structure of the `query`
 ##### `normalize(response)`
 
 Normalizes the response based on the `query`
+
+# Todo
+
++ Make use of jsf's validate method.
++ Add support for custom jsf faker statements
++ Properly implement tests
+
+All contributions are welcome!
