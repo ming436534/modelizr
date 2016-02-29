@@ -1,4 +1,4 @@
-import model from './schemas'
+import model from '../schemas/index'
 
 const api = () => {
     const request = model.buildRequest({

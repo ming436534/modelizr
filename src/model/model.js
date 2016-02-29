@@ -102,7 +102,7 @@ const defineSchemas = schemas => {
     })
 
     return {
-        models: schemas,
+        schemas,
         mock,
         mockAll,
         buildRequest
