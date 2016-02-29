@@ -1,2 +1,2 @@
-export * from './model/schema'
-export * from './model/model'
+export * from './schema'
+export * from './model'
