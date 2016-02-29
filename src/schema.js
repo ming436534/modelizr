@@ -20,10 +20,12 @@ class Schema extends NormalizerSchema {
 
         this._define = super.define
         this._schema = {
-            ...schema,
             ...{
-                type: 'object'
-            }
+                type: 'object',
+                required: _.map(schema.properties, (property, key) => key),
+                additionalProperties: false
+            },
+            ...schema
         }
     }
 
