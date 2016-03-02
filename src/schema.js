@@ -25,12 +25,28 @@ class Schema extends NormalizerSchema {
                 required: _.map(schema.properties, (property, key) => key),
                 additionalProperties: false
             },
-            ...schema
+            ...schema,
+            ...{
+                properties: {
+                    ...{
+                        id: {type: 'integer'}
+                    },
+                    ...schema.properties || {}
+                },
+            }
         }
+    }
+
+    getSchema() {
+        return this._schema
     }
 
     getProperties() {
         return this._schema.properties
+    }
+
+    getDefinitions() {
+        return this._schema.definitions
     }
 
     define(schemas) {

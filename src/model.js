@@ -30,21 +30,68 @@ const defineSchemas = schemas => {
                     return _.map(params, (param, key) => `${key}: ${getType(param)}`)
                 }
 
-                const mapProps = props => (
-                    _.map(props, (entity, key) => {
+                const mapProps = props => {
+                    if (props.model) {
+                        const fetchIncludes = (subProps, parentModel) => {
+                            const getSchema = (name, notSchema) => {
+                                if (Array.isArray(name)) {
+                                    name = name[0]
+                                }
+                                return notSchema ? name : schemas[name]
+                            }
+
+                            if (subProps.includes) {
+                                return _.mapValues(_.mapKeys(_.map(subProps.includes, model => {
+                                    if (typeof model === 'object') {
+                                        return {
+                                            key: model.definition,
+                                            props: {
+                                                type: 'object',
+                                                properties: {
+                                                    ...getSchema(schemas[parentModel].getDefinitions()[model.definition]).getProperties(),
+                                                    ...fetchIncludes(model,
+                                                        getSchema(schemas[parentModel].getDefinitions()[model.definition], true)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    return {
+                                        key: model,
+                                        props: {
+                                            type: 'object',
+                                            properties: getSchema(schemas[parentModel].getDefinitions()[model]).getProperties()
+                                        }
+                                    }
+                                }), model => model.key), model => model.props)
+                            }
+
+                            return {}
+                        }
+
+                        const newProps = props.properties || schemas[props.model].getProperties()
+
+                        props = {
+                            ...newProps,
+                            ...fetchIncludes(props, props.model)
+                        }
+                    }
+
+                    return _.map(props, (entity, key) => {
                         if (entity.type == 'object') {
                             return `\n      ${key} {${mapProps(entity.properties || {})}\n      }`
                         } else {
                             return `\n\      ${key}`
                         }
                     })
-                )
+                }
 
                 const makeQuery = (entity, key) => {
-                    const entities = _.omit(entity, ['model', 'type', 'params', 'properties'])
+                    const entities = _.omit(entity, ['model', 'type', 'params', 'properties', 'includes'])
 
-                    return `${key}(${makeParams(entity.params)}) {` +
-                        `${mapProps(entity.properties || schemas[entity.model].getProperties())}` +
+                    return `${key}${entity.params ? ` (${makeParams(entity.params)}) ` : ''} {` +
+                        `${mapProps(entity)}` +
                         `${_.isEmpty(entities) ? '' : ',\n   '}${_.map(entities, makeQuery)}\n   }`
                 }
 
@@ -53,7 +100,7 @@ const defineSchemas = schemas => {
                 }
                 if (entity.type == 'mutation') {
                     builtQuery += `mutation ${key} {\n   ${key}(${makeParams(entity.params)}) ` +
-                        `{${mapProps(entity.properties || schemas[entity.model].getProperties())}\n   }\n}`
+                        `{${mapProps(entity)}\n   }\n}`
                 } else {
                     builtQuery += `{\n   ${makeQuery(entity, key)}\n}`
                 }
