@@ -22,9 +22,10 @@ const defineSchemas = schemas => {
                     const getType = param => {
                         if (Array.isArray(param)) {
                             return `[${param}]`
-                        } else {
-                            return `"${param}"`
+                        } else if (typeof param === 'number') {
+                            return `${param}`
                         }
+                        return `"${param}"`
                     }
 
                     return _.map(params, (param, key) => `${key}: ${getType(param)}`)

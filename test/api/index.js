@@ -15,9 +15,9 @@ const api = () => {
     })
 
     const graphQLQuery = request.getGraphQuery()
-    console.log(graphQLQuery)
 
     const mockedRequest = request.mock()
+    console.log(mockedRequest.users[0].events)
     const normalizedResponse = request.normalize(mockedRequest)
 }
 
