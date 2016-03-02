@@ -1,6 +1,6 @@
 {
   "name": "modelizr",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A tool for building normalizr schemas that can be easily mocked",
   "main": "lib/index.js",
   "scripts": {
