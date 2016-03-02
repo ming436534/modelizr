@@ -4,6 +4,7 @@ const api = () => {
     const request = model.buildRequest({
         users: {
             model: 'user',
+            type: 'mutation',
             params: {
                 ids: [1, 2, 3]
             },
@@ -14,6 +15,7 @@ const api = () => {
     })
 
     const graphQLQuery = request.getGraphQuery()
+    console.log(graphQLQuery)
     /*
      {
          users(ids: [1,2,3]) {

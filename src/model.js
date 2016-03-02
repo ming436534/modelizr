@@ -33,8 +33,18 @@ const defineSchemas = schemas => {
                 const makeQuery = (entity, key) => {
                     const entities = _.omit(entity, ['model', 'type', 'params', 'properties'])
 
+                    const mapProps = props => (
+                        _.map(props, (entity, key) => {
+                            if (entity.type == 'object') {
+                                return `\n      ${key} {${mapProps(entity.properties || {})}\n      }`
+                            } else {
+                                return `\n\      ${key}`
+                            }
+                        })
+                    )
+
                     return `${key}(${makeParams(entity.params)}) {` +
-                        `${entity.properties || _.map(schemas[entity.model].getProperties(), (entity, key) => `\n\      ${key}`)}` +
+                        `${mapProps(entity.properties || schemas[entity.model].getProperties())}` +
                         `${_.isEmpty(entities) ? '' : ',\n   '}${_.map(entities, makeQuery)}\n   }`
                 }
 

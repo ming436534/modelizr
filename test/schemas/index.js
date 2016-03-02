@@ -7,7 +7,16 @@ const user = new Schema({
     },
     properties: {
         firstname: {type: 'string', faker: 'name.firstName'},
-        lastname: {type: 'string', faker: 'name.lastName'}
+        lastname: {type: 'string', faker: 'name.lastName'},
+        avatar: {
+            type: 'object',
+            properties: {
+                url: {
+                    type: 'string',
+                    faker: 'random.number'
+                }
+            }
+        }
     },
     required: ['firstname', 'lastname']
 })
