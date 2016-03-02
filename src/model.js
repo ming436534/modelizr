@@ -30,18 +30,18 @@ const defineSchemas = schemas => {
                     return _.map(params, (param, key) => `${key}: ${getType(param)}`)
                 }
 
+                const mapProps = props => (
+                    _.map(props, (entity, key) => {
+                        if (entity.type == 'object') {
+                            return `\n      ${key} {${mapProps(entity.properties || {})}\n      }`
+                        } else {
+                            return `\n\      ${key}`
+                        }
+                    })
+                )
+
                 const makeQuery = (entity, key) => {
                     const entities = _.omit(entity, ['model', 'type', 'params', 'properties'])
-
-                    const mapProps = props => (
-                        _.map(props, (entity, key) => {
-                            if (entity.type == 'object') {
-                                return `\n      ${key} {${mapProps(entity.properties || {})}\n      }`
-                            } else {
-                                return `\n\      ${key}`
-                            }
-                        })
-                    )
 
                     return `${key}(${makeParams(entity.params)}) {` +
                         `${mapProps(entity.properties || schemas[entity.model].getProperties())}` +
@@ -52,7 +52,8 @@ const defineSchemas = schemas => {
                     throw new Error(`no model was specified for the entity ${key}`)
                 }
                 if (entity.type == 'mutation') {
-                    builtQuery += `mutation ${key} {\n   ${key}(${makeParams(entity.params)})\n}`
+                    builtQuery += `mutation ${key} {\n   ${key}(${makeParams(entity.params)}) ` +
+                        `{${mapProps(entity.properties || schemas[entity.model].getProperties())}\n   }\n}`
                 } else {
                     builtQuery += `{\n   ${makeQuery(entity, key)}\n}`
                 }
