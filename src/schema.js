@@ -1,77 +1,87 @@
 import { Schema as NormalizerSchema, arrayOf } from 'normalizr'
-import _ from 'lodash'
+import { applyMutators, _ } from './utils'
 
-let jsf = () => ({})
-if (!process.env.MODELIZR_CHEAP_MOCK) {
-    jsf = require('json-schema-faker')
+const defineSchemas = (...schemas) => {
+    const orderedSchemas = _.mapKeys(_.map(schemas, schema => schema.schema), schema => schema.name)
+
+    _.forEach(orderedSchemas, schema => {
+        if (!schema.model) {
+            schema.model = new NormalizerSchema(schema.key)
+        }
+
+        schema.model.define(_.mapValues(_.pickBy(schema.properties, property => property.model),
+            definition => {
+                definition = definition.model
+                const findOrCreate = key => {
+                    if (!orderedSchemas[key].model) {
+                        orderedSchemas[key].model = new NormalizerSchema(orderedSchemas[key].key)
+                    }
+
+                    return orderedSchemas[key].model
+                }
+                if (Array.isArray(definition)) {
+                    return arrayOf(findOrCreate(definition[0]))
+                }
+                if (typeof definition === 'string') {
+                    return findOrCreate(definition)
+                }
+                return definition
+            })
+        )
+    })
 }
 
-class Schema extends NormalizerSchema {
-
-    constructor(schema, options) {
-        if (!schema.key) {
-            throw new Error('Schema object must have a key property')
-        }
-        if (typeof schema.key !== 'string') {
-            throw new Error('Schema key must be a string')
-        }
-
-        super(schema.key, options)
-
-        this._define = super.define
-        this._schema = {
-            ...{
-                type: 'object',
-                required: _.map(schema.properties, (property, key) => key),
-                additionalProperties: false
-            },
-            ...schema,
-            ...{
-                properties: {
-                    ...{
-                        id: {type: 'integer'}
-                    },
-                    ...schema.properties || {}
+const schema = (name, schema) => {
+    schema = ({
+        ...{
+            name,
+            key: `${name}s`,
+            type: 'object',
+            additionalProperties: false,
+            required: ['id', ..._.map(_.omitBy(schema.properties, prop => prop.model), (prop, key) => key)]
+        },
+        ...schema,
+        ...{
+            properties: {
+                ...{
+                    id: {type: 'integer'}
                 },
+                ...schema.properties || {}
             }
         }
-    }
+    })
 
-    getSchema() {
-        return this._schema
-    }
-
-    getProperties() {
-        return this._schema.properties
-    }
-
-    getDefinitions() {
-        return this._schema.definitions
-    }
-
-    define(schemas) {
-        this._define(_.mapValues(this._schema.definitions, definition => {
-            if (Array.isArray(definition)) {
-                return arrayOf(schemas[definition])
-            }
-            if (typeof definition === 'string') {
-                return schemas[definition]
-            }
-            return definition
-        }))
-    }
-
-    mock(ids) {
-        if (ids) {
-            if (typeof ids === 'number') {
-                return _.set(jsf(this._schema), 'id', ids)
-            } else if (Array.isArray(ids)) {
-                return _.map(ids, id => _.set(jsf(this._schema), 'id', id))
-            }
-        } else {
-            return jsf(this._schema)
+    const model = (params, ...models) => {
+        if (params && typeof params !== 'object') {
+            models.unshift(params)
+            params = undefined
         }
+
+        models = _.filter(models, model => model)
+
+        const response = () => {
+            response.construct = {
+                ...response.construct,
+                properties: {
+                    ...response.construct.properties,
+                    ..._.mapKeys(_.mapValues(models, model => model()), model => model.key)
+                }
+            }
+
+            return response.construct
+        }
+
+        response.construct = {
+            ...model.schema,
+            params: params
+        }
+
+        return applyMutators(response, 'model')
     }
+
+    model.schema = schema
+
+    return applyMutators(model, 'schema')
 }
 
-export { Schema as default, Schema }
+export { schema as default, schema, defineSchemas }

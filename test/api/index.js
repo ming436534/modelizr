@@ -2,22 +2,21 @@ import model from '../schemas/index'
 
 const api = () => {
     const request = model.buildRequest({
-        users: {
+        user: {
             model: 'user',
             params: {
-                ids: [1, 2, 3]
-            },
-            events: {
-                model: 'event',
-                includes: [{definition: 'prizes', includes: ['winner']}, 'qrCodes', 'bonusQRCode', 'scanned']
+                ids: 1
             }
+        },
+        events: {
+            model: 'event'
         }
     })
 
     const graphQLQuery = request.getGraphQuery()
 
     const mockedRequest = request.mock()
-    console.log(mockedRequest.users[0].events)
+    console.log(mockedRequest.user)
     const normalizedResponse = request.normalize(mockedRequest)
 }
 

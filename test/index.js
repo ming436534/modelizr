@@ -1,3 +1,5 @@
-import api from './api/index'
+//import api from './api/index'
 
-api()
+//api()
+
+import './schemas/index'

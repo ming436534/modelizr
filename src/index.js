@@ -1,2 +1,5 @@
 export * from './schema'
-export * from './model'
+export * from './mock'
+export * from './mutation'
+export * from './normalize'
+export * from './query'
