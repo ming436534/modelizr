@@ -52,8 +52,26 @@ const modelMutators = {
         }
 
         return response
+    },
+
+    properties: response => (props, overwrite) => {
+        if (Array.isArray(props)) {
+            props = _.mapValues(_.mapKeys(props, prop => prop), () => ({type: 'string'}))
+        }
+
+        if (overwrite) {
+            response.construct.properties = props
+        } else {
+            response.construct.properties = {
+                ...response.construct.properties,
+                ...props
+            }
+        }
+
+        return response
     }
 }
+modelMutators.props = modelMutators.properties
 
 const queryMutators = {}
 

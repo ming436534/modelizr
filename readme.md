@@ -194,11 +194,12 @@ entities with expected ids
 
 | Name                   | Accepts       | Effect
 | ---------------------- | ---------------------- | --------------------------
-| `as()`   | `[string]` | Change the name of the key to be used when generating requests and mocking |
-| `params()` | `[object]` | Define parameters for the generated request. |
-| `only()` | `[array]` | Use only the properties specified in `[array]` |
-| `except()` | `[array]` | Exclude the properties specified in `[array]` |
-| `onlyIf()` | `[boolean]` | Only include the model this is applied to if its parameter is true |
+| `as(key)`   | `[string]` | Change the name of the key to be used when generating requests and mocking |
+| `params(params)` | `[object]` | Define parameters for the generated request. |
+| `properties(props [, overwrite]) | props()` | `[array | object], ([boolean])` | add properties to the model, if overwrite is `true`, then the models props will be overwritten |
+| `only(props)` | `[array]` | Use only the properties specified in `[array]` |
+| `except(props)` | `[array]` | Exclude the properties specified in `[array]` |
+| `onlyIf(statement)` | `[boolean]` | Only include the model this is applied to if its parameter is true |
 
 ### `query(...models)`
 
@@ -284,7 +285,22 @@ normalize(
 
 Recommended to rather use the `.normalize()` mutator on requests
 
+In order to make arbitrary requests or mocks, you may also import 'request' from modelizr which is essentially an empty schema that you can call mutators on
+
+```javascript
+import { query, mutation, request } from 'modelizr'
+
+query(
+	request().props(['name', 'title']).params({id: 1}).as('customRequest')
+).then(res => {})
+
+mutation(
+	request().params({id: 1, title: 'something'}).as('mutateEntity')
+)
+```
+
 # Todo
 
 + Validation
 + entrypoint to add mutators
++ support for custom, non model based queries

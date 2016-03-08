@@ -8,8 +8,8 @@ import { arrayOf } from '../../src/normalize'
 
 const book = schema('books', {
 
-        title: {type: 'string'},
-        edition: {type: 'integer'}
+    title: {type: 'string'},
+    edition: {type: 'integer'}
 
 })
 const user = schema('users', {
@@ -26,7 +26,7 @@ const q = query.setSpaces(2)
 
 console.log(q(
     user(
-        book().only(['title'])
+        book().props(['firstname'])
     )
 ).generate())
 
