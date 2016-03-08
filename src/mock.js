@@ -1,4 +1,4 @@
-import { applyMutators, _, api } from './utils'
+import { applyMutators, _ } from './utils'
 
 let jsf = () => ({})
 if (!process.env.MODELIZR_CHEAP_MOCK) {
@@ -54,11 +54,9 @@ const mock = (...models) => {
         return mock(models)
     }
 
-    response.spaces = 3
-    response.api = api
-    response.path = 'http://localhost'
+    response.query = models
 
-    return applyMutators(response, 'mutation')
+    return applyMutators(response, 'mock')
 }
 
 export { mock as default, mock }

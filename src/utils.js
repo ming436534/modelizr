@@ -1,10 +1,11 @@
 import _ from 'lodash'
+import fetch from 'isomorphic-fetch'
 import * as mutators from './mutators'
 
 const applyMutators = (response, type) => {
     const relevantMutators = {
-        ...mutators[`${type}Mutators`],
-        ...mutators.sharedMutators
+        ...mutators.sharedMutators,
+        ...mutators[`${type}Mutators`]
     }
     _.forEach(relevantMutators, (action, name) => response[name] = action(response))
 
@@ -69,8 +70,16 @@ const makeQuery = (model, spaces = 3, indent = 1) => {
     return `\n${currentIndent}${model.key}${makeParams(model.params)} {${mapProps(model.properties, indent + 1)}\n${currentIndent}}`
 }
 
-const api = (path, query) => {
-    return {path, query}
-}
+const api = (path, query, headers) => fetch(path, {
+    headers: {
+        ...{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        ...headers || {}
+    },
+    method: 'POST',
+    body: JSON.stringify({query: query})
+})
 
 export { applyMutators, spacer, makeParams, api, makeQuery, _ }

@@ -24,17 +24,16 @@ Define a collection of models to be used when generating queries or mutations
 import { schema } from 'modelizr'
 
 const user = schema('users', {
-    properties: {
-        firstname: {type: 'string', faker: 'name.firstName'},
-        lastname: {type: 'string', faker: 'name.lastName'}
-    }
+	firstname: {type: 'string', faker: 'name.firstName'},
+    lastname: {type: 'string', faker: 'name.lastName'}
 })
 
 const book = schema({
     properties: {
         title: {type: 'string', faker: 'name.firstName'},
         edition: {type: 'integer', faker: 'random.number'}
-    }
+    },
+    required: ['title', 'edition']
 })
 
 // define nested models
@@ -49,7 +48,7 @@ book.define({
 export { user, book }
 ```
 
-Now we can create a request object from our model and use it to generate graphQL requests or mock data
+Now we can create a request object from our models and use it to generate graphQL requests or mock data
 
 ```javascript
 import { query, normalize } from 'modelizr'
@@ -63,7 +62,7 @@ const q = query(
 	).as('user').params({id: 1})
 )
 
-console.log(q.getQuery())
+console.log(q.generate())
 /*
 {
   user (id: 1) {
@@ -85,7 +84,9 @@ console.log(q.getQuery())
 */
 
 // make a request and normalize it
-q.path('http://...').query().normalize()
+q.path('http://...').normalize(res => {
+	console.log(res) // normalized response
+})
 /*
 {
    entities: { users: { '1': [Object] }, books: { '1': [Object], '2': [Object], ... } },
@@ -103,7 +104,19 @@ These are methods that can be applied to models or request generators to change 
 ```javascript
 query(
 	user().as('user').params({})
-).path('http://...')
+).path('http://...').then(res => {
+	console.log(res) // server response
+})
+```
+
+Mutators can also be used to pre-configure models or request generators
+
+```javascript
+const q = query.path('http://...').useApi(api)
+
+q(
+	user()
+).then(res => {})
 ```
 
 ### `schema(key, schema [, options])`
@@ -111,11 +124,21 @@ query(
 Create a new model from a schema. The schema must be defined with the `json-schema-faker` schema style.
 
 ```javascript
+import { schema } from 'modelizr'
+
 const user = schema('users', {
     properties: {
         firstname: {type: 'string', faker: 'name.firstName'},
         lastname: {type: 'string', faker: 'name.lastName'}
-    }
+    },
+    required: ['firstname'] // defaults to all properties,
+    additionalProperties: true // defaults to false
+})
+
+// or if you plan to use the defaults, you can directly specify properties
+const user = schema('users', {
+	firstname: {type: 'string', faker: 'name.firstName'},
+	lastname: {type: 'string', faker: 'name.lastName'}
 })
 ```
 
@@ -127,6 +150,7 @@ const user = schema('users', {
 | ---------------------- | ------------- |
 | `properties [object]`  | A collection of properties that follow `json-schema-faker`'s API |
 | `required [array]`     | A collection of properties that will be mocked. Also used to validate state against the model. Defaults to all values within `properties` |
+| `additionalProperties [boolean]` | Specify if the entity can have additional, unspecified properties. Used for validation |
 
 You can additionally specify any of `json-schema-faker`'s schema definitions.
 
@@ -156,7 +180,9 @@ user.define({
 })
 ```
 
-### `model([params,] ...models)`
+`'modelizr/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`
+
+### model `schema()([params,] ...models)`
 
 Define a nested query that can be generated or mocked
 
@@ -181,27 +207,35 @@ Generate and make a graphQL query
 + `models [model]` - A collection of nested models to define the generated request
 
 ```javascript
+import { query } from 'normalizr'
+
 query(
 	user()
-).getQuery()
+).then(res => {})
 ```
 
 ### `mutation(...models)`
 
 Generate and make a graphQL mutation
 
++ `models [model]` - A collection of nested models to define the generated request
+
 ```javascript
+import { mutation } from 'normalizr'
+
 mutation(
 	user()
-).getQuery()
+).then(res => {})
 ```
 
 If you want the mutation to query as well you can use the `withQuery()` mutator
 
 ```javascript
+import { mutation } from 'normalizr'
+
 mutation(
-	user().withQuery()
-).getQuery()
+	user()
+).withQuery().then(res => {})
 ```
 
 #### mutation / query mutators
@@ -210,19 +244,24 @@ mutation(
 | ---------------------- | ---------------------- | --------------------------
 | `path()`   | `[string]` | Define the endpoint for the graphQL request |
 | `useAPI()` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
-| `getQuery()` | N\A | Causes `query()` to return the generated query as a string |
-| `then()` | `[function (result)]` | Make the request and pass the result as it's first parameter |
+| `setSpaces()` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
+| `generate()` | N\A | Causes `query()` to return the generated query as a string |
 | `mock()` | `[boolean]` default `true` | Mock the request |
-| `normalize()` | `[function (result)]` | Normalize the query after receiving a response and pass the normalized response as the first parameter |
+| `then()` | `[function (result)]` | Make the request and pass the result as it's first parameter |
+| `normalize()` | `[function (result)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter |
 
 ### `mock(...models)`
 
 Generate nested mock data
 
++ `models [model]` - A collection of nested models to define the generated request
+
 ```javascript
+import { mock } from 'normalizr'
+
 mock(
 	user()
-)
+).then(res => {})
 ```
 
 #### mock mutators
@@ -242,3 +281,10 @@ normalize(
 	user()
 )
 ```
+
+Recommended to rather use the `.normalize()` mutator on requests
+
+# Todo
+
++ Validation
++ entrypoint to add mutators

@@ -1,4 +1,6 @@
-import { arrayOf } from './normalize'
+import { normalize, arrayOf } from './normalize'
+import mock from './mock'
+import { applyMutators } from './utils'
 import _ from 'lodash'
 
 const schemaMutators = {
@@ -44,11 +46,6 @@ const modelMutators = {
         return response
     },
 
-    withQuery: response => () => {
-        response.query = true
-        return response
-    },
-
     onlyIf: response => statement => {
         if (!statement) {
             response.construct.continue = false
@@ -58,19 +55,98 @@ const modelMutators = {
     }
 }
 
-const queryMutators = {
-
-}
+const queryMutators = {}
 
 const mutationMutators = {
     as: response => name => {
         response.mutationName = name
         return response
+    },
+
+    withQuery: response => () => {
+        response.includeQuery = true
+        return response
+    },
+}
+
+const mockMutators = {
+    then: response => cb => {
+        const promise = new Promise((resolve, reject) => {
+            if (response.mockError) {
+                return reject(new Error('Mocked Error'))
+            }
+            return resolve(response())
+        })
+
+        return promise.then(cb)
+    },
+
+    normalize: response => cb => {
+        const promise = new Promise((resolve, reject) => {
+            if (response.mockError) {
+                return reject(new Error('Mocked Error'))
+            }
+            return resolve(response())
+        })
+
+        return promise.then(res => normalize(
+            res,
+            ...response.query
+        )).then(cb)
     }
 }
 
 const sharedMutators = {
-    getQuery: response => () => response(true)
+    generate: response => () => response(true),
+
+    useApi: response => api => {
+        response.api = api
+        return response
+    },
+
+    path: response => path => {
+        response._path = path
+        return response
+    },
+
+    headers: response => headers => {
+        response.headers = headers
+        return response
+    },
+
+    then: response => cb => {
+        const promise = response()
+        return promise.then(cb)
+    },
+
+    normalize: response => cb => {
+        const promise = response()
+        return promise.then(res => {
+            if (res.json) {
+                return normalize(
+                    res.json,
+                    ...response.query
+                )
+
+            }
+            return res.json()
+        }).then(res => {
+            if (res.json) {
+                return normalize(
+                    res.json,
+                    ...response.query
+                )
+            }
+            return res
+        }).then(cb)
+    },
+
+    mock: response => statement => statement ? mock(response.query) : response,
+
+    setSpaces: response => spaces => {
+        response.spaces = spaces
+        return response
+    }
 }
 
-export { sharedMutators, schemaMutators, modelMutators, queryMutators, mutationMutators }
+export { sharedMutators, schemaMutators, modelMutators, queryMutators, mutationMutators, mockMutators }

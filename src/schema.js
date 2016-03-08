@@ -2,6 +2,12 @@ import { Schema as NormalizerSchema } from 'normalizr'
 import { applyMutators, _ } from './utils'
 
 const schema = (name, schema, options) => {
+    if (!schema.properties && !schema.required) {
+        schema = {
+            properties: schema
+        }
+    }
+
     schema = ({
         ...{
             name,
@@ -52,7 +58,12 @@ const schema = (name, schema, options) => {
 
     model.schema = schema
 
-    return applyMutators(model, 'schema')
+    return applyMutators(model, 'schema', schema.mutators)
+}
+
+schema.addMutators = mutators => schema.mutators = {
+    ...schema.mutators || {},
+    mutators
 }
 
 export { schema as default, schema }

@@ -7,10 +7,10 @@ import { normalize } from '../../src/normalize'
 import { arrayOf } from '../../src/normalize'
 
 const book = schema('books', {
-    properties: {
+
         title: {type: 'string'},
         edition: {type: 'integer'}
-    }
+
 })
 const user = schema('users', {
     properties: {
@@ -22,32 +22,18 @@ user.define({
     books: [book]
 })
 
+const q = query.setSpaces(2)
 
-const models =
-
-    (
-        user(
-            book(
-                user().as('author')
-            )
-        ).as('user').params({id: 1})
+console.log(q(
+    user(
+        book().only(['title'])
     )
+).generate())
 
-
-const q =
-
-
-    mock(
-        models
-    ).getQuery()
-
-
-const n =
-
-    normalize(
-        q,
-        models
-    )
-
-
-console.log(n)
+//mock(
+//    user(
+//        book(
+//            user().as('author')
+//        )
+//    ).as('user').params({id: 1})
+//).normalize(res => console.log(res))
