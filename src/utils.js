@@ -11,7 +11,7 @@ const applyMutators = (response, type) => {
     return response
 }
 
-const spacer = amount => _.join(_.map(_.range(0, amount), space => ''), ' ')
+const spacer = amount => _.join(_.map(_.range(0, amount), () => ''), ' ')
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -70,7 +70,7 @@ const makeQuery = (model, spaces = 3, indent = 1) => {
 }
 
 const api = (path, query) => {
-
+    return {path, query}
 }
 
 export { applyMutators, spacer, makeParams, api, makeQuery, _ }

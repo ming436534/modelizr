@@ -4,25 +4,23 @@ import { mutation } from '../../src/mutation'
 import { mock } from '../../src/mock'
 import { normalize } from '../../src/normalize'
 
-const book = schema('book', {
+import { arrayOf } from '../../src/normalize'
+
+const book = schema('books', {
     properties: {
         title: {type: 'string'},
         edition: {type: 'integer'}
     }
 })
-const user = schema('user', {
+const user = schema('users', {
     properties: {
-        books: {model: ['book']},
         title: {type: 'string'}
     }
 })
 
-
-
-defineSchemas(
-    book,
-    user
-)
+user.define({
+    books: [book]
+})
 
 
 const models =
@@ -30,9 +28,9 @@ const models =
     (
         user(
             book(
-
-            ).params({ids: [1, 2]})
-        ).params({ids: [1, 2], name: 'John'})
+                user().as('author')
+            )
+        ).as('user').params({id: 1})
     )
 
 
@@ -52,4 +50,4 @@ const n =
     )
 
 
-console.log(n.entities.users, n.entities.books)
+console.log(n)

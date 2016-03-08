@@ -1,41 +1,12 @@
-import { Schema as NormalizerSchema, arrayOf } from 'normalizr'
+import { Schema as NormalizerSchema } from 'normalizr'
 import { applyMutators, _ } from './utils'
 
-const defineSchemas = (...schemas) => {
-    const orderedSchemas = _.mapKeys(_.map(schemas, schema => schema.schema), schema => schema.name)
-
-    _.forEach(orderedSchemas, schema => {
-        if (!schema.model) {
-            schema.model = new NormalizerSchema(schema.key)
-        }
-
-        schema.model.define(_.mapValues(_.pickBy(schema.properties, property => property.model),
-            definition => {
-                definition = definition.model
-                const findOrCreate = key => {
-                    if (!orderedSchemas[key].model) {
-                        orderedSchemas[key].model = new NormalizerSchema(orderedSchemas[key].key)
-                    }
-
-                    return orderedSchemas[key].model
-                }
-                if (Array.isArray(definition)) {
-                    return arrayOf(findOrCreate(definition[0]))
-                }
-                if (typeof definition === 'string') {
-                    return findOrCreate(definition)
-                }
-                return definition
-            })
-        )
-    })
-}
-
-const schema = (name, schema) => {
+const schema = (name, schema, options) => {
     schema = ({
         ...{
             name,
-            key: `${name}s`,
+            key: name,
+            model: new NormalizerSchema(name, options),
             type: 'object',
             additionalProperties: false,
             required: ['id', ..._.map(_.omitBy(schema.properties, prop => prop.model), (prop, key) => key)]
@@ -84,4 +55,4 @@ const schema = (name, schema) => {
     return applyMutators(model, 'schema')
 }
 
-export { schema as default, schema, defineSchemas }
+export { schema as default, schema }

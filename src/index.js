@@ -1,5 +1,7 @@
+import normalize from './normalize'
+
 export * from './schema'
 export * from './mock'
 export * from './mutation'
-export * from './normalize'
 export * from './query'
+export { normalize }

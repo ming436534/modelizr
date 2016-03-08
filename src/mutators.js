@@ -1,15 +1,16 @@
+import { arrayOf } from './normalize'
 import _ from 'lodash'
 
 const schemaMutators = {
-    key: response => key => {
-        response.schema = ({
-            ...response.schema,
-            ...{
-                key: key
+    define: response => definitions => {
+        response.schema.model.define(_.mapValues(definitions, definition => {
+            if (Array.isArray(definition)) {
+                return arrayOf(definition[0], definition[1])
+            } else if (definition.schema) {
+                return definition.schema.model
             }
-        })
-
-        return response
+            return definition
+        }))
     }
 }
 

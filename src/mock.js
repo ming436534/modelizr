@@ -1,4 +1,4 @@
-import { applyMutators, spacer, makeParams, makeQuery, _, api } from './utils'
+import { applyMutators, _, api } from './utils'
 
 let jsf = () => ({})
 if (!process.env.MODELIZR_CHEAP_MOCK) {
@@ -6,7 +6,7 @@ if (!process.env.MODELIZR_CHEAP_MOCK) {
 }
 
 const mock = (...models) => {
-    const response = pure => {
+    const response = () => {
 
         const cache = {}
 

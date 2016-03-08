@@ -1,4 +1,4 @@
-import { applyMutators, spacer, makeQuery, _, api } from './utils'
+import { applyMutators, makeQuery, _, api } from './utils'
 
 const query = (...models) => {
     const response = pure => {

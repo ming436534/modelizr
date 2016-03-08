@@ -2,7 +2,7 @@ import { applyMutators, spacer, makeParams, makeQuery, _, api } from './utils'
 
 const mutation = (...models) => {
     const response = pure => {
-        let query = `mutation ${response.mutationName || 'query'} {${_.mapValid(models, model => {
+        const query = `mutation ${response.mutationName || 'query'} {${_.mapValid(models, model => {
             if (model.query) {
                 return makeQuery(model(), response.spaces)
             }

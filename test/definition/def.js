@@ -26,12 +26,6 @@ mock(
     book()
 ).normalize()
 
-// manually normalize
-
-normalize(
-    response,
-    query
-)
 
 // validate
 
@@ -53,39 +47,3 @@ addToMutation(
 
 addToAll()
 addToQuery()
-
-// new schema
-
-var model = schemas(
-    schema('book', {
-        key: 'books', // default dumbly pluralizes schema name
-        properties: {
-            author: {model: 'user'},
-            editions: {model: ['edition']},
-            title: {type: 'string', faker: 'job.title'},
-            places: {
-                type: 'object', properties: {
-                    location: {type: 'string'}
-                }
-            }
-        },
-        required: ['author', 'places', 'title'], // default includes all properties
-        without: ['editions']
-    }).useAs('books') // same as key
-)
-
-// or
-
-const book = schema('book', {
-    key: 'books', // default dumbly pluralizes schema name
-    properties: {
-        author: user
-    }
-})
-
-const user = schema('user', {
-
-})
-
-model.getSchema('book | books')
-model.getAllSchemas()
