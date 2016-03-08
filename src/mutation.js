@@ -12,6 +12,9 @@ let mutation = (...models) => {
         if (onlyQuery) {
             return query
         }
+        if (response._debug) {
+            console.log(query)
+        }
         return response.api(response._path, query, response.headers)
     }
 
@@ -19,6 +22,7 @@ let mutation = (...models) => {
     response.spaces = mutation.spaces || 3
     response.api = mutation.api || api
     response._path = mutation._path || 'http://localhost'
+    response._debug = mutation._debug || false
 
     return applyMutators(response, 'mutation')
 }

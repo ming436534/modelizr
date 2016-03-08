@@ -13,7 +13,9 @@ const schemaMutators = {
             }
             return definition
         }))
-    }
+    },
+
+    getKey: response => () => response.schema.key
 }
 
 const modelMutators = {
@@ -129,6 +131,16 @@ const sharedMutators = {
 
     headers: response => headers => {
         response.headers = headers
+        return response
+    },
+
+    debug: response => debug => {
+        if (debug !== false) {
+            response._debug = true
+        } else {
+            response._debug = false
+        }
+
         return response
     },
 
