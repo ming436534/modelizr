@@ -95,8 +95,8 @@ const mutationMutators = {
 
 const mockMutators = {}
 
-const _debug = (query, res) => {
-    if (typeof console.group === 'function') console.group()
+const _debug = (query, res, name) => {
+    if (typeof console.group === 'function') console.groupCollapsed('Modelizr: ')
     console.log(query, res)
     if (typeof console.groupEnd === 'function') console.groupEnd()
 }
@@ -135,7 +135,7 @@ const sharedMutators = {
         const promise = response()
         return promise.then(res => {
             if (response._debug) {
-                _debug(response.generate(), res)
+                _debug(response.generate(), res, response.construct.key)
             }
             cb(res, response.query)
         })
@@ -151,7 +151,7 @@ const sharedMutators = {
                 ...response.query
             )
             if (response._debug) {
-                _debug(response.generate(), result)
+                _debug(response.generate(), result, response.construct.key)
             }
             return result
         }
@@ -171,7 +171,7 @@ const sharedMutators = {
                 return res.normalized
             }
             if (response._debug) {
-                _debug(response.generate(), res)
+                _debug(response.generate(), res, response.construct.key)
             }
             return res
         }).then(res => cb(res, response.query))
