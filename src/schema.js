@@ -66,6 +66,6 @@ schema.addMutators = mutators => schema.mutators = {
     mutators
 }
 
-const request = schema('request', {})
+const request = schema('_request', {})
 
 export { schema as default, schema, request }

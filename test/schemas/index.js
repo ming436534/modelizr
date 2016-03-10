@@ -1,10 +1,5 @@
 import { defineSchemas, schema } from '../../src/schema'
-import { query } from '../../src/query'
-import { mutation } from '../../src/mutation'
-import { mock } from '../../src/mock'
-import { normalize } from '../../src/normalize'
-
-import { arrayOf } from '../../src/normalize'
+import { query, mutation, request } from '../../src/index'
 
 const book = schema('books', {
 
@@ -24,16 +19,6 @@ user.define({
 
 const q = query.setSpaces(2)
 
-console.log(q(
-    user(
-        book().props(['firstname'])
-    )
-).generate())
-
-//mock(
-//    user(
-//        book(
-//            user().as('author')
-//        )
-//    ).as('user').params({id: 1})
-//).normalize(res => console.log(res))
+q(
+    request().as('makeRequest').normalizeAs('templates')
+).mock().debug().normalize(res => console.log(res))

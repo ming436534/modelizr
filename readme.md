@@ -200,6 +200,7 @@ entities with expected ids
 | `only(props)` | `[array]` | Use only the properties specified in `[array]` |
 | `except(props)` | `[array]` | Exclude the properties specified in `[array]` |
 | `onlyIf(statement)` | `[boolean]` | Only include the model this is applied to if its parameter is true |
+| `normalizeAs(key)` | `[boolean]` | Replace a models normalize key. Primarily used for empty requests using the provided `request()` model |
 
 ### `query(...models)`
 
@@ -239,18 +240,6 @@ mutation(
 ).withQuery().then(res => {})
 ```
 
-#### mutation / query mutators
-
-| Name                   | Accepts       | Effect
-| ---------------------- | ---------------------- | --------------------------
-| `path()`   | `[string]` | Define the endpoint for the graphQL request |
-| `useAPI()` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
-| `setSpaces()` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
-| `generate()` | N\A | Causes `query()` to return the generated query as a string |
-| `mock()` | `[boolean]` default `true` | Mock the request |
-| `then()` | `[function (result)]` | Make the request and pass the result as it's first parameter |
-| `normalize()` | `[function (result)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter |
-
 ### `mock(...models)`
 
 Generate nested mock data
@@ -265,12 +254,17 @@ mock(
 ).then(res => {})
 ```
 
-#### mock mutators
+#### mutation / query mutators / mock mutators
 
 | Name                   | Accepts       | Effect
 | ---------------------- | ---------------------- | --------------------------
-| `then()` | `[function (result)]` | Make the request and pass the result as it's first parameter |
-| `normalize()` | `[function (result)]` | Normalize the query after receiving a response and pass the normalized response as the first parameter |
+| `path(endpoint)`   | `[string]` | Define the endpoint for the graphQL request |
+| `useAPI(api)` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
+| `setSpaces(spaces)` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
+| `generate()` | N\A | Causes `query()` to return the generated query as a string |
+| `mock(shouldMock)` | `[boolean]` default `true` | Mock the request |
+| `then(res, query)` | `[function (result)]` | Make the request and pass the result as it's first parameter, and the parsed query as the second |
+| `normalize(res, query)` | `[function (result)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter, and the parsed query as the second |
 
 ### `normalize(response, ...models)`
 
@@ -291,7 +285,7 @@ In order to make arbitrary requests or mocks, you may also import 'request' from
 import { query, mutation, request } from 'modelizr'
 
 query(
-	request().props(['name', 'title']).params({id: 1}).as('customRequest')
+	request().props(['name', 'title']).params({id: 1}).as('customRequest').normalizeAs('user')
 ).then(res => {})
 
 mutation(

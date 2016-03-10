@@ -1,4 +1,5 @@
 import { applyMutators, makeQuery, _, api } from './utils'
+import mock from './mock'
 
 let query = (...models) => {
     const response = onlyQuery => {
@@ -7,8 +8,8 @@ let query = (...models) => {
         if (onlyQuery) {
             return query
         }
-        if (response._debug) {
-            console.log(query)
+        if (response._mock) {
+            return mock(...models)()
         }
         return response.api(response._path, query, response.headers)
     }

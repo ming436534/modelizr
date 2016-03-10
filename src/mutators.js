@@ -1,5 +1,4 @@
 import { normalize, arrayOf } from './normalize'
-import mock from './mock'
 import { applyMutators } from './utils'
 import _ from 'lodash'
 
@@ -56,6 +55,11 @@ const modelMutators = {
         return response
     },
 
+    normalizeAs: response => key => {
+        response.construct.model._key = key
+        return response
+    },
+
     properties: response => (props, overwrite) => {
         if (Array.isArray(props)) {
             props = _.mapValues(_.mapKeys(props, prop => prop), () => ({type: 'string'}))
@@ -89,31 +93,12 @@ const mutationMutators = {
     },
 }
 
-const mockMutators = {
-    then: response => cb => {
-        const promise = new Promise((resolve, reject) => {
-            if (response.mockError) {
-                return reject(new Error('Mocked Error'))
-            }
-            return resolve(response())
-        })
+const mockMutators = {}
 
-        return promise.then(cb)
-    },
-
-    normalize: response => cb => {
-        const promise = new Promise((resolve, reject) => {
-            if (response.mockError) {
-                return reject(new Error('Mocked Error'))
-            }
-            return resolve(response())
-        })
-
-        return promise.then(res => normalize(
-            res,
-            ...response.query
-        )).then(cb)
-    }
+const _debug = (query, res) => {
+    if (typeof console.group === 'function') console.group()
+    console.log(query, res)
+    if (typeof console.groupEnd === 'function') console.groupEnd()
 }
 
 const sharedMutators = {
@@ -145,33 +130,57 @@ const sharedMutators = {
     },
 
     then: response => cb => {
+        cb = cb || function () {
+            }
         const promise = response()
-        return promise.then(cb)
+        return promise.then(res => {
+            if (response._debug) {
+                _debug(response.generate(), res)
+            }
+            cb(res, response.query)
+        })
     },
 
     normalize: response => cb => {
+        cb = cb || function () {
+            }
         const promise = response()
+        const normalizeResponse = res => {
+            const result = normalize(
+                res,
+                ...response.query
+            )
+            if (response._debug) {
+                _debug(response.generate(), result)
+            }
+            return result
+        }
+
         return promise.then(res => {
             if (res.json) {
-                return normalize(
-                    res.json,
-                    ...response.query
-                )
-
+                return {
+                    normalized: normalizeResponse(res.json)
+                }
             }
             return res.json()
         }).then(res => {
             if (res.json) {
-                return normalize(
-                    res.json,
-                    ...response.query
-                )
+                return normalizeResponse(res.json)
+            }
+            if (res.normalized) {
+                return res.normalized
+            }
+            if (response._debug) {
+                _debug(response.generate(), res)
             }
             return res
-        }).then(cb)
+        }).then(res => cb(res, response.query))
     },
 
-    mock: response => statement => statement ? mock(response.query) : response,
+    mock: response => statement => {
+        if (statement !== false) response._mock = true
+        return response
+    },
 
     setSpaces: response => spaces => {
         response.spaces = spaces

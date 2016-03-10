@@ -1,4 +1,5 @@
 import { applyMutators, _ } from './utils'
+import query from './query'
 
 let jsf = () => ({})
 if (!process.env.MODELIZR_CHEAP_MOCK) {
@@ -6,52 +7,60 @@ if (!process.env.MODELIZR_CHEAP_MOCK) {
 }
 
 const mock = (...models) => {
-    const response = () => {
+    const response = pure => {
 
         const cache = {}
 
         const mock = models => _.extractMockedObjects(_.mapValid(models, model => {
-                if (typeof model === 'function') {
-                    model = model()
+            if (typeof model === 'function') {
+                model = model()
+            }
+
+            const response = {}
+
+            const newId = _.size(cache[model.name]) + 1
+            let id = _.range(newId, newId + 20)
+            if (model.params) {
+                if (model.params.id || model.params.ids) {
+                    id = model.params.id || model.params.ids
                 }
+            }
 
-                const response = {}
+            const getFromCache = id => {
+                const mergeNested = mockedModel => ({
+                    ...mockedModel,
+                    ...mock(_.filter(model.properties, prop => prop.model))
+                })
 
-                const newId = _.size(cache[model.name]) + 1
-                let id = _.range(newId, newId + 20)
-                if (model.params) {
-                    if (model.params.id || model.params.ids) {
-                        id = model.params.id || model.params.ids
-                    }
+                if (cache[model.name] && cache[model.name][id]) {
+                    return mergeNested(cache[model.name][id])
                 }
+                const mocked = _.set(jsf(model), 'id', id)
 
-                const getFromCache = id => {
-                    const mergeNested = mockedModel => ({
-                        ...mockedModel,
-                        ...mock(_.filter(model.properties, prop => prop.model))
-                    })
+                cache[model.name] = {...cache[model.name], [id]: mocked}
+                return mergeNested(mocked)
+            }
 
-                    if (cache[model.name] && cache[model.name][id]) {
-                        return mergeNested(cache[model.name][id])
-                    }
-                    const mocked = _.set(jsf(model), 'id', id)
+            if (Array.isArray(id)) {
+                response[model.key] = _.map(id, id => getFromCache(id))
+            } else if (typeof id === 'number') {
+                response[model.key] = getFromCache(id)
+            } else {
+                response[model.key] = getFromCache(1)
+            }
 
-                    cache[model.name] = {...cache[model.name], [id]: mocked}
-                    return mergeNested(mocked)
-                }
+            return response
+        }))
 
-                if (Array.isArray(id)) {
-                    response[model.key] = _.map(id, id => getFromCache(id))
-                } else if (typeof id === 'number') {
-                    response[model.key] = getFromCache(id)
-                } else {
-                    response[model.key] = getFromCache(1)
-                }
-
-                return response
-            }))
-
-        return mock(models)
+        if (pure) {
+            return query(...models).generate()
+        }
+        return new Promise((resolve, reject) => {
+            if (response.mockError) {
+                return reject(new Error('Mocked Error'))
+            }
+            return resolve({json: mock(models)})
+        })
     }
 
     response.query = models
