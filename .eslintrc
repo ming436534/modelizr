@@ -15,7 +15,8 @@
     "prefer-const": 1,
     "prefer-spread": 1,
     "prefer-template": 1,
-    "no-constant-condition": 0
+    "no-constant-condition": 0,
+    "no-console": 0
   },
   "plugins": [
     "babel"

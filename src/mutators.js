@@ -1,5 +1,4 @@
 import { normalize, arrayOf } from './normalize'
-import { applyMutators } from './utils'
 import _ from 'lodash'
 
 const schemaMutators = {
@@ -90,7 +89,7 @@ const mutationMutators = {
     withQuery: response => () => {
         response.includeQuery = true
         return response
-    },
+    }
 }
 
 const mockMutators = {}
@@ -135,7 +134,7 @@ const sharedMutators = {
         const promise = response()
         return promise.then(res => {
             if (response._debug) {
-                _debug(response.generate(), res, response.construct.key)
+                _debug(response.generate(), res, response.query[0].construct.key)
             }
             cb(res, response.query)
         })
@@ -151,7 +150,7 @@ const sharedMutators = {
                 ...response.query
             )
             if (response._debug) {
-                _debug(response.generate(), result, response.construct.key)
+                _debug(response.generate(), result, response.query[0].construct.key)
             }
             return result
         }
@@ -171,7 +170,7 @@ const sharedMutators = {
                 return res.normalized
             }
             if (response._debug) {
-                _debug(response.generate(), res, response.construct.key)
+                _debug(response.generate(), res, response.query[0].construct.key)
             }
             return res
         }).then(res => cb(res, response.query))
