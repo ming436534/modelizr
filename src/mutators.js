@@ -96,7 +96,7 @@ const mutationMutators = {
 const mockMutators = {}
 
 const _debug = (query, res, name) => {
-    if (typeof console.group === 'function') console.groupCollapsed('Modelizr: ')
+    if (typeof console.groupCollapsed === 'function') console.groupCollapsed(`query: ${name}`)
     console.log(query, res)
     if (typeof console.groupEnd === 'function') console.groupEnd()
 }
