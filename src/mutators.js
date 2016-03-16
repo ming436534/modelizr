@@ -55,7 +55,9 @@ const modelMutators = {
     },
 
     normalizeAs: response => key => {
-        response.construct.model._key = key
+        const model = response.construct.model()
+        model._key = key
+        response.construct.model = () => model
         return response
     },
 
@@ -94,9 +96,9 @@ const mutationMutators = {
 
 const mockMutators = {}
 
-const _debug = (query, res, name) => {
-    if (typeof console.groupCollapsed === 'function') console.groupCollapsed(`query: ${name}`)
-    console.log(query, res)
+const _debug = (log, name) => {
+    if (typeof console.groupCollapsed === 'function') console.groupCollapsed(name)
+    console.log(log)
     if (typeof console.groupEnd === 'function') console.groupEnd()
 }
 
@@ -131,10 +133,15 @@ const sharedMutators = {
     then: response => cb => {
         cb = cb || function () {
             }
+
+        if (response._debug) {
+            _debug(response.generate(), `${response.query[0].construct.key} [query]`)
+        }
+
         const promise = response()
         return promise.then(res => {
             if (response._debug) {
-                _debug(response.generate(), res, response.query[0].construct.key)
+                _debug(res, `${response.query[0].construct.key} [response]`)
             }
             cb(res, response.query)
         })
@@ -143,6 +150,10 @@ const sharedMutators = {
     normalize: response => cb => {
         cb = cb || function () {
             }
+
+        if (response._debug) {
+            _debug(response.generate(), `${response.query[0].construct.key} [query]`)
+        }
         const promise = response()
         const normalizeResponse = res => {
             const result = normalize(
@@ -150,7 +161,7 @@ const sharedMutators = {
                 ...response.query
             )
             if (response._debug) {
-                _debug(response.generate(), result, response.query[0].construct.key)
+                _debug(res, `${response.query[0].construct.key} [normalized response]`)
             }
             return result
         }

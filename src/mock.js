@@ -29,7 +29,7 @@ const mock = (...models) => {
             const getFromCache = id => {
                 const mergeNested = mockedModel => ({
                     ...mockedModel,
-                    ...mock(_.filter(model.properties, prop => prop.model))
+                    ...mock(_.filter(model.properties, prop => prop._isModel))
                 })
 
                 if (cache[model.name] && cache[model.name][id]) {

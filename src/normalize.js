@@ -6,9 +6,9 @@ const normalize = (response, ...query) => {
 
     return Normalize(response, _.mapValues(query, (entity, key) => {
         if (Array.isArray(response[key])) {
-            return _arrayOf(entity.model)
+            return _arrayOf(entity.model())
         } else {
-            return entity.model
+            return entity.model()
         }
     }))
 }

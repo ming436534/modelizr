@@ -50,6 +50,8 @@ const schema = (name, schema, options) => {
 
         response.construct = {
             ...model.schema,
+            model: () => model.schema.model,
+            _isModel: true,
             params: params
         }
 

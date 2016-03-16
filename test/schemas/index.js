@@ -1,24 +1,23 @@
 import { defineSchemas, schema } from '../../src/schema'
-import { query, mutation, request } from '../../src/index'
+import { query, mutation, mock, request } from '../../src/index'
 
 const book = schema('books', {
-
     title: {type: 'string'},
     edition: {type: 'integer'}
-
 })
 const user = schema('users', {
-    properties: {
-        title: {type: 'string'}
-    }
+    title: {type: 'string'}
 })
 
 user.define({
-    books: [book]
+    book: book
+})
+book.define({
+    author: user
 })
 
-const q = query.setSpaces(2)
-
-q(
-    request().as('makeRequest').normalizeAs('templates')
-).mock().debug().normalize(res => console.log(res))
+mock(
+    user(
+        request({id: 1})
+    ).params({id: 1})
+).debug().normalize(res => console.log(res)).catch(e => console.log(e))
