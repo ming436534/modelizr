@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { request, prepare } from '../../src/index'
+import { prepare } from '../../src/index'
 import { book, user } from '../models/index'
 import store from '../store/index'
 
@@ -7,7 +7,7 @@ const setup = prepare().debug().spaces(2).path('http://localhost:8000/graphql')
 
 const query = setup.query()
 const mutation = setup.mutation()
-const mock = setup.getMock()
+const request = setup.request()
 
 export const SET_ENTITIES = "SET_ENTITIES"
 const setEntities = entities => {
@@ -38,4 +38,12 @@ export const mutateUserAndFetch = shouldMock => {
     mutation(
         user()
     ).mock(shouldMock).query().normalize(res => setEntities(res.entities))
+}
+
+export const plainRequest = shouldMock => {
+    request(
+        {
+            name: 'awesome'
+        }
+    ).mock(shouldMock).then(res => {})
 }

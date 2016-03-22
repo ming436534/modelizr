@@ -291,18 +291,20 @@ normalize(
 
 Recommended to rather use the `.normalize()` mutator on requests
 
-In order to make arbitrary requests or mocks, you may also import 'request' from modelizr which is essentially an empty schema that you can call mutators on
+To make 'normal' requests with the configured api, you can import `request` or take it from the `prepare` method
 
 ```javascript
-import { query, mutation, request } from 'modelizr'
+import { request } from 'modelizr'
 
-query(
-	request().props(['name', 'title']).params({id: 1}).as('customRequest').normalizeAs('user')
-).then(res => {})
+request({
+    
+}).method('post').contentType('application/json').then(res => {})
 
-mutation(
-	request().params({id: 1, title: 'something'}).as('mutateEntity')
-)
+// or
+import { prepare } from 'modelizr'
+
+const request = prepare().contentType(...).request()
+
 ```
 
 # Tests

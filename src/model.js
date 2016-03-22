@@ -101,6 +101,4 @@ const model = (name, schema, options) => {
     return response
 }
 
-const request = model('_request', {})
-
-export { model as default, model, Model, request }
+export { model as default, model, Model }

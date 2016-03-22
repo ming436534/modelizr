@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { Base } from './base'
-import { query as Query, mutation as Mutation, mock as Mock } from './index'
+import { query as Query, mutation as Mutation, mock as Mock, request as Request } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -53,17 +53,22 @@ const prepare = mutators => {
 
     return base({
         query: obj => () => {
-            let query = Query
+            const query = Query
             return apply(obj, query)
         },
 
         mutation: obj => () => {
-            let mutation = Mutation
+            const mutation = Mutation
             return apply(obj, mutation)
         },
 
+        request: obj => () => {
+            const request = Request
+            return apply(obj, request)
+        },
+
         getMock: obj => () => {
-            let mock = Mock
+            const mock = Mock
             return apply(obj, mock)
         },
 
@@ -71,16 +76,16 @@ const prepare = mutators => {
     })
 }
 
-const api = (path, query, headers) => fetch(path, {
+const api = (query, opts) => fetch(opts.path, {
     headers: {
         ...{
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': opts.contentType || 'application/json'
         },
-        ...headers || {}
+        ...opts.headers || {}
     },
     method: 'POST',
-    body: JSON.stringify({query: query})
+    body: JSON.stringify(opts._plainReq ? query : {query})
 }).then(res => res.json()).then(res => {
     if (res.json) {
         if (res.json.data) {

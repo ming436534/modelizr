@@ -38,7 +38,10 @@ mutation.Class = class extends mutation.Class {
                 resolve(true)
             })
         }
-        return this._api(this._path, this._query, this._headers)
+        return this._api(this._query, {
+            path: this._path,
+            headers: this._headers
+        })
     }
 
     as = name => this.apply('_mutationName', name)

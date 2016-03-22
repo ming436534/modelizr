@@ -15,6 +15,23 @@ module.exports = {
                     }
                 }
             ]
+        },
+
+        {
+            id: 2,
+            firstName: 'James',
+            lastName: 'Doe',
+            books: [
+                {
+                    id: 2,
+                    title: 'Book Title',
+                    author: {
+                        id: 2,
+                        firstName: 'James',
+                        lastName: 'Doe'
+                    }
+                }
+            ]
         }
     ]
 }

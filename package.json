@@ -1,7 +1,7 @@
 {
   "name": "modelizr",
   "version": "0.4.1",
-  "description": "A tool for building normalizr schemas that can be easily mocked",
+  "description": "Generate GraphQL queries from models that can be mocked and normalized.",
   "main": "lib/index.js",
   "scripts": {
     "test": "node tests/index.js",

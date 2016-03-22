@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 import store from '../store/index'
 import DevTool from './DevTool'
 import { div, button } from './elements'
-import { requestUsers, mutateUser, mutateUserAndFetch } from '../actions/index'
+import { requestUsers, mutateUser, mutateUserAndFetch, plainRequest } from '../actions/index'
 
 class Root extends Component {
     constructor() {
@@ -24,7 +24,8 @@ class Root extends Component {
             button({onClick: () => requestUsers(mock)}, "request users"),
             button({onClick: () => mutateUser(mock)}, "mutate user"),
             button({onClick: () => mutateUserAndFetch(mock)}, "mutate user and fetch"),
-
+            button({onClick: () => plainRequest(mock)}, "make plain request"),
+            
             DevTool({store})
         )
     }
