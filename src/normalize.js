@@ -2,7 +2,7 @@ import { normalize as Normalize, arrayOf as _arrayOf, valuesOf as _valuesOf, uni
 import { _ } from './utils'
 
 const normalize = (response, ...query) => {
-    query = _.mapKeys(_.mapValues(query, model => model()), model => model.key)
+    query = _.mapKeys(_.mapValues(query, model => model.build()), model => model.key)
 
     return Normalize(response, _.mapValues(query, (entity, key) => {
         if (Array.isArray(response[key])) {

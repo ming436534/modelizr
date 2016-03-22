@@ -297,4 +297,11 @@ mutation(
 
 + Validation
 + entrypoint to add mutators
-+ support for custom, non model based queries
+
+# Tests
+
++ `npm i`
++ `npm test`
++ navigate to `http://localhost:9000` in your browser
+
+Use the tests as usage examples.

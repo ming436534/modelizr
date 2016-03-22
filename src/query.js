@@ -1,28 +1,25 @@
-import { applyMutators, makeQuery, _, api } from './utils'
+import { _, prepare, debug } from './utils'
 import mock from './mock'
 
-let query = (...models) => {
-    const response = onlyQuery => {
-        const query = `{${_.mapValid(models, model => makeQuery(model(), response.spaces))}\n}`
-
-        if (onlyQuery) {
-            return query
-        }
-        if (response._mock) {
-            return mock(...models)()
-        }
-        return response.api(response._path, query, response.headers)
+const query = prepare()
+query.Class = class extends query.Class {
+    
+    generate() {
+        return (this._query = `{${_.mapValid(this._models, model => this.makeQuery(model.build(), this._spaces))}\n}`)
     }
 
-    response.query = models
-    response.spaces = query.spaces || 3
-    response.api = query.api || api
-    response._path = query._path || 'http://localhost'
-    response._debug = query._debug || false
+    response() {
+        this.generate()
 
-    return applyMutators(response, 'query')
+        if (this._debug) {
+            debug(this._query, '[query]')
+        }
+        
+        if (this._mock) {
+            return mock(this._models).response()
+        }
+        return this._api(this._path, this._query, this._headers)
+    }
 }
-
-query = applyMutators(query, 'query')
 
 export { query as default, query }

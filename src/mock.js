@@ -1,19 +1,19 @@
-import { applyMutators, _ } from './utils'
-import query from './query'
+import { _, prepare } from './utils'
 
 let jsf = () => ({})
 if (!process.env.MODELIZR_CHEAP_MOCK) {
     jsf = require('json-schema-faker')
 }
 
-const mock = (...models) => {
-    const response = pure => {
+const mock = prepare()
+mock.Class = class extends mock.Class {
 
+    response() {
         const cache = {}
 
         const mock = models => _.extractMockedObjects(_.mapValid(models, model => {
-            if (typeof model === 'function') {
-                model = model()
+            if (typeof model.build === 'function') {
+                model = model.build()
             }
 
             const response = {}
@@ -52,20 +52,10 @@ const mock = (...models) => {
             return response
         }))
 
-        if (pure) {
-            return query(...models).generate()
-        }
-        return new Promise((resolve, reject) => {
-            if (response.mockError) {
-                return reject(new Error('Mocked Error'))
-            }
-            return resolve({json: mock(models)})
+        return new Promise((resolve) => {
+            return resolve(mock(...this._models))
         })
     }
-
-    response.query = models
-
-    return applyMutators(response, 'mock')
 }
 
 export { mock as default, mock }

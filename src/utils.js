@@ -1,18 +1,5 @@
 import _ from 'lodash'
-import fetch from 'isomorphic-fetch'
-import * as mutators from './mutators'
-
-const applyMutators = (response, type) => {
-    const relevantMutators = {
-        ...mutators.sharedMutators,
-        ...mutators[`${type}Mutators`]
-    }
-    _.forEach(relevantMutators, (action, name) => response[name] = action(response))
-
-    return response
-}
-
-const spacer = amount => _.join(_.map(_.range(0, amount), () => ''), ' ')
+import { Base } from './base'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -27,47 +14,28 @@ _.extractMockedObjects = array => {
     return response
 }
 
-const makeParams = params => {
-    const getType = param => {
-        if (Array.isArray(param)) {
-            return `[${param}]`
-        } else if (typeof param === 'number') {
-            return param
-        }
-        return `"${param}"`
-    }
-
-    if (params) {
-        return ` (${_.filter(_.map(params, (param, key) => param ? `${key}: ${getType(param)}` : null), param => param)})`
-    }
-    return ''
+const debug = (log, name) => {
+    if (typeof console.groupCollapsed === 'function') console.groupCollapsed(name)
+    console.log(log)
+    if (typeof console.groupEnd === 'function') console.groupEnd()
 }
 
-const makeQuery = (model, spaces = 3, indent = 1) => {
-    if (model.continue === false) {
-        return undefined
+const prepare = () => {
+    const res = (...models) => new res.Class(models, res._opts)
+    res.Class = Base
+    res._opts = {}
+    res.apply = (key, value) => {
+        res._opts[key] = value
+        return res
     }
-    const mapProps = (props, indent) => {
-        const currentIndent = `\n${spacer(spaces * indent)}`
-        return _.mapValid(props, (prop, key) => {
-            if (prop.model) {
-                return makeQuery(prop, spaces, indent)
-            }
-            if (prop.type == 'object') {
-                return makeQuery({
-                    ...{
-                        key: key
-                    },
-                    ...prop
-                }, spaces, indent)
-            }
-            return `${currentIndent}${key}`
-        })
-    }
+    res.spaces = spaces => res.apply('_spaces', spaces)
+    res.api = api => res.apply('_api', api)
+    res.path = path => res.apply('_path', path)
+    res.headers = headers => res.apply('_headers', headers)
+    res.debug = debug => res.apply('_debug', debug !== false ? true : false)
+    res.mock = mock => res.apply('_mock', mock !== false ? true : false)
 
-    const currentIndent = spacer(spaces * indent)
-
-    return `\n${currentIndent}${model.key}${makeParams(model.params)} {${mapProps(model.properties, indent + 1)}\n${currentIndent}}`
+    return res
 }
 
 const api = (path, query, headers) => fetch(path, {
@@ -82,4 +50,4 @@ const api = (path, query, headers) => fetch(path, {
     body: JSON.stringify({query: query})
 })
 
-export { applyMutators, spacer, makeParams, api, makeQuery, _ }
+export { _, prepare, debug, api }
