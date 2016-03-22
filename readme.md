@@ -21,14 +21,14 @@ See [normalizr](https://github.com/gaearon/normalizr) and [json-schema-faker](ht
 Define a collection of models to be used when generating queries or mutations
 
 ```javascript
-import { schema } from 'modelizr'
+import { model } from 'modelizr'
 
-const user = schema('users', {
+const user = model('users', {
 	firstname: {type: 'string', faker: 'name.firstName'},
     lastname: {type: 'string', faker: 'name.lastName'}
 })
 
-const book = schema({
+const book = model({
     properties: {
         title: {type: 'string', faker: 'name.firstName'},
         edition: {type: 'integer', faker: 'random.number'}
@@ -51,10 +51,10 @@ export { user, book }
 Now we can create a request object from our models and use it to generate graphQL requests or mock data
 
 ```javascript
-import { query, normalize } from 'modelizr'
+import { query as Query, normalize } from 'modelizr'
 import { user, book } from './schemas'
 
-const q = query(
+const query = Query(
 	user(
 		book(
 			user().as('author')
@@ -62,7 +62,7 @@ const q = query(
 	).as('user').params({id: 1})
 )
 
-console.log(q.generate())
+console.log(query.generate())
 /*
 {
   user (id: 1) {
@@ -84,7 +84,7 @@ console.log(q.generate())
 */
 
 // make a request and normalize it
-q.path('http://...').normalize(res => {
+query.path('http://...').normalize(res => {
 	console.log(res) // normalized response
 })
 /*
@@ -112,21 +112,33 @@ query(
 Mutators can also be used to pre-configure models or request generators
 
 ```javascript
-const q = query.path('http://...').useApi(api)
+const query = Query.path('http://...').useApi(api)
 
-q(
+query(
 	user()
 ).then(res => {})
 ```
 
-### `schema(key, schema [, options])`
+There is also a convenience method called `prepare` which allows you to configure all query types.
+
+```javascript
+import { prepare } from 'modelizr'
+
+const prepared = prepare().path('http://...')
+
+const query = prepared.query()
+const mutation = prepared.mutation()
+const mock = prepared.getMock()
+```
+
+### `model(key, schema [, options])`
 
 Create a new model from a schema. The schema must be defined with the `json-schema-faker` schema style.
 
 ```javascript
-import { schema } from 'modelizr'
+import { model } from 'modelizr'
 
-const user = schema('users', {
+const user = model('users', {
     properties: {
         firstname: {type: 'string', faker: 'name.firstName'},
         lastname: {type: 'string', faker: 'name.lastName'}
@@ -136,7 +148,7 @@ const user = schema('users', {
 })
 
 // or if you plan to use the defaults, you can directly specify properties
-const user = schema('users', {
+const user = model('users', {
 	firstname: {type: 'string', faker: 'name.firstName'},
 	lastname: {type: 'string', faker: 'name.lastName'}
 })
@@ -157,15 +169,15 @@ You can additionally specify any of `json-schema-faker`'s schema definitions.
 If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step. 
 This is recommended as the `faker.js` library within `json-schema-faker` is very large and should only be included during development
 
-### `schema.define(definitions)`
+### `model.define(definitions)`
 
 Define relationships between models
 
 + `definitions [object]` - a collection of models structured as they are expected to be received
 
 ```javascript
-const user = schema('users', {})
-const book = schema('books', {})
+const user = model('users', {})
+const book = model('books', {})
 
 user.define({
 	books: [book],
@@ -182,7 +194,7 @@ user.define({
 
 `'modelizr/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`
 
-### model `schema()([params,] ...models)`
+### model instance `model()([params,] ...models)`
 
 Define a nested query that can be generated or mocked
 
@@ -237,7 +249,7 @@ import { mutation } from 'normalizr'
 
 mutation(
 	user()
-).withQuery().then(res => {})
+).query().then(res => {})
 ```
 
 ### `mock(...models)`
@@ -259,8 +271,8 @@ mock(
 | Name                   | Accepts       | Effect
 | ---------------------- | ---------------------- | --------------------------
 | `path(endpoint)`   | `[string]` | Define the endpoint for the graphQL request |
-| `useAPI(api)` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
-| `setSpaces(spaces)` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
+| `api(api)` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
+| `spaces(spaces)` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
 | `generate()` | N\A | Causes `query()` to return the generated query as a string |
 | `mock(shouldMock)` | `[boolean]` default `true` | Mock the request |
 | `then(res, query)` | `[function (result)]` | Make the request and pass the result as it's first parameter, and the parsed query as the second |
@@ -293,15 +305,10 @@ mutation(
 )
 ```
 
-# Todo
-
-+ Validation
-+ entrypoint to add mutators
-
 # Tests
 
 + `npm i`
 + `npm test`
-+ navigate to `http://localhost:9000` in your browser
++ navigate to `http://localhost:8000` in your browser
 
-Use the tests as usage examples.
+Use the tests as basic usage examples.

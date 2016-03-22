@@ -1,15 +1,21 @@
 var express = require('express'),
     server = express(),
+    bodyParser = require('body-parser'),
     _ = require('lodash'),
     path = require('path'),
     webpack = require('webpack'),
     config = require('./webpack.dev.js'),
-    port = 9000
+    port = 8000
 
 server.use(require('webpack-dev-middleware')(webpack(config), {
     noInfo: true,
     publicPath: config.output.publicPath
 }))
+
+server.use(bodyParser.json())
+server.use('/graphql', function (req, res) {
+    res.json(require('./data'))
+})
 
 server.use('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'))

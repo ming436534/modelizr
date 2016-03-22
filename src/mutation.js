@@ -4,8 +4,8 @@ import mock from './mock'
 const mutation = base()
 mutation.Class = class extends mutation.Class {
     
-    constructor() {
-        super()
+    constructor(models, opts) {
+        super(models, opts)
         
         this._mutationName = 'mutation'
         this._includeQuery = false
@@ -32,7 +32,7 @@ mutation.Class = class extends mutation.Class {
 
         if (this._mock) {
             if (this._includeQuery) {
-                return mock(...this._models).response()
+                return mock(this._models).response()
             }
             return new Promise((resolve) => {
                 resolve(true)

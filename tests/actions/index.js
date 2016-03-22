@@ -3,7 +3,7 @@ import { request, prepare } from '../../src/index'
 import { book, user } from '../models/index'
 import store from '../store/index'
 
-const setup = prepare().debug().spaces(2).path('http://localhost:9000/graphql')
+const setup = prepare().debug().spaces(2).path('http://localhost:8000/graphql')
 
 const query = setup.query()
 const mutation = setup.mutation()
@@ -25,11 +25,17 @@ export const requestUsers = shouldMock => {
         user(
             book()
         )
-    ).mock().normalize(res => setEntities(res.entities))
+    ).mock(shouldMock).normalize(res => setEntities(res.entities))
 }
 
 export const mutateUser = shouldMock => {
     mutation(
         user()
-    ).mock(shouldMock).debug().normalize(res => setEntities(res.entities))
+    ).mock(shouldMock).then()
+}
+
+export const mutateUserAndFetch = shouldMock => {
+    mutation(
+        user()
+    ).mock(shouldMock).query().normalize(res => setEntities(res.entities))
 }

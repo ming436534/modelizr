@@ -81,6 +81,16 @@ const api = (path, query, headers) => fetch(path, {
     },
     method: 'POST',
     body: JSON.stringify({query: query})
+}).then(res => res.json()).then(res => {
+    if (res.json) {
+        if (res.json.data) {
+            return res.json.data
+        }
+        return res.json
+    } else if (res.data) {
+        return res.data
+    }
+    return res
 })
 
 export { _, base, debug, api, prepare }

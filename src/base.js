@@ -68,7 +68,7 @@ class Base {
 
         return this.response().then(res => {
             if (this._debug) {
-                debug(response, '[response]')
+                debug(res, '[response]')
             }
 
             return res

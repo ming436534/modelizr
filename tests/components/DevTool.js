@@ -9,8 +9,8 @@ const Enhancer = createDevTools(
             changePositionKey: "ctrl-h",
             toggleVisibilityKey: "ctrl-w",
             defaultIsVisible: true,
-            defaultPosition: 'right',
-            defaultSize: 0.6
+            defaultPosition: 'bottom',
+            defaultSize: 0.9
         },
 
         createElement(Inspector)
