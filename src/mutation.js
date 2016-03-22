@@ -1,7 +1,7 @@
-import { _, prepare, debug } from './utils'
+import { _, base, debug } from './utils'
 import mock from './mock'
 
-const mutation = prepare()
+const mutation = base()
 mutation.Class = class extends mutation.Class {
     
     constructor() {

@@ -1,7 +1,7 @@
-import { _, prepare, debug } from './utils'
+import { _, base, debug } from './utils'
 import mock from './mock'
 
-const query = prepare()
+const query = base()
 query.Class = class extends query.Class {
     
     generate() {

@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { Base } from './base'
+import { query as Query, mutation as Mutation, mock as Mock } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -20,7 +21,7 @@ const debug = (log, name) => {
     if (typeof console.groupEnd === 'function') console.groupEnd()
 }
 
-const prepare = () => {
+const base = mutators => {
     const res = (...models) => new res.Class(models, res._opts)
     res.Class = Base
     res._opts = {}
@@ -35,7 +36,39 @@ const prepare = () => {
     res.debug = debug => res.apply('_debug', debug !== false ? true : false)
     res.mock = mock => res.apply('_mock', mock !== false ? true : false)
 
+    _.forEach(mutators, (mutator, key) => res[key] = mutator(res))
+
     return res
+}
+
+const prepare = mutators => {
+    const apply = (obj, target) => {
+        _.forEach(obj._opts, (val, key) => {
+            key = key.replace('_', '')
+            typeof target[key] == 'function' ? target = target[key](val) : null
+        })
+
+        return target
+    }
+
+    return base({
+        query: obj => () => {
+            let query = Query
+            return apply(obj, query)
+        },
+
+        mutation: obj => () => {
+            let mutation = Mutation
+            return apply(obj, mutation)
+        },
+
+        getMock: obj => () => {
+            let mock = Mock
+            return apply(obj, mock)
+        },
+
+        ...mutators || {}
+    })
 }
 
 const api = (path, query, headers) => fetch(path, {
@@ -50,4 +83,4 @@ const api = (path, query, headers) => fetch(path, {
     body: JSON.stringify({query: query})
 })
 
-export { _, prepare, debug, api }
+export { _, base, debug, api, prepare }

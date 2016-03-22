@@ -1,11 +1,11 @@
-import { _, prepare } from './utils'
+import { _, base } from './utils'
 
 let jsf = () => ({})
 if (!process.env.MODELIZR_CHEAP_MOCK) {
     jsf = require('json-schema-faker')
 }
 
-const mock = prepare()
+const mock = base()
 mock.Class = class extends mock.Class {
 
     response() {
