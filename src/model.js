@@ -95,6 +95,15 @@ const model = (name, schema, options) => {
             }
             return definition
         }))
+        
+        response.schema._mockTypes = _.mapValues(definitions, definition => {
+            if (Array.isArray(definition)) {
+                return response.schema._mockType = 'array'
+            } else if (definition.schema) {
+                return response.schema._mockType = 'single'
+            }
+            return response.schema._mockType = 'array'
+        })
     }
     response.getKey = () => response.schema.key
 

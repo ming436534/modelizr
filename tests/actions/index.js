@@ -23,7 +23,9 @@ const setEntities = entities => {
 export const requestUsers = shouldMock => {
     query(
         user(
-            book()
+            book(
+                user().as('author')
+            )
         )
     ).mock(shouldMock).normalize(res => setEntities(res.entities))
 }
