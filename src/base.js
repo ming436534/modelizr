@@ -84,7 +84,7 @@ class Base {
                 debug(res, '[response]')
             }
             const response = normalize(
-                res,
+                res.body,
                 ...this._models
             )
             if (this._debug) {

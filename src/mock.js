@@ -52,7 +52,10 @@ mock.Class = class extends mock.Class {
                 response[model.key] = getFromCache(1)
             }
 
-            return response
+            return {
+                status: 200,
+                body: response
+            }
         }))
 
         return new Promise((resolve) => {

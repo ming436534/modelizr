@@ -76,26 +76,39 @@ const prepare = mutators => {
     })
 }
 
-const api = (query, opts) => fetch(opts.path, {
-    headers: {
-        ...{
-            'Accept': 'application/json',
-            'Content-Type': opts.contentType || 'application/json'
+const api = (query, opts) => {
+    let status = 200
+    
+    return fetch(opts.path, {
+        headers: {
+            ...{
+                'Accept': 'application/json',
+                'Content-Type': opts.contentType || 'application/json'
+            },
+            ...opts.headers || {}
         },
-        ...opts.headers || {}
-    },
-    method: 'POST',
-    body: JSON.stringify(opts._plainReq ? query : {query})
-}).then(res => res.json()).then(res => {
-    if (res.json) {
-        if (res.json.data) {
-            return res.json.data
+        method: 'POST',
+        body: JSON.stringify(opts._plainReq ? query : {query})
+    }).then(res => {
+        status = res.status
+        return res.json()
+    }).then(res => {
+        const response = {
+            status,
+            body: res
         }
-        return res.json
-    } else if (res.data) {
-        return res.data
-    }
-    return res
-})
+        if (res.json) {
+            if (res.json.data) {
+                response.body = res.json.data
+                return response
+            }
+            response.body = res.json
+            return response
+        } else if (res.data) {
+            response.body = res.data
+        }
+        return response
+    })
+}
 
 export { _, base, debug, api, prepare }
