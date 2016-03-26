@@ -47,5 +47,7 @@ export const plainRequest = shouldMock => {
         {
             name: 'awesome'
         }
-    ).mock(shouldMock).then(res => {})
+    ).mock(shouldMock).headers({
+        authL: 'dunny'
+    }).then(res => {})
 }

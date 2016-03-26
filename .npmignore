@@ -1,6 +1,6 @@
 src/*
 !lib
-test
+tests
 .babelrc
 .eslintrc
 .idea

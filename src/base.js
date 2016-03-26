@@ -105,7 +105,7 @@ class Base {
     spaces = spaces => this.apply('_spaces', spaces)
     api = api => this.apply('_api', api)
     path = path => this.apply('_path', path)
-    headers = headers => this.apply('_headers', headers)
+    headers = headers => this.apply('_headers', {...this._headers, ...headers})
     debug = debug => this.apply('_debug', debug !== false ? true : false)
     mock = mock => this.apply('_mock', mock !== false ? true : false)
 }

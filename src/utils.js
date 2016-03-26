@@ -78,13 +78,11 @@ const prepare = mutators => {
 
 const api = (query, opts) => {
     let status = 200
-    
+
     return fetch(opts.path, {
         headers: {
-            ...{
-                'Accept': 'application/json',
-                'Content-Type': opts.contentType || 'application/json'
-            },
+            'Accept': 'application/json',
+            'Content-Type': opts.contentType || 'application/json',
             ...opts.headers || {}
         },
         method: 'POST',
