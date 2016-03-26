@@ -7,7 +7,7 @@ request.Class = class extends request.Class {
     constructor(query, opts) {
         super(null, opts)
 
-        this._query = query
+        this._query = query[0]
         this._contentType = 'application/json'
         this._method = 'GET'
     }
