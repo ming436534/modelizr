@@ -29,7 +29,7 @@ class Base {
             return `"${param}"`
         }
 
-        if (params) {
+        if (!_.isEmpty(params)) {
             return ` (${_.filter(_.map(params, (param, key) => param ? `${key}: ${getType(param)}` : null), param => param)})`
         }
         return ''

@@ -3,7 +3,7 @@ import { prepare } from '../../src/index'
 import { book, user } from '../models/index'
 import store from '../store/index'
 
-const setup = prepare().debug().spaces(2).path('http://localhost:8000/graphql')
+const setup = prepare().debug().spaces(2).path('http://localhost:8000/graphql').headers({ok: 'ok'})
 
 const query = setup.query()
 const mutation = setup.mutation()
@@ -43,6 +43,7 @@ export const mutateUserAndFetch = shouldMock => {
 }
 
 export const plainRequest = shouldMock => {
+    console.log(request())
     request(
         {
             name: 'awesome'
