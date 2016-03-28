@@ -1,5 +1,6 @@
 import { _, debug, api } from './utils'
 import normalize from './normalize'
+import { forEach } from 'lodash'
 
 class Base {
     constructor(models, opts) {
@@ -8,6 +9,7 @@ class Base {
         this._api = api
 
         _.forEach(opts, (opt, key) => this[key] = opt)
+        this.applyCustom()
     }
 
     apply(key, value) {
@@ -102,12 +104,35 @@ class Base {
         return '{}'
     }
 
-    spaces = spaces => this.apply('_spaces', spaces)
-    api = api => this.apply('_api', api)
-    path = path => this.apply('_path', path)
-    headers = headers => this.apply('_headers', {...this._headers, ...headers})
-    debug = debug => this.apply('_debug', debug !== false ? true : false)
-    mock = mock => this.apply('_mock', mock !== false ? true : false)
+    applyCustom() {
+        _.forEach(this._custom, (mutator, key) => this[key] = mutator)
+    }
 }
 
-export { Base as default, Base }
+const mutators = {
+    spaces: function (spaces) {
+        return this.apply('_spaces', spaces)
+    },
+    api: function (api) {
+        return this.apply('_api', api)
+    },
+    path: function (path) {
+        return this.apply('_path', path)
+    },
+    headers: function (headers) {
+        return this.apply('_headers', {...this._headers, ...headers})
+    },
+    debug: function (debug) {
+        return this.apply('_debug', debug !== false ? true : false)
+    },
+    mock: function (mock) {
+        return this.apply('_mock', mock !== false ? true : false)
+    },
+    custom: function (custom) {
+        return this.apply('_custom', {...this._custom, ...custom})
+    }
+}
+
+forEach(mutators, (mutator, key) => Base.prototype[key] = mutator)
+
+export { Base as default, Base, mutators }

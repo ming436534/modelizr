@@ -3,10 +3,10 @@ import mock from './mock'
 
 const mutation = base()
 mutation.Class = class extends mutation.Class {
-    
+
     constructor(models, opts) {
         super(models, opts)
-        
+
         this._mutationName = 'mutation'
         this._includeQuery = false
     }

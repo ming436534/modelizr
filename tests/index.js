@@ -17,6 +17,12 @@ server.use('/graphql', function (req, res) {
     res.json(require('./data'))
 })
 
+server.use('/custom-request', function (req, res) {
+    res.json({
+        name: 'John'
+    })
+})
+
 server.use('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'))
 })

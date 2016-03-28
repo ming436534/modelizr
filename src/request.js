@@ -1,5 +1,4 @@
-import { _, base, debug } from './utils'
-import mock from './mock'
+import { base, debug } from './utils'
 
 const request = base()
 request.Class = class extends request.Class {
@@ -9,7 +8,7 @@ request.Class = class extends request.Class {
 
         this._query = query[0]
         this._contentType = 'application/json'
-        this._method = 'GET'
+        this._method = null
     }
 
     response() {
@@ -28,15 +27,15 @@ request.Class = class extends request.Class {
             contentType: this._contentType,
             path: this._path,
             headers: this._headers,
-            method: this._method.toUpperCase(),
+            method: this._method ? this._method.toUpperCase() : null,
             _plainReq: true
         })
     }
-    
+
     normalize() {
         console.warn('Cannot normalize this request type')
     }
-    
+
     method = method => this.apply('_method', method)
     contentType = type => this.apply('_contentType', type)
 }

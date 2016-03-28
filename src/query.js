@@ -3,7 +3,7 @@ import mock from './mock'
 
 const query = base()
 query.Class = class extends query.Class {
-    
+
     generate() {
         return (this._query = `{${_.mapValid(this._models, model => this.makeQuery(model.build(), this._spaces))}\n}`)
     }
@@ -14,7 +14,7 @@ query.Class = class extends query.Class {
         if (this._debug) {
             debug(this._query, '[query]')
         }
-        
+
         if (this._mock) {
             return mock(this._models).response()
         }

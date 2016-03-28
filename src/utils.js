@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Base } from './base'
+import { Base, mutators } from './base'
 import { query as Query, mutation as Mutation, mock as Mock, request as Request } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
@@ -21,7 +21,7 @@ const debug = (log, name) => {
     if (typeof console.groupEnd === 'function') console.groupEnd()
 }
 
-const base = mutators => {
+const base = custom => {
     const res = (...models) => new res.Class(models, res._opts)
     res.Class = Base
     res._opts = {}
@@ -29,14 +29,8 @@ const base = mutators => {
         res._opts[key] = value
         return res
     }
-    res.spaces = spaces => res.apply('_spaces', spaces)
-    res.api = api => res.apply('_api', api)
-    res.path = path => res.apply('_path', path)
-    res.headers = headers => res.apply('_headers', headers)
-    res.debug = debug => res.apply('_debug', debug !== false ? true : false)
-    res.mock = mock => res.apply('_mock', mock !== false ? true : false)
 
-    _.forEach(mutators, (mutator, key) => res[key] = mutator(res))
+    _.forEach({...custom, ...mutators}, (mutator, key) => res[key] = mutator)
 
     return res
 }
@@ -48,31 +42,30 @@ const prepare = mutators => {
             typeof target[key] == 'function' ? target = target[key](val) : null
         })
 
+        target.custom(mutators)
         return target
     }
 
     return base({
-        query: obj => () => {
+        query: function () {
             const query = Query
-            return apply(obj, query)
+            return apply(this, query)
         },
 
-        mutation: obj => () => {
+        mutation: function () {
             const mutation = Mutation
-            return apply(obj, mutation)
+            return apply(this, mutation)
         },
 
-        request: obj => () => {
+        request: function () {
             const request = Request
-            return apply(obj, request)
+            return apply(this, request)
         },
 
-        getMock: obj => () => {
+        getMock: function () {
             const mock = Mock
-            return apply(obj, mock)
-        },
-
-        ...mutators || {}
+            return apply(this, mock)
+        }
     })
 }
 
@@ -85,7 +78,7 @@ const api = (query, opts) => {
             'Content-Type': opts.contentType || 'application/json',
             ...opts.headers || {}
         },
-        method: 'POST',
+        method: opts.method || 'POST',
         body: JSON.stringify(opts._plainReq ? query : {query})
     }).then(res => {
         status = res.status
