@@ -15,6 +15,7 @@ mock.Class = class extends mock.Class {
             if (typeof model.build === 'function') {
                 model = model.build()
             }
+            model._mockType = model._mockType || 'array'
 
             const response = {}
 
