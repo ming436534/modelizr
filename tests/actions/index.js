@@ -3,11 +3,18 @@ import { prepare } from '../../src/index'
 import { book, user } from '../models/index'
 import store from '../store/index'
 
-const setup = prepare({
-    requestTo: function (path) {
-        return this.apply('_path', `http://localhost:8000/${path}`)
-    }
-}).debug().spaces(2).path('http://localhost:8000/graphql').headers({ok: 'ok'})
+const setup = (
+    prepare({
+        requestTo: function (path) {
+            return this.apply('_path', `http://localhost:8000/${path}`)
+        }
+    })
+        .debug()
+        .spaces(2)
+        .path('http://localhost:8000/graphql')
+        .headers({ok: 'ok'})
+        .error('throw')
+)
 
 const query = setup.query()
 const mutation = setup.mutation()
@@ -24,36 +31,54 @@ const setEntities = entities => {
     })
 }
 
-export const requestUsers = shouldMock => {
+export const requestUsers = (mock, delay, error) => {
     query(
         user(
             book(
                 user().as('author')
             )
         )
-    ).mock(shouldMock).normalize(res => setEntities(res.entities))
+    )
+        .mock(mock)
+        .delay(delay)
+        .error(error ? 'throw' : false)
+        .normalize(res => setEntities(res.entities))
 }
 
-export const mutateUser = shouldMock => {
+export const mutateUser = (mock, delay, error) => {
     mutation(
         user()
-    ).mock(shouldMock).then()
+    )
+        .mock(mock)
+        .delay(delay)
+        .error(error ? 'throw' : false)
+        .then()
 }
 
-export const mutateUserAndFetch = shouldMock => {
+export const mutateUserAndFetch = (mock, delay, error) => {
     mutation(
         user()
-    ).mock(shouldMock).query().normalize(res => setEntities(res.entities))
+    )
+        .mock(mock)
+        .delay(delay)
+        .error(error ? 'throw' : false)
+        .query()
+        .normalize(res => setEntities(res.entities))
 }
 
-export const plainRequest = shouldMock => {
+export const plainRequest = (mock, delay, error) => {
     request(
         {
             name: 'john'
         }
-    ).mock(shouldMock).headers({
-        auth: 'token'
-    }).requestTo('custom-request')
+    )
+        .mock(mock)
+        .delay(delay)
+        .error(error ? 'throw' : false)
+        .headers({
+            auth: 'token'
+        })
+        .requestTo('custom-request')
         .then(res => {
         })
 }

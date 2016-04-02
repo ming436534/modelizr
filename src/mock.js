@@ -56,11 +56,24 @@ mock.Class = class extends mock.Class {
             return response
         }))
 
-        return new Promise((resolve) => {
-            return resolve({
-                status: 200,
-                body: mock(...this._models)
-            })
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (this._error) {
+                    if (this._error == 'throw') {
+                        reject(new Error('Mocked Error'))
+                    } else {
+                        resolve({
+                            status: this._error,
+                            body: {}
+                        })
+                    }
+                } else {
+                    resolve({
+                        status: 200,
+                        body: mock(...this._models)
+                    })
+                }
+            }, this._mockDelay)
         })
     }
 }

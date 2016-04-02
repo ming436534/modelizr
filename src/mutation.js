@@ -32,10 +32,15 @@ mutation.Class = class extends mutation.Class {
 
         if (this._mock) {
             if (this._includeQuery) {
-                return mock(this._models).response()
+                return mock(this._models)
+                    .delay(this._mockDelay)
+                    .error(this._error)
+                    .response()
             }
-            return new Promise((resolve) => {
-                resolve(true)
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(true)
+                }, this._mockDelay)
             })
         }
         return this._api(this._query, {

@@ -7,6 +7,8 @@ class Base {
         this._models = models
         this._spaces = 3
         this._api = api
+        this._mockDelay = 0
+        this._error = false
 
         _.forEach(opts, (opt, key) => this[key] = opt)
         this.applyCustom()
@@ -126,10 +128,16 @@ const mutators = {
         return this.apply('_debug', debug !== false ? true : false)
     },
     mock: function (mock) {
-        return this.apply('_mock', mock !== false ? true : false)
+        return this.apply('_mock', mock === undefined ? true : mock)
+    },
+    delay: function(delay) {
+        return this.apply('_mockDelay', delay || 500)
     },
     custom: function (custom) {
         return this.apply('_custom', {...this._custom, ...custom})
+    },
+    error: function(error) {
+        return this.apply('_error', error === undefined ? 'throw' : error)
     }
 }
 

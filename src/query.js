@@ -16,7 +16,10 @@ query.Class = class extends query.Class {
         }
 
         if (this._mock) {
-            return mock(this._models).response()
+            return mock(this._models)
+                .delay(this._mockDelay)
+                .error(this._error)
+                .response()
         }
         return this._api(this._query, {
             path: this._path,

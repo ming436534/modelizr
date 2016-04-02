@@ -19,8 +19,24 @@ request.Class = class extends request.Class {
         }
 
         if (this._mock) {
-            return new Promise((resolve) => {
-                resolve(true)
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (this._error) {
+                        if (this._error == 'throw') {
+                            reject(new Error('Mocked Error'))
+                        } else {
+                            resolve({
+                                status: this._error,
+                                body: {}
+                            })
+                        }
+                    } else {
+                        if (typeof this._mock === 'function') {
+                            return resolve(this._mock(this._query))
+                        }
+                        return resolve(this._mock)
+                    }
+                }, this._mockDelay)
             })
         }
         return this._api(this._query, {

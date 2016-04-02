@@ -275,6 +275,8 @@ mock(
 | `spaces(spaces)` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
 | `generate()` | N\A | Causes `query()` to return the generated query as a string |
 | `mock(shouldMock)` | `[boolean]` default `true` | Mock the request |
+| `delay(delay)` | `[integer]` default `500` (ms) | Add a delay to your mock |
+| `error(type)` | `[string | integer]` default `throw` | Mock returns an error. If you give it a string `throw` it will throw an error and you will need to catch it. if you give it an integer it will treat it as an http status code. |
 | `then(res, query)` | `[function (result)]` | Make the request and pass the result as it's first parameter, and the parsed query as the second |
 | `normalize(res, query)` | `[function (result)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter, and the parsed query as the second |
 
@@ -291,20 +293,24 @@ normalize(
 
 Recommended to rather use the `.normalize()` mutator on requests
 
-To make 'normal' requests with the configured api, you can import `request` or take it from the `prepare` method
+To make 'normal' requests with the configured api, you can import `request` or take it from the `prepare` method.
+To mock a normal request, you can give it a response to mock in the `.mock()` mutator. the response can be either a function or plain data.
 
 ```javascript
 import { request } from 'modelizr'
 
 request({
-    
-}).method('post').contentType('application/json').then(res => {})
+    email: 'johndoe@gmail.com',
+    password: 'mysecret'
+}).method('post').contentType('application/json').mock({
+    name: "John",
+    email: "johndoe@gmail.com"
+}).then(res => {})
 
 // or
 import { prepare } from 'modelizr'
 
 const request = prepare().contentType(...).request()
-
 ```
 
 # Tests
