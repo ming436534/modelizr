@@ -44,7 +44,7 @@ request.Class = class extends request.Class {
             path: this._path,
             headers: this._headers,
             method: this._method ? this._method.toUpperCase() : null,
-            _plainReq: true
+            isPlain: true
         })
     }
 

@@ -1,6 +1,6 @@
 # modelizr
 
-A Combination of normalizr and json-schema-faker allowing you to define multipurpose models that can generate graphQL queries, mock deeply nested fake data and normalize
+A Combination of normalizr, json-schema and faker.js allowing you to define multipurpose models that can generate graphQL queries, mock deeply nested fake data and normalize
 
 # Installation
 
@@ -119,21 +119,9 @@ query(
 ).then(res => {})
 ```
 
-There is also a convenience method called `prepare` which allows you to configure all query types.
-
-```javascript
-import { prepare } from 'modelizr'
-
-const prepared = prepare().path('http://...')
-
-const query = prepared.query()
-const mutation = prepared.mutation()
-const mock = prepared.getMock()
-```
-
 ### `model(key, schema [, options])`
 
-Create a new model from a schema. The schema must be defined with the `json-schema-faker` schema style.
+Create a new model from a schema. The schema must be defined with the `json-schema` schema style.
 
 ```javascript
 import { model } from 'modelizr'
@@ -167,7 +155,8 @@ const user = model('users', {
 You can additionally specify any of `json-schema-faker`'s schema definitions.
 
 If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step. 
-This is recommended as the `faker.js` library within `json-schema-faker` is very large and should only be included during development
+This is recommended as the `faker.js` library used is very large and should only be included during development. The resulting mocked entities will just
+contain ids
 
 ### `model.define(definitions)`
 
@@ -192,14 +181,15 @@ user.define({
 })
 ```
 
-`'modelizr/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`
+`'modelizr/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`. **Note** if you use 
+actual `normalizr` methods, it will not work.
 
 ### model instance `model()([params,] ...models)`
 
 Define a nested query that can be generated or mocked
 
-+ `params [object]` - Options that get added to the generated request. Note `id [integer]` and `ids [array]` parameters are used when mocking to create
-entities with expected ids
++ `params [object]` - (optional) Parameters that get added to the generated request. Note `id [integer]` and `ids [array]` parameters are used when mocking to create
+entities with expected ids. A single `id` will generate a single mocked entity, and an array of `ids` will generate an array of entities
 + `models [model]` - Nested models
 
 #### model mutators
@@ -293,7 +283,43 @@ normalize(
 
 Recommended to rather use the `.normalize()` mutator on requests
 
-To make 'normal' requests with the configured api, you can import `request` or take it from the `prepare` method.
+### `prepare(mutators)`
+
+There is also a convenience method called `prepare` which allows you to pre-configure all query types.
+
+```javascript
+import { prepare } from 'modelizr'
+
+const prepared = prepare().path('http://...')
+
+const query = prepared.query()
+const mutation = prepared.mutation()
+const mock = prepared.getMock()
+```
+
+The api for prepare isn't very stable and is likely to change. There is also a very hacky way to add custom mutators:
+
+```javascript
+const prepared = prepare({
+    customPathMutator: function (path) {
+        return this.apply('_path', 'http://api.example.com/' + path)
+    }
+})
+
+const query = prepared.query()
+
+query(
+    model()
+).customPathMutator('graphql')
+```
+
+**Note** all existing mutators apply to properties of the same name but prefixed by `_`. Eg: `.mock()` applies to `_mock`. The custom mutators must be
+ `function`'s and not a lambdas. To mutate properties, they have access to `this.apply(key, value)` where `key` is the property name (eg `_mock`) and `value`
+ is the new value you want to set.
+
+### `request(body)`
+
+Perform a plain request with the default or configured api. The api will receive an `isPlain` property in its second parameter
 To mock a normal request, you can give it a response to mock in the `.mock()` mutator. the response can be either a function or plain data.
 
 ```javascript
@@ -302,15 +328,45 @@ import { request } from 'modelizr'
 request({
     email: 'johndoe@gmail.com',
     password: 'mysecret'
-}).method('post').contentType('application/json').mock({
-    name: "John",
-    email: "johndoe@gmail.com"
-}).then(res => {})
+})
+    .method('post')
+    .contentType('application/json')
+    .mock({
+        name: "John",
+        email: "johndoe@gmail.com"
+    })
+    .then(res => {})
 
 // or
 import { prepare } from 'modelizr'
 
 const request = prepare().contentType(...).request()
+```
+
+### `api(query, opts)`
+
+The format of the api.
+
++ `query [string | object]` - will be the stringified query unless using a plain request, in which case it will be the request object
++ `opts [object]` - some request settings
+
+| Option Name                   | Purpose       
+| ---------------------- | ---------------------- 
+| `path [string]`   | The request endpoint | 
+| `contentType [string]` | Request contentType header. Defaults to `application/json`| 
+| `headers [object]` | Any additional headers | 
+| `method [string]` | `post | get | put | delete` Defaults to `post` | 
+| `isPlain [boolean]` | Specify if the query is a graphQL query or not | 
+
+##### returns
+
+Expects server response body to be in json. Returns a response with the following format:
+
+```javascript
+{
+    status: 200, // http status code
+    body: response // the response body after res.json() has been called
+}
 ```
 
 # Tests

@@ -79,7 +79,7 @@ const api = (query, opts) => {
             ...opts.headers || {}
         },
         method: opts.method || 'POST',
-        body: JSON.stringify(opts._plainReq ? query : {query})
+        body: JSON.stringify(opts.isPlain ? query : {query})
     }).then(res => {
         status = res.status
         return res.json()
