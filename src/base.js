@@ -10,7 +10,7 @@ class Base {
         this._mockDelay = 0
         this._error = false
 
-        _.forEach(opts, (opt, key) => this[key] = opt)
+        _.forEach(opts, (opt, key) => {this[key] = opt})
         this.applyCustom()
     }
 
