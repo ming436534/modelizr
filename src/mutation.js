@@ -27,7 +27,7 @@ mutation.Class = class extends mutation.Class {
         this.generate()
 
         if (this._debug) {
-            debug(this._query, '[mutation]')
+            debug(this._query, `[mutation: ${this._models[0]._schema.key}]`)
         }
 
         if (this._mock) {

@@ -12,7 +12,7 @@ query.Class = class extends query.Class {
         this.generate()
 
         if (this._debug) {
-            debug(this._query, '[query]')
+            debug(this._query, `[query: ${this._models[0]._schema.key}]`)
         }
 
         if (this._mock) {

@@ -15,7 +15,7 @@ request.Class = class extends request.Class {
         this.generate()
 
         if (this._debug) {
-            debug(this._query, '[request]')
+            debug(this._query, `[request: ${this._path} <${this._method || 'post'}>]`)
         }
 
         if (this._mock) {
