@@ -188,7 +188,7 @@ actual `normalizr` methods, it will not work.
 
 Define a nested query that can be generated or mocked
 
-+ `params [object]` - (optional) Parameters that get added to the generated request. Note `id [integer]` and `ids [array]` parameters are used when mocking to create
++ `params [object]` - (optional) Parameters that get added to the generated request. Note the `id [integer | array]` or `ids [integer | array]` parameters are used when mocking to create
 entities with expected ids. A single `id` will generate a single mocked entity, and an array of `ids` will generate an array of entities
 + `models [model]` - Nested models
 
@@ -256,6 +256,49 @@ mock(
 ).then(res => {})
 ```
 
+Mock are generating with a cache, so if you reference the same `id` twice, you won't get conflicting entities. If your query contains nesting of
+the same model, then their `id's` will always continue from the last mocked entity. eg:
+
+```javascript
+{
+  user {
+     id,
+     books {
+        id
+     }
+  }
+}
+
+// results in this pattern of ids
+
+[
+    {
+        id: 1,
+        books: [1, 2, 3, ... n]
+    },
+    
+    {
+        id: 2,
+        books: [n +  1, n + 2, n + 3, ...]
+    },
+    
+    ...
+]
+```
+
+This will continue for all levels of nesting.
+
+The id mocking algorithm is as follows:
+
++ If an `id` or `ids` parameter is provided, then mocking will follow this pattern:
+    + If the `id` or `ids` parameter is an array, then an array of entities will be generated with matching `ids`
+    + If the `id` or `ids`parameter is an integer, then a single entity with that `id` will be generated
++ If no `id` or `ids` parameter is provided, the mocks will be generated as follows:
+    + If the entity is a top level query, then 20 entities will be generated with ids `1 => 20`
+    + If the entity is nested and is defined in its parent model then it will be mocked according to its normalizr definition. eg:
+        + `arrayOf()` and the other function definitions will generate 20 entities with ids `n + 1 => n + 20`
+        + A plain `model` will generate a single entity with id `n + 1`
+
 #### mutation / query mutators / mock mutators
 
 | Name                   | Accepts       | Effect
@@ -285,7 +328,7 @@ Recommended to rather use the `.normalize()` mutator on requests
 
 ### `prepare(mutators)`
 
-There is also a convenience method called `prepare` which allows you to pre-configure all query types.
+This is a convenience method that allows you to pre-configure all query types.
 
 ```javascript
 import { prepare } from 'modelizr'
