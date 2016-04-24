@@ -9,11 +9,12 @@ mutation.Class = class extends mutation.Class {
 
         this._mutationName = 'mutation'
         this._includeQuery = false
+        this._params = {}
     }
 
     generate() {
         return (
-            this._query = `mutation ${this._mutationName} {${_.mapValid(this._models, model => {
+            this._query = `mutation ${this._mutationName}${this.makeParams(this._params)} {${_.mapValid(this._models, model => {
                 model = model.build()
                 if (this._includeQuery) {
                     return this.makeQuery(model, this._spaces)
@@ -50,6 +51,7 @@ mutation.Class = class extends mutation.Class {
     }
 
     as = name => this.apply('_mutationName', name)
+    params = params => this.apply('_params', params)
     query = query => this.apply('_includeQuery', query !== false ? true : false)
 }
 

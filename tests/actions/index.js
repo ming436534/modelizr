@@ -49,6 +49,8 @@ export const mutateUser = (mock, delay, error) => {
     mutation(
         user()
     )
+        .as("createUser")
+        .params({admin: true})
         .mock(mock)
         .delay(delay)
         .error(error ? 'throw' : false)

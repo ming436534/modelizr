@@ -232,7 +232,7 @@ mutation(
 ).then(res => {})
 ```
 
-If you want the mutation to query as well you can use the `withQuery()` mutator
+If you want the mutation to query as well you can use the `query()` mutator
 
 ```javascript
 import { mutation } from 'normalizr'
@@ -241,6 +241,8 @@ mutation(
 	user()
 ).query().then(res => {})
 ```
+
+To change the mutation name and add params - you can use the `as()` and `params()` mutators
 
 ### `mock(...models)`
 
@@ -304,6 +306,8 @@ The id mocking algorithm is as follows:
 | Name                   | Accepts       | Effect
 | ---------------------- | ---------------------- | --------------------------
 | `path(endpoint)`   | `[string]` | Define the endpoint for the graphQL request |
+| `as(name)` | `[string]` default `mutation` | Specify the name of a mutation query |
+| `params()` | `[object]` | Add top level parameters to a mutation query |
 | `api(api)` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
 | `spaces(spaces)` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
 | `generate()` | N\A | Causes `query()` to return the generated query as a string |
