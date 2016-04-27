@@ -17,13 +17,14 @@ mock.Class = class extends mock.Class {
             }
             model._mockType = model._mockType || 'array'
 
+            const primary = model.primaryKey || 'id'
             const response = {}
 
             const newId = _.size(cache[model.name]) + 1
             let id = model._mockType == 'array' ? _.range(newId, newId + 20) : newId
             if (model.params) {
-                if (model.params.id || model.params.ids) {
-                    id = model.params.id || model.params.ids
+                if (model.params[primary]) {
+                    id = model.params[primary]
                 }
             }
 
@@ -39,7 +40,7 @@ mock.Class = class extends mock.Class {
                 if (cache[model.name] && cache[model.name][id]) {
                     return mergeNested(cache[model.name][id])
                 }
-                const mocked = _.set(jsf(model), 'id', id)
+                const mocked = _.set(jsf(model), primary, id)
 
                 cache[model.name] = {...cache[model.name], [id]: mocked}
                 return mergeNested(mocked)

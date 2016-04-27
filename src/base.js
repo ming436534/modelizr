@@ -57,7 +57,7 @@ class Base {
                         ...prop
                     }, spaces, indent)
                 }
-                return `${currentIndent}${key}`
+                return `${currentIndent}${key}${prop.alias ? `: ${prop.alias}` : ''}`
             })
         }
 

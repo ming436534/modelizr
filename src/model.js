@@ -36,7 +36,7 @@ class Model {
     params = params => this.apply('params', params)
     without = exclusion => this.apply('properties', _.omit(this._schema.properties, exclusion))
     only = selection => this.apply('properties', _.pick(this._schema.properties, selection))
-    onlyIf = statement => this.apply('continue', statement !== false ? true : false)
+    onlyIf = statement => this.apply('continue', statement === undefined ? true : statement)
 
     normalizeAs(key) {
         const model = this._schema.model()
@@ -63,26 +63,29 @@ const model = (name, schema, options) => {
         }
     }
 
-    schema = ({
-        ...{
-            name,
-            key: name,
-            model: new NormalizerSchema(name, options),
-            type: 'object',
-            additionalProperties: false,
-            required: ['id', ..._.map(_.omitBy(schema.properties, prop => prop.model), (prop, key) => key)],
-            _isModel: true
-        },
-        ...schema,
-        ...{
-            properties: {
-                ...{
-                    id: {type: 'integer'}
-                },
-                ...schema.properties || {}
+    schema.properties = _.mapValues(schema.properties, (definition, name) => {
+        if (definition.type == 'primary') {
+            schema.primaryKey = name
+
+            return {
+                ...definition,
+                type: 'integer'
             }
         }
+
+        return definition
     })
+
+    schema = {
+        name,
+        key: name,
+        model: new NormalizerSchema(name, {idAttribute: entity => entity[schema.primaryKey || 'id'], ...options}),
+        type: 'object',
+        additionalProperties: false,
+        required: _.map(_.omitBy(schema.properties, prop => prop.model), (prop, key) => key),
+        _isModel: true,
+        ...schema
+    }
 
     const response = (params, ...models) => new Model(response.schema, params, ...models,)
     response.schema = schema
@@ -106,6 +109,7 @@ const model = (name, schema, options) => {
         })
     }
     response.getKey = () => response.schema.key
+    response.primaryKey = key => response.schema.primaryKey = key
 
     return response
 }

@@ -24,16 +24,19 @@ Define a collection of models to be used when generating queries or mutations
 import { model } from 'modelizr'
 
 const user = model('users', {
+    id: {type: 'primary', alias: 'ID'},
 	firstname: {type: 'string', faker: 'name.firstName'},
     lastname: {type: 'string', faker: 'name.lastName'}
 })
 
 const book = model({
     properties: {
+        id: {type: 'integer'},
         title: {type: 'string', faker: 'name.firstName'},
         edition: {type: 'integer', faker: 'random.number'}
     },
-    required: ['title', 'edition']
+    required: ['title', 'edition'],
+    primaryKey: 'id'
 })
 
 // define nested models
@@ -128,11 +131,13 @@ import { model } from 'modelizr'
 
 const user = model('users', {
     properties: {
+        id: {type: 'integer'},
         firstname: {type: 'string', faker: 'name.firstName'},
         lastname: {type: 'string', faker: 'name.lastName'}
     },
-    required: ['firstname'] // defaults to all properties,
-    additionalProperties: true // defaults to false
+    required: ['firstname'], // defaults to all properties,
+    additionalProperties: true, // defaults to false
+    primaryKey: 'id'
 })
 
 // or if you plan to use the defaults, you can directly specify properties
@@ -140,6 +145,7 @@ const user = model('users', {
 	firstname: {type: 'string', faker: 'name.firstName'},
 	lastname: {type: 'string', faker: 'name.lastName'}
 })
+user.primaryKey('id')
 ```
 
 + `key [string]` - gets used to create a `normalizr` schema. Is also the default name of an entity when generating a graph request or mocking
@@ -151,8 +157,21 @@ const user = model('users', {
 | `properties [object]`  | A collection of properties that follow `json-schema-faker`'s API |
 | `required [array]`     | A collection of properties that will be mocked. Also used to validate state against the model. Defaults to all values within `properties` |
 | `additionalProperties [boolean]` | Specify if the entity can have additional, unspecified properties. Used for validation |
+| `primaryKey [string]`  | The schemas primary key attribute. Passed to normalizr's `idAttribute` and used in mocks |
 
-You can additionally specify any of `json-schema-faker`'s schema definitions.
+You can additionally specify any of `json-schema`'s schema definitions as well as an `alias` definition which will append the specified alias in your query:
+
+```javascript
+const user = model('users', {
+    id: {type: 'primary', alias: 'ID'}
+})
+
+{
+  user {
+     id: ID,
+  }
+}
+```
 
 If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step. 
 This is recommended as the `faker.js` library used is very large and should only be included during development. The resulting mocked entities will just
@@ -184,12 +203,20 @@ user.define({
 `'modelizr/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`. **Note** if you use 
 actual `normalizr` methods, it will not work.
 
+### `model.primaryKey(key)`
+
+Specify the primary key to be given to normalizr, and used in mocks. Assumes `id` by default.
+
+```javascript
+user.primaryKey('ID')
+```
+
 ### model instance `model()([params,] ...models)`
 
 Define a nested query that can be generated or mocked
 
-+ `params [object]` - (optional) Parameters that get added to the generated request. Note the `id [integer | array]` or `ids [integer | array]` parameters are used when mocking to create
-entities with expected ids. A single `id` will generate a single mocked entity, and an array of `ids` will generate an array of entities
++ `params [object]` - (optional) Parameters that get added to the generated request. Note that parameters that are specified as `primaryKeys` are used when mocking to create
+entities with expected ids. A single `param<primaryKey>` will generate a single mocked entity, and an array of `param<primaryKey>` will generate an array of entities
 + `models [model]` - Nested models
 
 #### model mutators
@@ -292,10 +319,10 @@ This will continue for all levels of nesting.
 
 The id mocking algorithm is as follows:
 
-+ If an `id` or `ids` parameter is provided, then mocking will follow this pattern:
-    + If the `id` or `ids` parameter is an array, then an array of entities will be generated with matching `ids`
-    + If the `id` or `ids`parameter is an integer, then a single entity with that `id` will be generated
-+ If no `id` or `ids` parameter is provided, the mocks will be generated as follows:
++ If an `id` parameter or a parameter with a `primaryKey` is provided, then mocking will follow this pattern:
+    + If the `id` or `primaryKey` parameter is an array, then an array of entities will be generated with matching values
+    + If the `id` or `primaryKey` parameter is an integer, then a single entity with that value will be generated
++ If no `id` or `primaryKey` parameter is provided, the mocks will be generated as follows:
     + If the entity is a top level query, then 20 entities will be generated with ids `1 => 20`
     + If the entity is nested and is defined in its parent model then it will be mocked according to its normalizr definition. eg:
         + `arrayOf()` and the other function definitions will generate 20 entities with ids `n + 1 => n + 20`
