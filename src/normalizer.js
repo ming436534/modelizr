@@ -17,4 +17,4 @@ const arrayOf = (model, options) => _arrayOf(model.schema.model, options)
 const valuesOf = (model, options) => _valuesOf(model.schema.model, options)
 const unionOf = (model, options) => _unionOf(model.schema.model, options)
 
-export { normalize as default, normalize, arrayOf, valuesOf, unionOf }
+export { normalize as default, arrayOf, valuesOf, unionOf }

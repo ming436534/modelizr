@@ -1,5 +1,5 @@
 import { _, debug, api } from './utils'
-import normalize from './normalize'
+import normalize from './normalizer'
 import { forEach } from 'lodash'
 
 class Base {

@@ -1,5 +1,5 @@
 import { Schema as NormalizerSchema } from 'normalizr'
-import { arrayOf } from './normalize'
+import { arrayOf } from './normalizer'
 import { _ } from './utils'
 
 class Model {

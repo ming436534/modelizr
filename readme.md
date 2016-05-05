@@ -193,14 +193,14 @@ user.define({
 })
 
 // or you can use the provided normalizr tools
-import { arrayOf } from 'modelizr/normalizer'
+import { arrayOf } from 'modelizr/lib/normalizer'
 
 user.define({
 	books: arrayOf(book)
 })
 ```
 
-`'modelizr/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`. **Note** if you use 
+`'modelizr/lib/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`. **Note** if you use
 actual `normalizr` methods, it will not work.
 
 ### `model.primaryKey(key)`
@@ -450,3 +450,9 @@ Expects server response body to be in json. Returns a response with the followin
 + navigate to `http://localhost:8000` in your browser
 
 Use the tests as basic usage examples.
+
+# Todo
+
++ Move the current tests to examples.
++ Write proper tests.
++ Model support for `unionOf()`
