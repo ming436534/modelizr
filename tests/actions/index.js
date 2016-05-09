@@ -5,9 +5,7 @@ import store from '../store/index'
 
 const setup = (
     prepare({
-        requestTo: function (path) {
-            return this.apply('_path', `http://localhost:8000/${path}`)
-        }
+        requestTo: apply => path => apply('path', `http://localhost:8000/${path}`)
     })
         .debug()
         .spaces(2)

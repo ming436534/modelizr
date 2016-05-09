@@ -11,20 +11,11 @@ query.Class = class extends query.Class {
     response() {
         this.generate()
 
-        if (this._debug) {
+        if (this.valueOf('debug')) {
             debug(this._query, `[query: ${this._models[0]._schema.key}]`)
         }
 
-        if (this._mock) {
-            return mock(this._models)
-                .delay(this._mockDelay)
-                .error(this._error)
-                .response()
-        }
-        return this._api(this._query, {
-            path: this._path,
-            headers: this._headers
-        })
+        return this.callApi(mock)
     }
 }
 

@@ -1,22 +1,49 @@
 import { _, debug, api } from './utils'
 import normalize from './normalizer'
-import { forEach } from 'lodash'
 
-class Base {
-    constructor(models, opts) {
-        this._models = models
-        this._spaces = 3
-        this._api = api
-        this._mockDelay = 0
-        this._error = false
-
-        _.forEach(opts, (opt, key) => {this[key] = opt})
-        this.applyCustom()
+class QueryMutators {
+    constructor(target) {
+        this._mutations = {
+            spaces: 3,
+            mockDelay: 0,
+            mockError: false,
+            query: true,
+            api
+        }
+        
+        this._this = target || this
     }
 
-    apply(key, value) {
-        this[key] = value
-        return this
+    apply = (key, value) => {
+        this._this._mutations[key] = value
+        return this._this
+    }
+    valueOf = key => {
+        return this._this._mutations[key]
+    }
+    
+    spaces = spaces => this.apply('spaces', spaces)
+    api = api => this.apply('api', api)
+    path = path => this.apply('path', path)
+    headers = headers => this.apply('headers', {...this.valueOf('headers'), ...headers})
+    debug = debug => this.apply('debug', debug === undefined ? true : debug)
+    mock = mock => this.apply('mock', mock === undefined ? true : mock)
+    delay = delay => this.apply('mockDelay', delay || 500)
+    error = error => this.apply('error', error === undefined ? 'throw' : error)
+    custom = func => func(this.apply, this.valueOf)
+}
+
+class Base extends QueryMutators {
+    constructor(models, mutations) {
+        super()
+
+        this._models = models
+        this._mutations = {
+            ...this._mutations,
+            ...mutations
+        }
+
+        _.forEach(mutations.custom, (mutator, key) => this[key] = mutator(this.apply, this.valueOf))
     }
 
     spacer(amount) {
@@ -40,9 +67,6 @@ class Base {
     }
 
     makeQuery(model, spaces = 3, indent = 1) {
-        if (model.continue === false) {
-            return undefined
-        }
         const mapProps = (props, indent) => {
             const currentIndent = `\n${this.spacer(spaces * indent)}`
             return _.mapValid(props, (prop, key) => {
@@ -67,11 +91,11 @@ class Base {
     }
 
     then(cb) {
-        cb = cb || function () {
+        cb = cb || function() {
             }
 
         return this.response().then(res => {
-            if (this._debug) {
+            if (this.valueOf('debug')) {
                 debug(res, '[response]')
             }
 
@@ -80,18 +104,18 @@ class Base {
     }
 
     normalize(cb) {
-        cb = cb || function () {
+        cb = cb || function() {
             }
 
         return this.response().then(res => {
-            if (this._debug) {
+            if (this.valueOf('debug')) {
                 debug(res, '[response]')
             }
             const response = normalize(
                 res.body,
                 ...this._models
             )
-            if (this._debug) {
+            if (this.valueOf('debug')) {
                 debug(response, '[normalized response]')
             }
             return response
@@ -105,42 +129,23 @@ class Base {
     generate() {
         return '{}'
     }
-
-    applyCustom() {
-        _.forEach(this._custom, (mutator, key) => this[key] = mutator)
+    
+    callApi(mock) {
+        if (this.valueOf('mock')) {
+            if (this.valueOf('query')) {
+                return mock(this._models)
+                    .delay(this.valueOf('mockDelay'))
+                    .error(this.valueOf('mockError'))
+                    .response()
+            }
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(true)
+                }, this.valueOf('mockDelay'))
+            })
+        }
+        return this.valueOf('api')(this._query, this._mutations)
     }
 }
 
-const mutators = {
-    spaces: function (spaces) {
-        return this.apply('_spaces', spaces)
-    },
-    api: function (api) {
-        return this.apply('_api', api)
-    },
-    path: function (path) {
-        return this.apply('_path', path)
-    },
-    headers: function (headers) {
-        return this.apply('_headers', {...this._headers, ...headers})
-    },
-    debug: function (debug) {
-        return this.apply('_debug', debug !== false ? true : false)
-    },
-    mock: function (mock) {
-        return this.apply('_mock', mock === undefined ? true : mock)
-    },
-    delay: function(delay) {
-        return this.apply('_mockDelay', delay || 500)
-    },
-    custom: function (custom) {
-        return this.apply('_custom', {...this._custom, ...custom})
-    },
-    error: function(error) {
-        return this.apply('_error', error === undefined ? 'throw' : error)
-    }
-}
-
-forEach(mutators, (mutator, key) => Base.prototype[key] = mutator)
-
-export { Base as default, Base, mutators }
+export { Base as default, Base, QueryMutators }

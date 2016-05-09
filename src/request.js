@@ -3,26 +3,28 @@ import { base, debug } from './utils'
 const request = base()
 request.Class = class extends request.Class {
 
-    constructor(query, opts) {
-        super(null, opts)
-
+    constructor(query, mutations) {
+        super(null, mutations)
+    
+        this._mutations = {
+            ...this._mutations,
+            contentType: 'application/json',
+            method: null
+        }
+    
         this._query = query[0]
-        this._contentType = 'application/json'
-        this._method = null
     }
 
     response() {
-        this.generate()
-
-        if (this._debug) {
-            debug(this._query, `[request: ${this._path} <${this._method || 'post'}>]`)
+        if (this.valueOf('debug')) {
+            debug(this._query, `[request: ${this.valueOf('path')} <${this.valueOf('method') || 'POST'}>]`)
         }
 
-        if (this._mock) {
+        if (this.valueOf('mock')) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    if (this._error) {
-                        if (this._error == 'throw') {
+                    if (this.valueOf('mockError')) {
+                        if (this.valueOf('mockError') == 'throw') {
                             reject(new Error('Mocked Error'))
                         } else {
                             resolve({
@@ -31,19 +33,17 @@ request.Class = class extends request.Class {
                             })
                         }
                     } else {
-                        if (typeof this._mock === 'function') {
-                            return resolve(this._mock(this._query))
+                        if (typeof this.valueOf('mock') === 'function') {
+                            return resolve(this.valueOf('mock')(this._query))
                         }
-                        return resolve(this._mock)
+                        return resolve(this.valueOf('mock'))
                     }
-                }, this._mockDelay)
+                }, this.valueOf('mockDelay'))
             })
         }
-        return this._api(this._query, {
-            contentType: this._contentType,
-            path: this._path,
-            headers: this._headers,
-            method: this._method ? this._method.toUpperCase() : null,
+        return this.valueOf('api')(this._query, {
+            ...this._mutations,
+            method: this.valueOf('method') ? this.valueOf('method').toUpperCase() : null,
             isPlain: true
         })
     }
@@ -52,8 +52,8 @@ request.Class = class extends request.Class {
         console.warn('Cannot normalize this request type')
     }
 
-    method = method => this.apply('_method', method)
-    contentType = type => this.apply('_contentType', type)
+    method = method => this.apply('method', method)
+    contentType = type => this.apply('contentType', type)
 }
 
 export { request as default, request }

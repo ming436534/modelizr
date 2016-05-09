@@ -7,19 +7,22 @@ mutation.Class = class extends mutation.Class {
     constructor(models, opts) {
         super(models, opts)
 
-        this._mutationName = 'mutation'
-        this._includeQuery = false
-        this._params = {}
+        this._mutations = {
+            ...this._mutations,
+            mutationName: 'mutation',
+            query: false,
+            params: {}
+        }
     }
 
     generate() {
         return (
-            this._query = `mutation ${this._mutationName}${this.makeParams(this._params)} {${_.mapValid(this._models, model => {
+            this._query = `mutation ${this.valueOf('mutationName')}${this.makeParams(this.valueOf('params'))} {${_.mapValid(this._models, model => {
                 model = model.build()
-                if (this._includeQuery) {
-                    return this.makeQuery(model, this._spaces)
+                if (this.valueOf('query')) {
+                    return this.makeQuery(model, this.valueOf('spaces'))
                 }
-                return `\n${this.spacer(this._spaces)}${model.key}${this.makeParams(model.params)}`
+                return `\n${this.spacer(this.valueOf('spaces'))}${model.key}${this.makeParams(model.params)}`
             })}\n}`
         )
     }
@@ -27,32 +30,16 @@ mutation.Class = class extends mutation.Class {
     response() {
         this.generate()
 
-        if (this._debug) {
+        if (this.valueOf('debug')) {
             debug(this._query, `[mutation: ${this._models[0]._schema.key}]`)
         }
 
-        if (this._mock) {
-            if (this._includeQuery) {
-                return mock(this._models)
-                    .delay(this._mockDelay)
-                    .error(this._error)
-                    .response()
-            }
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(true)
-                }, this._mockDelay)
-            })
-        }
-        return this._api(this._query, {
-            path: this._path,
-            headers: this._headers
-        })
+        return this.callApi(mock)
     }
 
-    as = name => this.apply('_mutationName', name)
-    params = params => this.apply('_params', params)
-    query = query => this.apply('_includeQuery', query !== false ? true : false)
+    as = name => this.apply('mutationName', name)
+    params = params => this.apply('params', params)
+    query = query => this.apply('query', query === undefined ? true : query)
 }
 
 export { mutation as default, mutation }

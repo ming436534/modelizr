@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Base, mutators } from './base'
+import { Base, QueryMutators } from './base'
 import { query as Query, mutation as Mutation, mock as Mock, request as Request } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
@@ -22,64 +22,59 @@ const debug = (log, name) => {
 }
 
 const base = custom => {
-    const res = (...models) => new res.Class(models, res._opts)
+    let res = (...models) => new res.Class(models, res._mutations)
     res.Class = Base
-    res._opts = {}
-    res.apply = (key, value) => {
-        res._opts[key] = value
-        return res
-    }
+    res._mutations = {}
+    res = Object.assign(res, new QueryMutators(res))
 
-    _.forEach({...custom, ...mutators}, (mutator, key) => res[key] = mutator)
+    _.forEach(custom, (mutator, key) => res[key] = mutator)
 
     return res
 }
 
 const prepare = mutators => {
     const apply = (obj, target) => {
-        _.forEach(obj._opts, (val, key) => {
-            key = key.replace('_', '')
-            typeof target[key] == 'function' ? target = target[key](val) : null
-        })
-
-        target.custom(mutators)
+        target._mutations = {
+            ...obj._mutations,
+            custom: mutators
+        }
         return target
     }
 
     return base({
-        query: function () {
+        query: function() {
             const query = Query
             return apply(this, query)
         },
 
-        mutation: function () {
+        mutation: function() {
             const mutation = Mutation
             return apply(this, mutation)
         },
 
-        request: function () {
+        request: function() {
             const request = Request
             return apply(this, request)
         },
 
-        getMock: function () {
+        getMock: function() {
             const mock = Mock
             return apply(this, mock)
         }
     })
 }
 
-const api = (query, opts) => {
+const api = (query, {path, contentType, headers, method, isPlain}) => {
     let status = 200
 
-    return fetch(opts.path, {
+    return fetch(path, {
         headers: {
             'Accept': 'application/json',
-            'Content-Type': opts.contentType || 'application/json',
-            ...opts.headers || {}
+            'Content-Type': contentType || 'application/json',
+            ...headers || {}
         },
-        method: opts.method || 'POST',
-        body: JSON.stringify(opts.isPlain ? query : {query})
+        method: method || 'POST',
+        body: JSON.stringify(isPlain ? query : {query})
     }).then(res => {
         status = res.status
         return res.json()
