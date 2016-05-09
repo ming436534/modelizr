@@ -448,16 +448,16 @@ Expects server response body to be in json. Returns a response with the followin
 }
 ```
 
-# Tests
+# Example
 
 + `npm i`
-+ `npm test`
++ `npm start`
 + navigate to `http://localhost:8000` in your browser
 
-Use the tests as basic usage examples.
+This is just a basic usage example. More specific examples will come.
 
 # Todo
 
-+ Move the current tests to examples.
-+ Write proper tests.
-+ Model support for `unionOf()`
++ Write tests.
++ Union Models
++ Determine model type from response (arrayOf model | valuesOf model) and add mutators to infer it

@@ -4,7 +4,7 @@
   "description": "Generate GraphQL queries from models that can be mocked and normalized.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node tests/index.js",
+    "start": "node example/index.js",
     "lint": "eslint src; exit 0",
     "build": "rimraf lib && babel src -d lib",
     "prepublish": "npm run build"
