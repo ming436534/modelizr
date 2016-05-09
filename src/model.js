@@ -1,5 +1,5 @@
 import { Schema as NormalizerSchema } from 'normalizr'
-import { arrayOf } from './normalizer'
+import { arrayOf, ArrayOf, ValuesOf, UnionOf, Definition } from './normalizer'
 import { _ } from './utils'
 
 class Model {
@@ -37,6 +37,15 @@ class Model {
     without = exclusion => this.apply('properties', _.omit(this._schema.properties, exclusion))
     only = selection => this.apply('properties', _.pick(this._schema.properties, selection))
     onlyIf = statement => this.apply('continue', statement === undefined ? true : statement)
+
+    valuesOf = attribute => {
+        this.apply('_modelType', 'valuesOf')
+        return this.apply('_attribute', attribute)
+    }
+    arrayOf = attribute => {
+        this.apply('_modelType', 'arrayOf')
+        return this.apply('_attribute', attribute)
+    }
 
     normalizeAs(key) {
         const model = this._schema.model()
@@ -90,23 +99,27 @@ const model = (name, schema, options) => {
     const response = (params, ...models) => new Model(response.schema, params, ...models,)
     response.schema = schema
     response.define = definitions => {
-        response.schema.model.define(_.mapValues(definitions, definition => {
+        // change to map once
+        response.schema._mockTypes = {}
+
+        response.schema.model.define(_.mapValues(definitions, (definition, key) => {
+            if (definition instanceof ArrayOf) response.schema._mockTypes[key] = 'arrayOf'
+            if (definition instanceof ValuesOf) response.schema._mockTypes[key] = 'valuesOf'
+            if (definition instanceof UnionOf) response.schema._mockTypes[key] = 'unionOf'
+
             if (Array.isArray(definition)) {
+                response.schema._mockTypes[key] = 'arrayOf'
                 return arrayOf(definition[0], definition[1])
-            } else if (definition.schema) {
+            }
+            if (definition.schema) {
+                response.schema._mockTypes[key] = 'single'
                 return definition.schema.model
             }
+            response.schema._mockTypes[key] = 'arrayOf'
+            if (definition instanceof Definition) return definition.define()
+
             return definition
         }))
-
-        response.schema._mockTypes = _.mapValues(definitions, definition => {
-            if (Array.isArray(definition)) {
-                return response.schema._mockType = 'array'
-            } else if (definition.schema) {
-                return response.schema._mockType = 'single'
-            }
-            return response.schema._mockType = 'array'
-        })
     }
     response.getKey = () => response.schema.key
     response.primaryKey = key => response.schema.primaryKey = key

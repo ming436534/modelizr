@@ -15,13 +15,13 @@ mock.Class = class extends mock.Class {
             if (typeof model.build === 'function') {
                 model = model.build()
             }
-            model._mockType = model._mockType || 'array'
+            model._modelType = model._modelType || 'arrayOf'
 
             const primary = model.primaryKey || 'id'
             const response = {}
 
             const newId = _.size(cache[model.name]) + 1
-            let id = model._mockType == 'array' ? _.range(newId, newId + 20) : newId
+            let id = model._modelType == 'arrayOf' ? _.range(newId, newId + 20) : newId
             if (model.params) {
                 if (model.params[primary]) {
                     id = model.params[primary]
@@ -32,7 +32,7 @@ mock.Class = class extends mock.Class {
                 const mergeNested = mockedModel => ({
                     ...mockedModel,
                     ...mock(_.map(_.filter(model.properties, prop => prop._isModel), childModel => {
-                        childModel._mockType = model._mockTypes[childModel.key] || 'array'
+                        childModel._modelType = model._mockTypes[childModel.key] || 'arrayOf'
                         return childModel
                     }))
                 })

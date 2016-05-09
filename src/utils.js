@@ -14,6 +14,10 @@ _.extractMockedObjects = array => {
 
     return response
 }
+_.hasValuesOf = (response, model) => {
+    const filtered = _.map(response, value => _.filter(model.required, field => value[field]).length === model.required.length)
+    return filtered.length == _.size(response)
+}
 
 const debug = (log, name) => {
     if (typeof console.groupCollapsed === 'function') console.groupCollapsed(name)
