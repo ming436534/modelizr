@@ -1,12 +1,12 @@
 import { book } from './book'
 import { user } from './user'
-import {arrayOf} from '../../src/normalizer'
+import { valuesOf } from '../../src/normalizer'
 
 book.define({
     author: user
 })
 user.define({
-    books: arrayOf(book)
+    books: valuesOf(book)
 })
 
 export { book } from './book'

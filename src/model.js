@@ -1,5 +1,5 @@
 import { Schema as NormalizerSchema } from 'normalizr'
-import { arrayOf, ArrayOf, ValuesOf, UnionOf, Definition } from './normalizer'
+import { arrayOf, ValuesOf, UnionOf, Definition } from './normalizer'
 import { _ } from './utils'
 
 class Model {
@@ -99,24 +99,21 @@ const model = (name, schema, options) => {
     const response = (params, ...models) => new Model(response.schema, params, ...models,)
     response.schema = schema
     response.define = definitions => {
-        // change to map once
         response.schema._mockTypes = {}
 
         response.schema.model.define(_.mapValues(definitions, (definition, key) => {
-            if (definition instanceof ArrayOf) response.schema._mockTypes[key] = 'arrayOf'
-            if (definition instanceof ValuesOf) response.schema._mockTypes[key] = 'valuesOf'
-            if (definition instanceof UnionOf) response.schema._mockTypes[key] = 'unionOf'
-
-            if (Array.isArray(definition)) {
-                response.schema._mockTypes[key] = 'arrayOf'
-                return arrayOf(definition[0], definition[1])
-            }
+            response.schema._mockTypes[key] = 'arrayOf'
+            if (Array.isArray(definition)) return arrayOf(definition[0], definition[1])
             if (definition.schema) {
                 response.schema._mockTypes[key] = 'single'
                 return definition.schema.model
             }
-            response.schema._mockTypes[key] = 'arrayOf'
-            if (definition instanceof Definition) return definition.define()
+
+            if (definition instanceof Definition) {
+                if (definition instanceof ValuesOf) response.schema._mockTypes[key] = 'valuesOf'
+                if (definition instanceof UnionOf) response.schema._mockTypes[key] = 'unionOf'
+                return definition.define()
+            }
 
             return definition
         }))

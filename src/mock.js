@@ -21,7 +21,7 @@ mock.Class = class extends mock.Class {
             const response = {}
 
             const newId = _.size(cache[model.name]) + 1
-            let id = model._modelType == 'arrayOf' ? _.range(newId, newId + 20) : newId
+            let id = model._modelType == 'arrayOf' || model._modelType == 'valuesOf' ? _.range(newId, newId + 20) : newId
             if (model.params) {
                 if (model.params[primary]) {
                     id = model.params[primary]
@@ -48,6 +48,9 @@ mock.Class = class extends mock.Class {
 
             if (Array.isArray(id)) {
                 response[model.key] = _.map(id, id => getFromCache(id))
+                if (model._modelType == 'valuesOf') {
+                    response[model.key] = _.mapKeys(response[model.key], entity => entity[primary])
+                }
             } else if (typeof id === 'number') {
                 response[model.key] = getFromCache(id)
             } else {
