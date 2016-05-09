@@ -357,9 +357,16 @@ normalize(
 
 Recommended to rather use the `.normalize()` mutator on requests
 
-### `prepare(mutators)`
+### `prepare(customMutators)`
 
-This is a convenience method that allows you to pre-configure all query types.
+This is a convenience method that allows you to pre-configure all query types and apply custom mutators. All custom mutators mutate data that is given to the request API.
+
++ `customMutators [object]` - A collection of custom mutators that will get applied to the query tool. Each mutator accepts an `apply(key, value)` method and a `valueOf(key)` method
+as its first and second argument respectively. The mutator should return a function that in turn returns `apply()`. Example below:
+    + `apply(key, value)` - A utility method to set values on the query objects collection of mutations.
+        + `key [string]` - The name of the field to set.
+        + `value [any]` - the value of the field.
+    + `valueOf(key)` - A utility method to retrieve the value of a mutation on the query object.
 
 ```javascript
 import { prepare } from 'modelizr'
@@ -371,13 +378,11 @@ const mutation = prepared.mutation()
 const mock = prepared.getMock()
 ```
 
-The api for prepare isn't very stable and is likely to change. There is also a very hacky way to add custom mutators:
+Adding custom mutators:
 
 ```javascript
 const prepared = prepare({
-    customPathMutator: function (path) {
-        return this.apply('_path', 'http://api.example.com/' + path)
-    }
+    customPathMutator: apply => path => apply('path', 'http://api.example.com/' + path)
 })
 
 const query = prepared.query()
@@ -387,9 +392,8 @@ query(
 ).customPathMutator('graphql')
 ```
 
-**Note** all existing mutators apply to properties of the same name but prefixed by `_`. Eg: `.mock()` applies to `_mock`. The custom mutators must be
- `function`'s and not a lambdas. To mutate properties, they have access to `this.apply(key, value)` where `key` is the property name (eg `_mock`) and `value`
- is the new value you want to set.
+**Note** all existing mutators apply to fields with the same name on the query objects collection of mutations. Eg: `.mock()` applies to a field with key `mock` and can be retrieved with
+`valueOf('mock')`.
 
 ### `request(body)`
 
@@ -417,13 +421,14 @@ import { prepare } from 'modelizr'
 const request = prepare().contentType(...).request()
 ```
 
-### `api(query, opts)`
+### `api(query, mutations)`
 
 The format of the api.
 
-+ `query [string | object]` - will be the stringified query unless using a plain request, in which case it will be the request object
-+ `opts [object]` - some request settings
++ `query [string | object]` - will be the stringified query unless using a plain request, in which case it will be the request object.
++ `mutations [object]` - an object containing all mutations (including defaults) that have occurred.
 
+mutators that are used by the default request API
 | Option Name                   | Purpose       
 | ---------------------- | ---------------------- 
 | `path [string]`   | The request endpoint | 
