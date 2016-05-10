@@ -25,32 +25,23 @@ const normalize = (response, ...query) => {
     }))
 }
 
-class Definition {
+class Iterable {
     constructor(model, options) {
         options = options || {}
         this.model = model
-        this.options = options.schemaAttribute
+        this.options = _.pick(options, ['schemaAttribute'])
     }
     
     define() {
-        return _valuesOf(this.model, this.options)
+        return _valuesOf(this.model.schema ? this.model.schema.model : this.model, this.options)
     }
 }
 
-class ArrayOf extends Definition {
+class ValuesOf extends Iterable {
     
 }
-class ValuesOf extends Definition {
-    
-}
-class UnionOf extends Definition {
-    define() {
-        return _unionOf(this.model, this.options)
-    }
-}
 
-const arrayOf = (model, options) => new ArrayOf(model.schema.model, options)
-const valuesOf = (model, options) => new ValuesOf(model.schema.model, options)
-const unionOf = (model, options) => new UnionOf(model.schema.model, options)
+const arrayOf = (model, options) => new Iterable(model, options)
+const valuesOf = (model, options) => new ValuesOf(model, options)
 
-export { normalize as default, arrayOf, valuesOf, unionOf, ArrayOf, ValuesOf, UnionOf, Definition }
+export { normalize as default, arrayOf, valuesOf, ValuesOf, Iterable }

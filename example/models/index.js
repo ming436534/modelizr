@@ -1,13 +1,18 @@
 import { book } from './book'
 import { user } from './user'
-import { valuesOf } from '../../src/normalizer'
+import { unionOf } from '../../src/index'
 
 book.define({
     author: user
 })
+
+const collection = unionOf('collections', {
+    books: book
+}, {schemaAttribute: 'type'})
+
 user.define({
-    books: valuesOf(book)
+    books: book,
+    collections: [collection]
 })
 
-export { book } from './book'
-export { user } from './user'
+export { book, user, collection }

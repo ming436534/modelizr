@@ -200,8 +200,7 @@ user.define({
 })
 ```
 
-`'modelizr/lib/normalizer'` exports a function with the same name for all of `normalizr`'s schema tools. `arrayOf | valuesOf | unionOf`. **Note** if you use
-actual `normalizr` methods, it will not work.
+`'modelizr/lib/normalizer'` exports an `arrayOf` and a `valuesOf` function. **Note** `unionOf` is exported directly from `modelizr` as it is a model extension.
 
 ### `model.primaryKey(key)`
 
@@ -460,4 +459,8 @@ This is just a basic usage example. More specific examples will come.
 
 + Write tests.
 + Union Models
-+ Determine model type from response (arrayOf model | valuesOf model) and add mutators to infer it
++ Mocking support for `unionOf`
++ Mocking support for wrapped `unionOf` (eg: `valuesOf(unionOf(model))`)
++ Add ability to infer key value when mocking a `valuesOf(model)`
++ Add ability to have default properties relating to models that get mocked accordingly. (add model as field type)
++ Update package.json modules

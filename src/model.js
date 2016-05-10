@@ -1,10 +1,12 @@
 import { Schema as NormalizerSchema } from 'normalizr'
-import { arrayOf, ValuesOf, UnionOf, Definition } from './normalizer'
+import { arrayOf, ValuesOf, Iterable } from './normalizer'
+import {ModelBase} from './bases'
 import { _ } from './utils'
 
-class Model {
+class Model extends ModelBase {
     constructor(schema, params, ...models) {
-        if (params && params instanceof Model) {
+        super()
+        if (params && params instanceof ModelBase) {
             models.unshift(params)
             params = {}
         }
@@ -16,24 +18,7 @@ class Model {
             params
         }
     }
-
-    build() {
-        return {
-            ...this._schema,
-            properties: {
-                ...this._schema.properties,
-                ..._.mapKeys(_.mapValues(this._models, model => model.build()), model => model.key)
-            }
-        }
-    }
-
-    apply(key, value) {
-        this._schema[key] = value
-        return this
-    }
-
-    as = key => this.apply('key', key)
-    params = params => this.apply('params', params)
+    
     without = exclusion => this.apply('properties', _.omit(this._schema.properties, exclusion))
     only = selection => this.apply('properties', _.pick(this._schema.properties, selection))
     onlyIf = statement => this.apply('continue', statement === undefined ? true : statement)
@@ -89,7 +74,6 @@ const model = (name, schema, options) => {
         name,
         key: name,
         model: new NormalizerSchema(name, {idAttribute: entity => entity[schema.primaryKey || 'id'], ...options}),
-        type: 'object',
         additionalProperties: false,
         required: _.map(_.omitBy(schema.properties, prop => prop.model), (prop, key) => key),
         _isModel: true,
@@ -103,15 +87,27 @@ const model = (name, schema, options) => {
 
         response.schema.model.define(_.mapValues(definitions, (definition, key) => {
             response.schema._mockTypes[key] = 'arrayOf'
-            if (Array.isArray(definition)) return arrayOf(definition[0], definition[1])
+            if (Array.isArray(definition)) {
+                definition = definition[0]
+                if (definition.unionOf) {
+                    return arrayOf(definition.define()).define()
+                }
+                return arrayOf(definition).define()
+            }
             if (definition.schema) {
                 response.schema._mockTypes[key] = 'single'
                 return definition.schema.model
             }
+            
+            if (definition.unionOf) {
+                response.schema._mockTypes[key] = 'single'
+                return definition.define()
+            }
 
-            if (definition instanceof Definition) {
-                if (definition instanceof ValuesOf) response.schema._mockTypes[key] = 'valuesOf'
-                if (definition instanceof UnionOf) response.schema._mockTypes[key] = 'unionOf'
+            if (definition instanceof Iterable) {
+                if (definition instanceof ValuesOf) {
+                    response.schema._mockTypes[key] = 'valuesOf'
+                }
                 return definition.define()
             }
 

@@ -1,4 +1,5 @@
 export * from './model'
+export * from './union'
 export * from './mock'
 export * from './mutation'
 export * from './query'

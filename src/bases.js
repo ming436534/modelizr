@@ -33,7 +33,7 @@ class QueryMutators {
     custom = func => func(this.apply, this.valueOf)
 }
 
-class Base extends QueryMutators {
+class QueryBase extends QueryMutators {
     constructor(models, mutations) {
         super()
 
@@ -148,4 +148,30 @@ class Base extends QueryMutators {
     }
 }
 
-export { Base as default, Base, QueryMutators }
+class ModelBase {
+    build() {
+        const _build = {
+            ...this._schema,
+            properties: {
+                ...this._schema.properties,
+                ..._.mapKeys(_.mapValues(this._models, model => model.build()), model => model.key)
+            }
+        }
+
+        if (_.size(_build.properties)) {
+            _build.type = 'object'
+        }
+
+        return _build
+    }
+
+    apply(key, value) {
+        this._schema[key] = value
+        return this
+    }
+
+    as = key => this.apply('key', key)
+    params = params => this.apply('params', params)
+}
+
+export { ModelBase, QueryBase, QueryMutators }

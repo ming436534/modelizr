@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Base, QueryMutators } from './base'
+import { QueryBase, QueryMutators } from './bases'
 import { query as Query, mutation as Mutation, mock as Mock, request as Request } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
@@ -27,7 +27,7 @@ const debug = (log, name) => {
 
 const base = custom => {
     let res = (...models) => new res.Class(models, res._mutations)
-    res.Class = Base
+    res.Class = QueryBase
     res._mutations = {}
     res = Object.assign(res, new QueryMutators(res))
 

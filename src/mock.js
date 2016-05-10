@@ -21,7 +21,13 @@ mock.Class = class extends mock.Class {
             const response = {}
 
             const newId = _.size(cache[model.name]) + 1
-            let id = model._modelType == 'arrayOf' || model._modelType == 'valuesOf' ? _.range(newId, newId + 20) : newId
+
+            let id = newId
+            
+            if (model._modelType == 'arrayOf' || model._modelType == 'valuesOf') {
+                id = _.range(newId, newId + 20)
+            }
+
             if (model.params) {
                 if (model.params[primary]) {
                     id = model.params[primary]
@@ -29,20 +35,42 @@ mock.Class = class extends mock.Class {
             }
 
             const getFromCache = id => {
+                let _model = model
+                let schemaAttribute = model.schemaAttribute
+
+                if (model._isUnion) {
+                    const rand = () => {
+                        let result
+                        let count = 0
+                        for (const prop in model.models)
+                            if (Math.random() < 1/++count)
+                                result = model.models[prop]
+                        return result
+                    }
+                    _model = {
+                        ...rand().schema,
+                        type: 'object'
+                    }
+                    _model.model = () => _model.model
+                }
+
                 const mergeNested = mockedModel => ({
                     ...mockedModel,
-                    ...mock(_.map(_.filter(model.properties, prop => prop._isModel), childModel => {
-                        childModel._modelType = model._mockTypes[childModel.key] || 'arrayOf'
+                    ...mock(_.map(_.filter(_model.properties, prop => prop._isModel || prop._isUnion), childModel => {
+                        childModel._modelType = _model._mockTypes[childModel.key] || 'arrayOf'
                         return childModel
                     }))
                 })
 
-                if (cache[model.name] && cache[model.name][id]) {
-                    return mergeNested(cache[model.name][id])
+                if (cache[_model.key] && cache[_model.key][id]) {
+                    return mergeNested(cache[_model.key][id])
                 }
-                const mocked = _.set(jsf(model), primary, id)
+                let mocked = _.set(jsf(_model), primary, id)
+                if (model._isUnion) {
+                    mocked = _.set(mocked, schemaAttribute, _model.key)
+                }
 
-                cache[model.name] = {...cache[model.name], [id]: mocked}
+                cache[_model.key] = {...cache[_model.key], [id]: mocked}
                 return mergeNested(mocked)
             }
 
