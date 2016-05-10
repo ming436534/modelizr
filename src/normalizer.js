@@ -6,7 +6,10 @@ const normalize = (response, ...query) => {
 
     return Normalize(response, _.mapValues(_query, (entity, key) => {
 
-        const model = entity.model()
+        const model = entity._isUnion ?
+            _unionOf(_.mapValues(entity.models, model => model.schema.model), {schemaAttribute: entity.schemaAttribute})
+            : entity.model()
+
         const attribute = entity._attribute ? {
             schemaAttribute: entity._attribute
         } : {}
@@ -31,14 +34,14 @@ class Iterable {
         this.model = model
         this.options = _.pick(options, ['schemaAttribute'])
     }
-    
+
     define() {
-        return _valuesOf(this.model.schema ? this.model.schema.model : this.model, this.options)
+        return _valuesOf(this.model.schema ? this.model.schema.model : this.model.define(), this.options)
     }
 }
 
 class ValuesOf extends Iterable {
-    
+
 }
 
 const arrayOf = (model, options) => new Iterable(model, options)

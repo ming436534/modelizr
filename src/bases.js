@@ -172,6 +172,15 @@ class ModelBase {
 
     as = key => this.apply('key', key)
     params = params => this.apply('params', params)
+
+    valuesOf = attribute => {
+        this.apply('_modelType', 'valuesOf')
+        return this.apply('_attribute', attribute)
+    }
+    arrayOf = attribute => {
+        this.apply('_modelType', 'arrayOf')
+        return this.apply('_attribute', attribute)
+    }
 }
 
 export { ModelBase, QueryBase, QueryMutators }

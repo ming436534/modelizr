@@ -15,7 +15,9 @@ _.extractMockedObjects = array => {
     return response
 }
 _.hasValuesOf = (response, model) => {
-    const filtered = _.map(response, value => _.filter(model.required, field => value[field]).length === model.required.length)
+    const filtered = _.filter(response, value => {
+        return (model.required && model.required.length && _.filter(model.required, field => value[field]).length === model.required.length) || false
+    })
     return filtered.length == _.size(response)
 }
 

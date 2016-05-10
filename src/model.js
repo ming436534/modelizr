@@ -23,15 +23,6 @@ class Model extends ModelBase {
     only = selection => this.apply('properties', _.pick(this._schema.properties, selection))
     onlyIf = statement => this.apply('continue', statement === undefined ? true : statement)
 
-    valuesOf = attribute => {
-        this.apply('_modelType', 'valuesOf')
-        return this.apply('_attribute', attribute)
-    }
-    arrayOf = attribute => {
-        this.apply('_modelType', 'arrayOf')
-        return this.apply('_attribute', attribute)
-    }
-
     normalizeAs(key) {
         const model = this._schema.model()
         model._key = key
@@ -87,13 +78,7 @@ const model = (name, schema, options) => {
 
         response.schema.model.define(_.mapValues(definitions, (definition, key) => {
             response.schema._mockTypes[key] = 'arrayOf'
-            if (Array.isArray(definition)) {
-                definition = definition[0]
-                if (definition.unionOf) {
-                    return arrayOf(definition.define()).define()
-                }
-                return arrayOf(definition).define()
-            }
+            if (Array.isArray(definition)) return arrayOf(definition[0]).define()
             if (definition.schema) {
                 response.schema._mockTypes[key] = 'single'
                 return definition.schema.model
