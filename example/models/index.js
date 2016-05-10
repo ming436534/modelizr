@@ -15,8 +15,7 @@ const collection = unionOf('collections', {
 user.setSchema({
     id: {type: 'integer', alias: 'ID'},
     firstName: {type: 'string', faker: 'name.firstName'},
-    lastName: {type: 'string', faker: 'name.lastName'},
-    books: {type: book}
+    lastName: {type: 'string', faker: 'name.lastName'}
 })
 
 book.define({

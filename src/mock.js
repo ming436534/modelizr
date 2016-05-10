@@ -30,7 +30,7 @@ mock.Class = class extends mock.Class {
             const primary = model.primaryKey || 'id'
             const response = {}
 
-            const newId = _.size(cache[model.name]) + 1
+            const newId = _.size(cache[model.key]) + 1
 
             let id = newId
 
@@ -74,6 +74,7 @@ mock.Class = class extends mock.Class {
                 }), prop => prop)
 
                 if (cache[_model.key] && cache[_model.key][id]) {
+                    if (model._isUnion) cache[_model.key][id][schemaAttribute] = _model.key
                     return mergeNested(cache[_model.key][id])
                 }
                 let mocked = _.set(jsf(_model), primary, id)

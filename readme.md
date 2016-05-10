@@ -431,6 +431,7 @@ The id mocking algorithm is as follows:
 | `error(type)` | `[string | integer]` default `throw` | Mock returns an error. If you give it a string `throw` it will throw an error and you will need to catch it. if you give it an integer it will treat it as an http status code. |
 | `then(res, query)` | `[function (result)]` | Make the request and pass the result as it's first parameter, and the parsed query as the second |
 | `normalize(res, query)` | `[function (result)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter, and the parsed query as the second |
+| `custom((apply, valueOf) => mutator)` | `[function (apply, valueOf) => mutator]` | Pass in a custom mutation. Accepts a function and must return a new function that in turn returns apply(). Custom mutators are explained in more detail below |
 
 ### `normalize(response, ...models)`
 
@@ -548,5 +549,5 @@ This is just a basic usage example. More specific examples will come.
 
 + Write tests.
 + Add ability to infer key value when mocking a `valuesOf(model)`
-+ Update package.json modules
 + Mock amount mutator
++ Collections don't increment mocking cache properly
