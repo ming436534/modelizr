@@ -270,7 +270,7 @@ entities with expected ids. A single `param<primaryKey>` will generate a single 
 | ---------------------- | ---------------------- | --------------------------
 | `as(key)`   | `[string]` | Change the name of the key to be used when generating requests and mocking |
 | `params(params)` | `[object]` | Define parameters for the generated request. |
-| `properties(props [, overwrite]) | props()` | `[array | object], ([boolean])` | add properties to the model, if overwrite is `true`, then the models props will be overwritten |
+| `properties(props [, overwrite])` | props()` | `[array | object], ([boolean])` | add properties to the model, if overwrite is `true`, then the models props will be overwritten |
 | `only(props)` | `[array]` | Use only the properties specified in `[array]` |
 | `except(props)` | `[array]` | Exclude the properties specified in `[array]` |
 | `onlyIf(statement)` | `[boolean]` | Only include the model this is applied to if its parameter is true |
@@ -308,7 +308,7 @@ query(
 
 ### union instance `unionOf()([params,] ...models)`
 
-Give the union parameters and model properties. If no parameters are provided then the resulting query will just contain the union key.
+Give the union parameters and model properties. Has the same effects as `model`. If no parameters are provided then the resulting query will just contain the union key.
 
 ### union mutators
 
@@ -551,3 +551,4 @@ This is just a basic usage example. More specific examples will come.
 + Add ability to infer key value when mocking a `valuesOf(model)`
 + Mock amount mutator
 + Collections don't increment mocking cache properly
++ Support for custom json-schema-faker mocks

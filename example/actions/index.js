@@ -32,9 +32,7 @@ const setEntities = entities => {
 export const requestUsers = (mock, delay, error) => {
     query(
         user(
-            book(
-                // user().as('author')
-            ),
+            book(),
             collection()
         )
     )
