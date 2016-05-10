@@ -126,6 +126,10 @@ query(
 
 Create a new model from a schema. The schema must be defined with the `json-schema` schema style.
 
++ `key [string]` - gets used to create a `normalizr` schema. Is also the default name of an entity when generating a graph request or mocking
++ `schema [object]` - used to define properties that get added to generated requests, mocked and used in validation
++ `options [object]` - `normalizr` schema options
+
 ```javascript
 import { model } from 'modelizr'
 
@@ -148,10 +152,6 @@ const user = model('users', {
 user.primaryKey('id')
 ```
 
-+ `key [string]` - gets used to create a `normalizr` schema. Is also the default name of an entity when generating a graph request or mocking
-+ `schema [object]` - used to define properties that get added to generated requests, mocked and used in validation
-+ `options [object]` - `normalizr` schema options
-
 | Name                   | Description   |
 | ---------------------- | ------------- |
 | `properties [object]`  | A collection of properties that follow `json-schema-faker`'s API |
@@ -171,6 +171,24 @@ const user = model('users', {
      id: ID,
   }
 }
+```
+
+You can also pass models as property types in your schema. For example:
+
+```javascript
+const user = model('users', {
+    id: {type: 'integer'},
+    ...
+})
+
+const book = model('books', {
+    id: {type: 'integer'},
+    author: {type: user}
+})
+
+book.define({
+    author: user
+})
 ```
 
 If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step. 
@@ -210,9 +228,37 @@ Specify the primary key to be given to normalizr, and used in mocks. Assumes `id
 user.primaryKey('ID')
 ```
 
+### `model.setSchema(schema)`
+
+Set the schema of a model. Useful if you have circular model dependencies in your schema. For example:
+
+```javascript
+const user = model('users')
+const book = model('books', {
+    id: {type: 'integer'},
+    title: {type: 'string', faker: 'name.firstName'}
+})
+
+const collection = unionOf('collections', {
+    books: book,
+    users: user
+}, {schemaAttribute: 'type'})
+
+user.setSchema({
+    id: {type: 'integer', alias: 'ID'},
+    firstName: {type: 'string', faker: 'name.firstName'},
+    lastName: {type: 'string', faker: 'name.lastName'},
+    books: {type: book}
+})
+```
+
+### `model.keyKey()`
+
+Get the models key
+
 ### model instance `model()([params,] ...models)`
 
-Define a nested query that can be generated or mocked
+Define a nested query that can be generated or mocked. If no parameters are provided then the resulting query will just contain the model key.
 
 + `params [object]` - (optional) Parameters that get added to the generated request. Note that parameters that are specified as `primaryKeys` are used when mocking to create
 entities with expected ids. A single `param<primaryKey>` will generate a single mocked entity, and an array of `param<primaryKey>` will generate an array of entities
@@ -229,6 +275,49 @@ entities with expected ids. A single `param<primaryKey>` will generate a single 
 | `except(props)` | `[array]` | Exclude the properties specified in `[array]` |
 | `onlyIf(statement)` | `[boolean]` | Only include the model this is applied to if its parameter is true |
 | `normalizeAs(key)` | `[boolean]` | Replace a models normalize key. Primarily used for empty requests using the provided `request()` model |
+| `arrayOf(schemaAttribute)` | `[string]` | Forcefully specify the model definition as an array. Should only be applied to top level models |
+| `valuesOf(schemaAttribute)` | `[string]` | Forcefully specify the model definition as values. Should only be applied to top level models |
+
+### `unionOf(key, models, options)`
+
+Define a union of models that can be normalized and mocked.
+
++ `key [string]` - Same purpose as `model(key)`
++ `models [object]` - A collection of models that the union contains
++ `options [object]` - `normalizr` unionOf options. `schemaAttribute` is required.
+
+```javascript
+const user = model('users')
+const group = model('groups')
+
+const friends = unionOf('friends', {
+    groups: group,
+    users: user
+}, {schemaAttribute: 'type'})
+
+user.define({
+    friends: arrayOf(friends)
+})
+
+query(
+    user(
+        friends()
+    )
+)
+```
+
+### union instance `unionOf()([params,] ...models)`
+
+Give the union parameters and model properties. If no parameters are provided then the resulting query will just contain the union key.
+
+### union mutators
+
+| Name                   | Accepts       | Effect
+| ---------------------- | ---------------------- | --------------------------
+| `as(key)`   | `[string]` | Change the name of the key to be used when generating requests and mocking |
+| `params(params)` | `[object]` | Define parameters for the generated request. |
+| `arrayOf(schemaAttribute)` | `[string]` | Forcefully specify the union definition as an array. Should only be applied to top level unions |
+| `valuesOf(schemaAttribute)` | `[string]` | Forcefully specify the union definition as values. Should only be applied to top level unions |
 
 ### `query(...models)`
 
@@ -458,9 +547,6 @@ This is just a basic usage example. More specific examples will come.
 # Todo
 
 + Write tests.
-+ Union Models
-+ Mocking support for `unionOf`
-+ Mocking support for wrapped `unionOf` (eg: `valuesOf(unionOf(model))`)
 + Add ability to infer key value when mocking a `valuesOf(model)`
-+ Add ability to have default properties relating to models that get mocked accordingly. (add model as field type)
 + Update package.json modules
++ Mock amount mutator

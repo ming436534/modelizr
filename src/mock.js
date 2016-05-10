@@ -15,6 +15,16 @@ mock.Class = class extends mock.Class {
             if (typeof model.build === 'function') {
                 model = model.build()
             }
+
+            const rand = model => {
+                let result
+                let count = 0
+                for (const prop in model.models)
+                    if (Math.random() < 1 / ++count)
+                        result = model.models[prop]
+                return result
+            }
+
             model._modelType = model._modelType || 'arrayOf'
 
             const primary = model.primaryKey || 'id'
@@ -23,7 +33,7 @@ mock.Class = class extends mock.Class {
             const newId = _.size(cache[model.name]) + 1
 
             let id = newId
-            
+
             if (model._modelType == 'arrayOf' || model._modelType == 'valuesOf') {
                 id = _.range(newId, newId + 20)
             }
@@ -39,16 +49,8 @@ mock.Class = class extends mock.Class {
                 let schemaAttribute = model.schemaAttribute
 
                 if (model._isUnion) {
-                    const rand = () => {
-                        let result
-                        let count = 0
-                        for (const prop in model.models)
-                            if (Math.random() < 1/++count)
-                                result = model.models[prop]
-                        return result
-                    }
                     _model = {
-                        ...rand().schema,
+                        ...rand(model).schema,
                         type: 'object'
                     }
                     _model.model = () => _model.model
@@ -61,6 +63,15 @@ mock.Class = class extends mock.Class {
                         return childModel
                     }))
                 })
+
+                _model.properties = _.pickBy(_.mapValues(_model.properties, (prop, key) => {
+                    if (typeof prop.type === 'function') {
+                        const gen = prop.type()
+                        if (gen._schema.key == model.propertyOf) return undefined
+                        return {...gen.build(), propertyOf: key}
+                    }
+                    return prop
+                }), prop => prop)
 
                 if (cache[_model.key] && cache[_model.key][id]) {
                     return mergeNested(cache[_model.key][id])

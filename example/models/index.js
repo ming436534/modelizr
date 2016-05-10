@@ -1,10 +1,10 @@
-import { book } from './book'
-import { user } from './user'
-import { unionOf } from '../../src/index'
-import {valuesOf} from '../../src/normalizer'
+import { unionOf, model } from '../../src/index'
 
-book.define({
-    author: user
+const user = model('users')
+
+const book = model('books', {
+    id: {type: 'integer'},
+    title: {type: 'string', faker: 'name.firstName'}
 })
 
 const collection = unionOf('collections', {
@@ -12,8 +12,19 @@ const collection = unionOf('collections', {
     users: user
 }, {schemaAttribute: 'type'})
 
+user.setSchema({
+    id: {type: 'integer', alias: 'ID'},
+    firstName: {type: 'string', faker: 'name.firstName'},
+    lastName: {type: 'string', faker: 'name.lastName'},
+    books: {type: book}
+})
+
+book.define({
+    author: user
+})
+
 user.define({
-    books: book,
+    books: [book],
     collections: [collection]
 })
 

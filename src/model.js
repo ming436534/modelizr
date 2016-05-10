@@ -42,56 +42,63 @@ class Model extends ModelBase {
 }
 
 const model = (name, schema, options) => {
-    if (!schema.properties && !schema.required) {
-        schema = {
-            properties: schema
-        }
-    }
-
-    schema.properties = _.mapValues(schema.properties, (definition, name) => {
-        if (definition.type == 'primary') {
-            schema.primaryKey = name
-
-            return {
-                ...definition,
-                type: 'integer'
+    schema = schema || {}
+    
+    const formatSchema = schema => {
+        if (!schema.properties && !schema.required) {
+            schema = {
+                properties: schema
             }
         }
 
-        return definition
-    })
+        schema.properties = _.mapValues(schema.properties, (definition, name) => {
+            if (definition.type == 'primary') {
+                schema.primaryKey = name
 
-    schema = {
-        name,
-        key: name,
-        model: new NormalizerSchema(name, {idAttribute: entity => entity[schema.primaryKey || 'id'], ...options}),
-        additionalProperties: false,
-        required: _.map(_.omitBy(schema.properties, prop => prop.model), (prop, key) => key),
-        _isModel: true,
-        ...schema
+                return {
+                    ...definition,
+                    type: 'integer'
+                }
+            }
+
+            return definition
+        })
+
+        schema = {
+            name,
+            key: name,
+            model: new NormalizerSchema(name, {idAttribute: entity => entity[schema.primaryKey || 'id'], ...options}),
+            additionalProperties: false,
+            required: _.map(_.omitBy(schema.properties, prop => prop.model || typeof prop.type === 'function'), (prop, key) => key),
+            _isModel: true,
+            ...schema
+        }
+        
+        return schema
     }
+    schema = formatSchema(schema)
 
-    const response = (params, ...models) => new Model(response.schema, params, ...models,)
-    response.schema = schema
-    response.define = definitions => {
-        response.schema._mockTypes = {}
+    const _model = (params, ...models) => new Model(_model.schema, params, ...models,)
+    _model.schema = schema
+    _model.define = definitions => {
+        _model.schema._mockTypes = {}
 
-        response.schema.model.define(_.mapValues(definitions, (definition, key) => {
-            response.schema._mockTypes[key] = 'arrayOf'
+        _model.schema.model.define(_.mapValues(definitions, (definition, key) => {
+            _model.schema._mockTypes[key] = 'arrayOf'
             if (Array.isArray(definition)) return arrayOf(definition[0]).define()
             if (definition.schema) {
-                response.schema._mockTypes[key] = 'single'
+                _model.schema._mockTypes[key] = 'single'
                 return definition.schema.model
             }
             
             if (definition.unionOf) {
-                response.schema._mockTypes[key] = 'single'
+                _model.schema._mockTypes[key] = 'single'
                 return definition.define()
             }
 
             if (definition instanceof Iterable) {
                 if (definition instanceof ValuesOf) {
-                    response.schema._mockTypes[key] = 'valuesOf'
+                    _model.schema._mockTypes[key] = 'valuesOf'
                 }
                 return definition.define()
             }
@@ -99,10 +106,13 @@ const model = (name, schema, options) => {
             return definition
         }))
     }
-    response.getKey = () => response.schema.key
-    response.primaryKey = key => response.schema.primaryKey = key
+    _model.getKey = () => _model.schema.key
+    _model.primaryKey = key => _model.schema.primaryKey = key
+    _model.setSchema = schema => {
+        _model.schema = formatSchema(schema)
+    }
 
-    return response
+    return _model
 }
 
 export { model as default, model, Model }

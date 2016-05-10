@@ -35,9 +35,6 @@ export const requestUsers = (mock, delay, error) => {
             // book(
             //     user().as('author')
             // )
-            collection(
-                book()
-            )
         )
     )
         .mock(mock)
