@@ -250,7 +250,7 @@ user.setSchema({
     id: {type: 'integer', alias: 'ID'},
     firstName: {type: 'string', faker: 'name.firstName'},
     lastName: {type: 'string', faker: 'name.lastName'},
-    books: {type: book}
+    collections: {type: collection}
 })
 ```
 
