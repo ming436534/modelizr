@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for bases.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="index.html">All files</a> bases.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.33% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>2/60</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">2.08% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>1/48</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.13% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/32</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.33% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>2/60</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { _, debug, api } from './utils'
+import normalize from './normalizer'
+&nbsp;
+class QueryMutators {
+    constructor(target) {
+        this._mutations = {
+            spaces: 3,
+            mockDelay: 0,
+            mockError: false,
+            query: true,
+            api
+        }
+        
+        this._this = t</span>arget || <span class="branch-1 cbranch-no" title="branch not covered" >this
+    }
+&nbsp;
+    apply = <span class="fstat-no" title="function not covered" >(key, value) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        this._this._mutations[key] = value</span>
+<span class="cstat-no" title="statement not covered" >        return this._this</span>
+    }
+    valueOf = <span class="fstat-no" title="function not covered" >key =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        return this._this._mutations[key]</span>
+    }
+    
+    spaces = <span class="fstat-no" title="function not covered" >spaces =&gt; this.apply('spaces', spaces)</span>
+    api = <span class="fstat-no" title="function not covered" >api =&gt; this.apply('api', api)</span>
+    path = <span class="fstat-no" title="function not covered" >path =&gt; this.apply('path', path)</span>
+    headers = <span class="fstat-no" title="function not covered" >headers =&gt; this.apply('headers', {...this.valueOf('headers'), ...headers})</span>
+    debug = <span class="fstat-no" title="function not covered" >debug =&gt; this.apply('debug', debug === undefined ? true : debug)</span>
+    mock = <span class="fstat-no" title="function not covered" >mock =&gt; this.apply('mock', mock === undefined ? true : mock)</span>
+    delay = <span class="fstat-no" title="function not covered" >delay =&gt; this.apply('mockDelay', delay || 500)</span>
+    error = <span class="fstat-no" title="function not covered" >error =&gt; this.apply('error', error === undefined ? 'throw' : error)</span>
+    custom = <span class="fstat-no" title="function not covered" >func =&gt; func(this.apply, this.valueOf)</span>
+}
+&nbsp;
+class QueryBase extends QueryMutators {
+<span class="fstat-no" title="function not covered" >    constructor(models, mutations) {</span>
+        super()
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        this._models = models</span>
+<span class="cstat-no" title="statement not covered" >        this._mutations = {</span>
+            ...this._mutations,
+            ...mutations
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        _.forEach(mutations.custom, <span class="fstat-no" title="function not covered" >(mutator, key) =&gt; this[key] = mutator(this.apply, this.valueOf))</span></span>
+    }
+&nbsp;
+    spacer(amount) {
+<span class="cstat-no" title="statement not covered" >        return _.join(_.map(_.range(0, amount), <span class="fstat-no" title="function not covered" >() =&gt; ''), ' ')</span></span>
+    }
+&nbsp;
+    makeParams(params) {
+<span class="cstat-no" title="statement not covered" >        const getType = <span class="fstat-no" title="function not covered" >param =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >            if (Array.isArray(param)) {</span>
+<span class="cstat-no" title="statement not covered" >                return `[${param}]`</span>
+            } else <span class="cstat-no" title="statement not covered" ></span>if (typeof param === 'number') {
+<span class="cstat-no" title="statement not covered" >                return param</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return `"${param}"`</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ></span>        if (!_.isEmpty(params)) {
+<span class="cstat-no" title="statement not covered" >            return `(${_.filter(_.map(params, <span class="fstat-no" title="function not covered" >(param, key) =&gt; param ? `${key}: ${getType(param)}` : null), <span class="fstat-no" title="function not covered" >param =&gt; param)})`</span></span></span>
+        }
+<span class="cstat-no" title="statement not covered" >        return ''</span>
+    }
+&nbsp;
+    makeQuery(model, spaces = 3, indent = 1) {
+<span class="cstat-no" title="statement not covered" >        const mapProps = <span class="fstat-no" title="function not covered" >(props, indent) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >            const currentIndent = `\n${this.spacer(spaces * indent)}`</span>
+<span class="cstat-no" title="statement not covered" >            return _.mapValid(props, <span class="fstat-no" title="function not covered" >(prop, key) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" ></span>                if (prop.model) {
+<span class="cstat-no" title="statement not covered" >                    return this.makeQuery(prop, spaces, indent)</span>
+                }
+<span class="cstat-no" title="statement not covered" ></span>                if (prop.type == 'object') {
+<span class="cstat-no" title="statement not covered" >                    return this.makeQuery({</span>
+                        ...{
+                            key: key
+                        },
+                        ...prop
+                    }, spaces, indent)
+                }
+<span class="cstat-no" title="statement not covered" >                return `${currentIndent}${key}${prop.alias ? `: ${prop.alias}` : ''}`</span>
+            })
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        const currentIndent = this.spacer(spaces * indent)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return `\n${currentIndent}${model.key}${this.makeParams(model.params)} {${mapProps(model.properties, indent + 1)}\n${currentIndent}}`</span>
+    }
+&nbsp;
+    then(cb) {
+<span class="cstat-no" title="statement not covered" >        cb = cb || <span class="fstat-no" title="function not covered" >function() {</span></span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return this.response().then(<span class="fstat-no" title="function not covered" >res =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" ></span>            if (this.valueOf('debug')) {
+<span class="cstat-no" title="statement not covered" >                debug(res, '[response]')</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return res</span>
+        }).then(cb)
+    }
+&nbsp;
+    normalize(cb) {
+<span class="cstat-no" title="statement not covered" >        cb = cb || <span class="fstat-no" title="function not covered" >function() {</span></span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return this.response().then(<span class="fstat-no" title="function not covered" >res =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" ></span>            if (this.valueOf('debug')) {
+<span class="cstat-no" title="statement not covered" >                debug(res, '[response]')</span>
+            }
+<span class="cstat-no" title="statement not covered" >            const response = normalize(</span>
+                res.body,
+                ...this._models
+            )
+<span class="cstat-no" title="statement not covered" ></span>            if (this.valueOf('debug')) {
+<span class="cstat-no" title="statement not covered" >                debug(response, '[normalized response]')</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return response</span>
+        }).then(cb)
+    }
+&nbsp;
+    response() {
+<span class="cstat-no" title="statement not covered" >        return this._models</span>
+    }
+&nbsp;
+    generate() {
+<span class="cstat-no" title="statement not covered" >        return '{}'</span>
+    }
+    
+    callApi(mock) {
+<span class="cstat-no" title="statement not covered" ></span>        if (this.valueOf('mock')) {
+<span class="cstat-no" title="statement not covered" ></span>            if (this.valueOf('query')) {
+<span class="cstat-no" title="statement not covered" >                return mock(this._models)</span>
+                    .delay(this.valueOf('mockDelay'))
+                    .error(this.valueOf('mockError'))
+                    .response()
+            }
+<span class="cstat-no" title="statement not covered" >            return new Promise(<span class="fstat-no" title="function not covered" >resolve =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    resolve(true)</span>
+                }, this.valueOf('mockDelay'))
+            })
+        }
+<span class="cstat-no" title="statement not covered" >        return this.valueOf('api')(this._query, this._mutations)</span>
+    }
+}
+&nbsp;
+class ModelBase {
+    build() {
+<span class="cstat-no" title="statement not covered" >        const _build = {</span>
+            ...this._schema,
+            properties: {
+                ...this._schema.properties,
+                ..._.mapKeys(_.mapValues(this._models, <span class="fstat-no" title="function not covered" >model =&gt; model.build()), <span class="fstat-no" title="function not covered" >model =&gt; model.key)</span></span>
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ></span>        if (_.size(_build.properties)) {
+<span class="cstat-no" title="statement not covered" >            _build.type = 'object'</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return _build</span>
+    }
+&nbsp;
+    apply(key, value) {
+<span class="cstat-no" title="statement not covered" >        this._schema[key] = value</span>
+<span class="cstat-no" title="statement not covered" >        return this</span>
+    }
+&nbsp;
+    as = <span class="fstat-no" title="function not covered" >key =&gt; this.apply('key', key)</span>
+    params = <span class="fstat-no" title="function not covered" >params =&gt; this.apply('params', params)</span>
+&nbsp;
+    valuesOf = <span class="fstat-no" title="function not covered" >attribute =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        this.apply('_modelType', 'valuesOf')</span>
+<span class="cstat-no" title="statement not covered" >        return this.apply('_attribute', attribute)</span>
+    }
+    arrayOf = <span class="fstat-no" title="function not covered" >attribute =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        this.apply('_modelType', 'arrayOf')</span>
+<span class="cstat-no" title="statement not covered" >        return this.apply('_attribute', attribute)</span>
+    }
+}
+&nbsp;
+export { ModelBase, QueryBase, QueryMutators }</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu May 19 2016 21:04:12 GMT+0200 (SAST)
+</div>
+</div>
+<script src="prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="sorter.js"></script>
+</body>
+</html>
