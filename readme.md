@@ -1,6 +1,7 @@
 # modelizr
 [![Coverage Status](https://coveralls.io/repos/github/julienvincent/modelizr/badge.svg?branch=master)](https://coveralls.io/github/julienvincent/modelizr?branch=master)
 [![Build Status](https://travis-ci.org/julienvincent/modelizr.svg?branch=master)](https://travis-ci.org/julienvincent/modelizr)
+[![Gitter](https://badges.gitter.im/julienvincent/modelizr.svg)](https://gitter.im/julienvincent/modelizr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 A Combination of normalizr, json-schema and faker.js allowing you to define multipurpose models that can generate graphQL queries, mock deeply nested fake data and normalize
 
@@ -554,3 +555,4 @@ This is just a basic usage example. More specific examples will come.
 + Mock amount mutator
 + Collections don't increment mocking cache properly
 + Support for custom json-schema-faker mocks
++ Model-less mutation syntax for mutations that do not require querying

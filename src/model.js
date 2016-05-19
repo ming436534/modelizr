@@ -43,6 +43,8 @@ class Model extends ModelBase {
 
 const model = (name, schema, options) => {
     schema = schema || {}
+
+    const _model = (params, ...models) => new Model(_model.schema, params, ...models)
     
     const formatSchema = schema => {
         if (!schema.properties && !schema.required) {
@@ -67,18 +69,20 @@ const model = (name, schema, options) => {
         schema = {
             name,
             key: name,
+            primaryKey: 'id',
             model: new NormalizerSchema(name, {idAttribute: entity => entity[schema.primaryKey || 'id'], ...options}),
             additionalProperties: false,
             required: _.map(_.omitBy(schema.properties, prop => prop.model || typeof prop.type === 'function'), (prop, key) => key),
             _isModel: true,
+            _mockTypes: {},
+            ..._model.schema || {},
             ...schema
         }
         
         return schema
     }
     schema = formatSchema(schema)
-
-    const _model = (params, ...models) => new Model(_model.schema, params, ...models,)
+    
     _model.schema = schema
     _model.define = definitions => {
         _model.schema._mockTypes = {}
