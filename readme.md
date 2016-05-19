@@ -1,4 +1,6 @@
 # modelizr
+[![Coverage Status](https://coveralls.io/repos/github/julienvincent/modelizr/badge.svg?branch=master)](https://coveralls.io/github/julienvincent/modelizr?branch=master)
+[![Build Status](https://travis-ci.org/julienvincent/modelizr.svg?branch=master)](https://travis-ci.org/julienvincent/modelizr)
 
 A Combination of normalizr, json-schema and faker.js allowing you to define multipurpose models that can generate graphQL queries, mock deeply nested fake data and normalize
 
