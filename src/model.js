@@ -67,15 +67,14 @@ const model = (name, schema, options) => {
         })
 
         schema = {
-            name,
             key: name,
             primaryKey: 'id',
             model: new NormalizerSchema(name, {idAttribute: entity => entity[schema.primaryKey || 'id'], ...options}),
             additionalProperties: false,
-            required: _.map(_.omitBy(schema.properties, prop => prop.model || typeof prop.type === 'function'), (prop, key) => key),
             _isModel: true,
             _mockTypes: {},
             ..._model.schema || {},
+            required: _.map(_.omitBy(schema.properties, prop => prop.model || typeof prop.type === 'function'), (prop, key) => key),
             ...schema
         }
         

@@ -16,22 +16,12 @@ mock.Class = class extends mock.Class {
                 model = model.build()
             }
 
-            const rand = model => {
-                let result
-                let count = 0
-                for (const prop in model.models)
-                    if (Math.random() < 1 / ++count)
-                        result = model.models[prop]
-                return result
-            }
-
             model._modelType = model._modelType || 'arrayOf'
 
             const primary = model.primaryKey || 'id'
             const response = {}
 
             const newId = _.size(cache[model.key]) + 1
-
             let id = newId
 
             if (model._modelType == 'arrayOf' || model._modelType == 'valuesOf') {
@@ -48,7 +38,20 @@ mock.Class = class extends mock.Class {
                 let _model = model
                 let schemaAttribute = model.schemaAttribute
 
+                /**
+                 * If model is a union, pick a random model from the unions collection
+                 */
                 if (model._isUnion) {
+                    const rand = model => {
+                        let result
+                        let count = 0
+                        for (const prop in model.models)
+                            if (Math.random() < 1 / ++count) {
+                                result = model.models[prop]
+                            }
+                        return result
+                    }
+
                     _model = {
                         ...rand(model).schema,
                         type: 'object'
@@ -56,6 +59,9 @@ mock.Class = class extends mock.Class {
                     _model.model = () => _model.model
                 }
 
+                /**
+                 * Find nested models and mock them
+                 */
                 const mergeNested = mockedModel => ({
                     ...mockedModel,
                     ...mock(_.map(_.filter(_model.properties, prop => prop._isModel || prop._isUnion), childModel => {
@@ -73,16 +79,23 @@ mock.Class = class extends mock.Class {
                     return prop
                 }), prop => prop)
 
-                if (cache[_model.key] && cache[_model.key][id]) {
-                    if (model._isUnion) cache[_model.key][id][schemaAttribute] = _model.key
-                    return mergeNested(cache[_model.key][id])
-                }
-                let mocked = _.set(jsf(_model), primary, id)
-                if (model._isUnion) {
-                    mocked = _.set(mocked, schemaAttribute, _model.key)
+                /**
+                 * Determine if a model with the same PK is in the cache. Use it if it is.
+                 */
+                const _key = model._isUnion ? model.key : _model.key
+                if (cache[_key] && cache[_key][id]) {
+                    return mergeNested({
+                        ...cache[_key][id],
+                        ...(model._isUnion ? {
+                            [schemaAttribute]: _model.key
+                        } : {})
+                    })
                 }
 
-                cache[_model.key] = {...cache[_model.key], [id]: mocked}
+                let mocked = _.set(jsf(_model), primary, id)
+                if (model._isUnion) mocked = _.set(mocked, schemaAttribute, _model.key)
+
+                cache[_key] = {...cache[_key], [id]: mocked}
                 return mergeNested(mocked)
             }
 
