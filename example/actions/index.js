@@ -12,6 +12,18 @@ const setup = (
         .path('http://localhost:8000/graphql')
         .headers({ok: 'ok'})
         .error('throw')
+        .mockConfig({
+            extensions: {
+                faker: faker => {
+                    faker.custom = {
+                        statement: length => {
+                            return faker.name.firstName() + " has " + faker.finance.amount() + " on " + faker.finance.account(length) + ".";
+                        }
+                    }
+                    return faker
+                }
+            }
+        })
 )
 
 const {query, mutation, request} = setup.get()

@@ -10,7 +10,7 @@ class QueryMutators {
             query: true,
             api
         }
-        
+
         this._this = target || this
     }
 
@@ -21,16 +21,21 @@ class QueryMutators {
     valueOf = key => {
         return this._this._mutations[key]
     }
-    
+
     spaces = spaces => this.apply('spaces', spaces)
     api = api => this.apply('api', api)
     path = path => this.apply('path', path)
     headers = headers => this.apply('headers', {...this.valueOf('headers'), ...headers})
     debug = debug => this.apply('debug', debug === undefined ? true : debug)
-    mock = mock => this.apply('mock', mock === undefined ? true : mock)
     delay = delay => this.apply('mockDelay', delay || 500)
     error = error => this.apply('error', error === undefined ? 'throw' : error)
     custom = func => func(this.apply, this.valueOf)
+
+    mockConfig = opts => this.apply('mockConfig', opts)
+    mock = (mock, opts) => {
+        if (opts) this.apply('mockConfig', opts)
+        return this.apply('mock', mock === undefined ? true : mock)
+    }
 }
 
 class QueryBase extends QueryMutators {
@@ -94,13 +99,18 @@ class QueryBase extends QueryMutators {
         cb = cb || function() {
             }
 
+        const normalizr = res => normalize(
+            res,
+            ...this._models
+        )
+
         return this.response().then(res => {
             if (this.valueOf('debug')) {
                 debug(res, '[response]')
             }
 
             return res
-        }).then(cb)
+        }).then((...args) => cb(...args, normalizr))
     }
 
     normalize(cb) {
@@ -129,13 +139,14 @@ class QueryBase extends QueryMutators {
     generate() {
         return '{}'
     }
-    
+
     callApi(mock) {
         if (this.valueOf('mock')) {
             if (this.valueOf('query')) {
                 return mock(this._models)
                     .delay(this.valueOf('mockDelay'))
                     .error(this.valueOf('mockError'))
+                    .mockConfig(this.valueOf('mockConfig'))
                     .response()
             }
             return new Promise(resolve => {

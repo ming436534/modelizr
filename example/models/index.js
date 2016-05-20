@@ -15,7 +15,8 @@ const collection = unionOf('collections', {
 user.setSchema({
     id: {type: 'integer', alias: 'ID'},
     firstName: {type: 'string', faker: 'name.firstName'},
-    lastName: {type: 'string', faker: 'name.lastName'}
+    lastName: {type: 'string', faker: 'name.lastName'},
+    statement: {"type": "string", "faker": {"custom.statement": [19]}}
 })
 
 book.define({

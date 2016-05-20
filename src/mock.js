@@ -11,6 +11,24 @@ mock.Class = class extends mock.Class {
     response() {
         const cache = {}
 
+        _.forEach(this.valueOf('mockConfig'), (opt, key) => {
+            if (key == 'extensions') {
+                _.forEach(opt, (extension, platform) => {
+                    jsf.extend(platform, extension)
+                })
+                return
+            }
+
+            if (key == 'formats') {
+                _.forEach(opt, (format, name) => {
+                    jsf.extend(name, format)
+                })
+                return
+            }
+
+            jsf.option({[key]: opt})
+        })
+
         const mock = models => _.extractMockedObjects(_.mapValid(models, model => {
             if (typeof model.build === 'function') {
                 model = model.build()
@@ -115,12 +133,13 @@ mock.Class = class extends mock.Class {
 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                if (this._error) {
-                    if (this._error == 'throw') {
+                const error = this.valueOf('mockError')
+                if (error) {
+                    if (error == 'throw') {
                         reject(new Error('Mocked Error'))
                     } else {
                         resolve({
-                            status: this._error,
+                            status: error,
                             body: {}
                         })
                     }
@@ -130,7 +149,7 @@ mock.Class = class extends mock.Class {
                         body: mock(...this._models)
                     })
                 }
-            }, this._mockDelay)
+            }, this.valueOf('mockDelay'))
         })
     }
 }

@@ -2,6 +2,9 @@
 
 + Deprecated query tool mutators on prepare method. Replaced with `.get()`.
 + Model `setSchema(schema)` now merges the schema instead of overwriting.
++ Repaired `unionOf` mocking.
++ Added ability to specify jsf options, formats and extensions via a `.mockConfig()` mutator or via the second parameter of `.mock()`.
++ `.then()` mutator gets passed a normalizr tool as the last argument.
 
 ## 0.6.0 (May 10th 2016)
 

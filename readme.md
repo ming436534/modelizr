@@ -429,12 +429,31 @@ The id mocking algorithm is as follows:
 | `api(api)` | `[function (path, query)]` that returns a promise | Replace the default request API (isomorphic-fetch) |
 | `spaces(spaces)` | `[integer]` default `3` | Specify by how many spaces to indent the generated query |
 | `generate()` | N\A | Causes `query()` to return the generated query as a string |
-| `mock(shouldMock)` | `[boolean]` default `true` | Mock the request |
+| `mock(shouldMock, config)` | `[boolean], [object]` | The first argument determines weather to mock or not. The second is a `jsf` configuration object as defined below. |
+| `mockConfig(config)` | `[object]` | A `jsf` configuration object as defined below. |
 | `delay(delay)` | `[integer]` default `500` (ms) | Add a delay to your mock |
 | `error(type)` | `[string | integer]` default `throw` | Mock returns an error. If you give it a string `throw` it will throw an error and you will need to catch it. if you give it an integer it will treat it as an http status code. |
-| `then(res, query)` | `[function (result)]` | Make the request and pass the result as it's first parameter, and the parsed query as the second |
-| `normalize(res, query)` | `[function (result)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter, and the parsed query as the second |
+| `then(res)` | `[function (res, normalize)]` | Make the request and call the callback with the request result, and a normalize function to normalize data based on the query. |
+| `normalize(res)` | `[function (res)]` | To be used instead of `.then()`. Normalize the query after receiving a response and pass the normalized response as the first parameter. |
 | `custom((apply, valueOf) => mutator)` | `[function (apply, valueOf) => mutator]` | Pass in a custom mutation. Accepts a function and must return a new function that in turn returns apply(). Custom mutators are explained in more detail below |
+
+The `jsf` configuration object is used to extend faker and chance, provide custom formats and pass options to jsf.
+
+```javascript
+{
+    extensions: {
+        faker: faker => {},
+        chance: chance => {}
+    },
+    formats: {
+        semver: (gen, schema) => {}
+    },
+
+    // jsf options
+    failOnInvalidTypes: true/false,
+    ...
+}
+```
 
 ### `normalize(response, ...models)`
 
@@ -553,6 +572,4 @@ This is just a basic usage example. More specific examples will come.
 + Write tests.
 + Add ability to infer key value when mocking a `valuesOf(model)`
 + Mock amount mutator
-+ Collections don't increment mocking cache properly - Should add to their own unique cache
-+ Support for custom json-schema-faker mocks
 + Model-less mutation syntax for mutations that do not require querying
