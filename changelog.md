@@ -1,3 +1,8 @@
+# Latest
+
++ Deprecated query tool mutators on prepare method. Replaced with `.get()`.
++ Model `setSchema(schema)` now merges the schema instead of overwriting.
+
 ## 0.6.0 (May 10th 2016)
 
 + Changed internals of sharing mutators across objects.

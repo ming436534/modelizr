@@ -553,6 +553,6 @@ This is just a basic usage example. More specific examples will come.
 + Write tests.
 + Add ability to infer key value when mocking a `valuesOf(model)`
 + Mock amount mutator
-+ Collections don't increment mocking cache properly
++ Collections don't increment mocking cache properly - Should add to their own unique cache
 + Support for custom json-schema-faker mocks
 + Model-less mutation syntax for mutations that do not require querying

@@ -14,9 +14,7 @@ const setup = (
         .error('throw')
 )
 
-const query = setup.query()
-const mutation = setup.mutation()
-const request = setup.request()
+const {query, mutation, request} = setup.get()
 
 export const SET_ENTITIES = "SET_ENTITIES"
 const setEntities = entities => {

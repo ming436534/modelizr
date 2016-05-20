@@ -82,7 +82,7 @@ const model = (name, schema, options) => {
         return schema
     }
     schema = formatSchema(schema)
-    
+
     _model.schema = schema
     _model.define = definitions => {
         _model.schema._mockTypes = {}

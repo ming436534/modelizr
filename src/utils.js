@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { QueryBase, QueryMutators } from './bases'
-import { query as Query, mutation as Mutation, mock as Mock, request as Request } from './index'
+import { query, mutation, mock, request } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -38,34 +38,53 @@ const base = custom => {
     return res
 }
 
+const warn = message => {
+    if (typeof console.warn === 'function') {
+        console.warn(message)
+    } else {
+        console.log(message)
+    }
+}
+
 const prepare = mutators => {
     const apply = (obj, target) => {
-        target._mutations = {
+        const _target = target
+
+        _target._mutations = {
             ...obj._mutations,
             custom: mutators
         }
-        return target
+        return _target
     }
 
     return base({
         query: function() {
-            const query = Query
+            warn("Calling .query() is deprecated. Please use .get() instead")
             return apply(this, query)
         },
 
         mutation: function() {
-            const mutation = Mutation
+            warn("Calling .mutation() is deprecated. Please use .get() instead")
             return apply(this, mutation)
         },
 
         request: function() {
-            const request = Request
+            warn("Calling .request() is deprecated. Please use .get() instead")
             return apply(this, request)
         },
 
         getMock: function() {
-            const mock = Mock
+            warn("Calling .getMock() is deprecated. Please use .get() instead")
             return apply(this, mock)
+        },
+
+        get: function() {
+            return {
+                query: apply(this, query),
+                mutation: apply(this, mutation),
+                request: apply(this, request),
+                mock: apply(this, mock)
+            }
         }
     })
 }
