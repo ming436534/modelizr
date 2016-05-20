@@ -421,8 +421,8 @@ The id mocking algorithm is as follows:
 
 #### mutation / query mutators / mock mutators
 
-| Name                   | Accepts       | Effect
-| ---------------------- | ---------------------- | --------------------------
+| Name                   | Accepts                     | Effect
+| ---------------------- | ----------------------------- | --------------------------
 | `path(endpoint)`   | `[string]` | Define the endpoint for the graphQL request |
 | `as(name)` | `[string]` default `mutation` | Specify the name of a mutation query |
 | `params()` | `[object]` | Add top level parameters to a mutation query |
@@ -540,7 +540,7 @@ The format of the api.
 + `mutations [object]` - an object containing all mutations (including defaults) that have occurred.
 
 mutators that are used by the default request API
-| Option Name                   | Purpose       
+| Option Name            | Purpose
 | ---------------------- | ---------------------- 
 | `path [string]`   | The request endpoint | 
 | `contentType [string]` | Request contentType header. Defaults to `application/json`| 
