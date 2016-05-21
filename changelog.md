@@ -7,6 +7,7 @@
 + `.then()` mutator gets passed a normalizr tool as the last argument.
 + Passing an object to a prop gets stringified.
 + Union child models get prefixed with `... on ` to represent a union fragment.
++ If specifying a field as a primary key through the `type` property, using a pipe - `|` - you can specify the type of the primary key.
 
 ## 0.6.0 (May 10th 2016)
 

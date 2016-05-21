@@ -55,11 +55,12 @@ const model = (name, schema, options) => {
 
         schema.properties = _.mapValues(schema.properties, (definition, name) => {
             if (definition.type == 'primary') {
+                const _type = definition.type.split("|")
                 schema.primaryKey = name
 
                 return {
                     ...definition,
-                    type: 'integer'
+                    type: _type[1] || 'integer'
                 }
             }
 
