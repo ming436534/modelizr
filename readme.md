@@ -540,6 +540,7 @@ The format of the api.
 + `mutations [object]` - an object containing all mutations (including defaults) that have occurred.
 
 mutators that are used by the default request API
+
 | Option Name            | Purpose
 | ---------------------- | ---------------------- 
 | `path [string]`   | The request endpoint | 

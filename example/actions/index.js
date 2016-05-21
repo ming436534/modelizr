@@ -43,7 +43,9 @@ export const requestUsers = (mock, delay, error) => {
     query(
         user(
             book(),
-            collection()
+            collection(
+                user()
+            )
         )
     )
         .mock(mock)

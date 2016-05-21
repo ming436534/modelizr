@@ -57,11 +57,10 @@ class QueryBase extends QueryMutators {
 
     makeParams(params) {
         const getType = param => {
-            if (Array.isArray(param)) {
-                return `[${param}]`
-            } else if (typeof param === 'number') {
-                return param
-            }
+            if (Array.isArray(param)) return `[${param}]`
+            if (typeof param === 'number') return param
+            if (typeof param === 'object') return `"${JSON.stringify(param)}"`
+            
             return `"${param}"`
         }
 
@@ -71,13 +70,13 @@ class QueryBase extends QueryMutators {
         return ''
     }
 
-    makeQuery(model, spaces = 3, indent = 1) {
+    makeQuery(model, spaces = 3, indent = 1, prefix = false) {
         const mapProps = (props, indent) => {
             const currentIndent = `\n${this.spacer(spaces * indent)}`
+            
             return _.mapValid(props, (prop, key) => {
-                if (prop.model) {
-                    return this.makeQuery(prop, spaces, indent)
-                }
+                if (prop.model) return this.makeQuery(prop, spaces, indent, model._isUnion)
+                
                 if (prop.type == 'object') {
                     return this.makeQuery({
                         ...{
@@ -86,13 +85,14 @@ class QueryBase extends QueryMutators {
                         ...prop
                     }, spaces, indent)
                 }
+                
                 return `${currentIndent}${key}${prop.alias ? `: ${prop.alias}` : ''}`
             })
         }
 
         const currentIndent = this.spacer(spaces * indent)
 
-        return `\n${currentIndent}${model.key}${this.makeParams(model.params)} {${mapProps(model.properties, indent + 1)}\n${currentIndent}}`
+        return `\n${currentIndent}${prefix ? '... on ' : ''}${model.key}${this.makeParams(model.params)} {${mapProps(model.properties, indent + 1)}\n${currentIndent}}`
     }
 
     then(cb) {
