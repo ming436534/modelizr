@@ -1,4 +1,4 @@
-# Unpublished
+# 0.6.1 (May 22nd 2016)
 
 + Deprecated query tool mutators on prepare method. Replaced with `.get()`.
 + Model `setSchema(schema)` now merges the schema instead of overwriting.
