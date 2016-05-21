@@ -10,24 +10,21 @@ mock.Class = class extends mock.Class {
 
     response() {
         const cache = {}
+        const opts = {
+            extensions: {},
+            formats: {},
+            jsfOptions: {},
+            quantity: 20,
+            ...this.valueOf('mockConfig')
+        }
 
-        _.forEach(this.valueOf('mockConfig'), (opt, key) => {
-            if (key == 'extensions') {
-                _.forEach(opt, (extension, platform) => {
-                    jsf.extend(platform, extension)
-                })
-                return
-            }
-
-            if (key == 'formats') {
-                _.forEach(opt, (format, name) => {
-                    jsf.extend(name, format)
-                })
-                return
-            }
-
-            jsf.option({[key]: opt})
+        _.forEach(opts.extensions, (extension, name) => {
+            jsf.extend(name, extension)
         })
+        _.forEach(opts.formats, (format, name) => {
+            jsf.format(name, format)
+        })
+        // jsf.option(opts.jsfOptions) // Specified in json-schema-faker docs, but not actually a property of jsf. https://github.com/json-schema-faker/json-schema-faker/issues/155
 
         const mock = models => _.extractMockedObjects(_.mapValid(models, model => {
             if (typeof model.build === 'function') {
@@ -43,7 +40,7 @@ mock.Class = class extends mock.Class {
             let id = newId
 
             if (model._modelType == 'arrayOf' || model._modelType == 'valuesOf') {
-                id = _.range(newId, newId + 20)
+                id = _.range(newId, newId + opts.quantity)
             }
 
             if (model.params) {

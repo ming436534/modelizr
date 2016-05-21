@@ -474,9 +474,11 @@ The `jsf` configuration object is used to extend faker and chance, provide custo
         semver: (gen, schema) => {}
     },
 
-    // jsf options
-    failOnInvalidTypes: true/false,
-    ...
+    jsfOptions: {
+        failOnInvalidTypes: true/false,
+        ...
+    }
+    quantity: 25 // Amount of entities to generate unless otherwise specified in a query
 }
 ```
 
@@ -595,7 +597,5 @@ This is just a basic usage example. More specific examples will come.
 
 # Todo
 
-+ Write tests.
++ Write tests
 + Add ability to infer key value when mocking a `valuesOf(model)`
-+ Mock amount mutator
-+ Model-less mutation syntax for mutations that do not require querying

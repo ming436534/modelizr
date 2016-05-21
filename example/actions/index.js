@@ -22,7 +22,9 @@ const setup = (
                     }
                     return faker
                 }
-            }
+            },
+            jsfOptions: {},
+            quantity: 20
         })
 )
 
