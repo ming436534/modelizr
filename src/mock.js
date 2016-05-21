@@ -60,19 +60,27 @@ mock.Class = class extends mock.Class {
                  * If model is a union, pick a random model from the unions collection
                  */
                 if (model._isUnion) {
-                    const rand = model => {
-                        let result
-                        let count = 0
-                        for (const prop in model.models)
-                            if (Math.random() < 1 / ++count) {
-                                result = model.models[prop]
+                    const getSchema = model => {
+                        const rand = models => {
+                            let result
+                            let count = 0
+
+                            for (const prop in models) {
+                                if (Math.random() < 1 / ++count) {
+                                    result = models[prop]
+                                }
                             }
-                        return result
+
+                            return result
+                        }
+
+                        if (_.size(model.properties)) return rand(model.properties)
+                        return rand(model.models).schema
                     }
 
                     _model = {
-                        ...rand(model).schema,
-                        type: 'object'
+                        type: 'object',
+                        ...getSchema(model)
                     }
                     _model.model = () => _model.model
                 }

@@ -8,6 +8,8 @@
 + Passing an object to a prop gets stringified.
 + Union child models get prefixed with `... on ` to represent a union fragment.
 + If specifying a field as a primary key through the `type` property, using a pipe - `|` - you can specify the type of the primary key.
++ When generating mocks for a union, the schema to mock will be chosen from one of the given models in the schema - or, if non are given - the
+schema will be chosen from the unions collection of pre-defined models.
 
 ## 0.6.0 (May 10th 2016)
 
