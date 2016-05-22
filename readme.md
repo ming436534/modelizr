@@ -255,7 +255,7 @@ user.setSchema({
 })
 ```
 
-### `model.keyKey()`
+### `model.getKey()`
 
 Get the models key
 
@@ -333,7 +333,7 @@ import { query } from 'normalizr'
 
 query(
 	user()
-).then(res => {})
+).then((res, normalize) => {})
 ```
 
 ### `mutation(...models)`
@@ -347,7 +347,7 @@ import { mutation } from 'normalizr'
 
 mutation(
 	user()
-).then(res => {})
+).then((res, normalize) => {})
 ```
 
 If you want the mutation to query as well you can use the `query()` mutator
@@ -357,7 +357,7 @@ import { mutation } from 'normalizr'
 
 mutation(
 	user()
-).query().then(res => {})
+).query().then((res, normalize) => {})
 ```
 
 To change the mutation name and add params - you can use the `as()` and `params()` mutators
@@ -382,11 +382,6 @@ request(
         ...
     })
     .then((res, normalize) => {})
-
-// or
-import { prepare } from 'modelizr'
-
-const { request } = prepare().contentType(...).get()
 ```
 
 ### `Fragments`
@@ -425,7 +420,7 @@ import { mock } from 'normalizr'
 
 mock(
 	user()
-).then(res => {})
+).then((res, normalize) => {})
 ```
 
 Mock are generating with a cache, so if you reference the same `id` twice, you won't get conflicting entities. If your query contains nesting of
