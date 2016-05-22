@@ -44,11 +44,11 @@ const book = model({
 
 // define nested models
 user.define({
-	books: [book]
+    books: [book]
 })
 
 book.define({
-	author: user
+    author: user
 })
 
 export { user, book }
@@ -61,11 +61,11 @@ import { query as Query, normalize } from 'modelizr'
 import { user, book } from './schemas'
 
 const query = Query(
-	user(
-		book(
-			user().as('author')
-		)
-	).as('user').params({id: 1})
+    user(
+        book(
+            user().as('author')
+        )
+    ).as('user').params({id: 1})
 )
 
 console.log(query.generate())
@@ -91,7 +91,7 @@ console.log(query.generate())
 
 // make a request and normalize it
 query.path('http://...').normalize(res => {
-	console.log(res) // normalized response
+    console.log(res) // normalized response
 })
 /*
 {
@@ -109,9 +109,9 @@ These are methods that can be applied to models or request generators to change 
 
 ```javascript
 query(
-	user().as('user').params({})
+    user().as('user').params({})
 ).path('http://...').then(res => {
-	console.log(res) // server response
+    console.log(res) // server response
 })
 ```
 
@@ -121,7 +121,7 @@ Mutators can also be used to pre-configure models or request generators
 const query = Query.path('http://...').useApi(api)
 
 query(
-	user()
+    user()
 ).then(res => {})
 ```
 
@@ -149,8 +149,8 @@ const user = model('users', {
 
 // or if you plan to use the defaults, you can directly specify properties
 const user = model('users', {
-	firstname: {type: 'string', faker: 'name.firstName'},
-	lastname: {type: 'string', faker: 'name.lastName'}
+    firstname: {type: 'string', faker: 'name.firstName'},
+    lastname: {type: 'string', faker: 'name.lastName'}
 })
 user.primaryKey('id')
 ```
@@ -209,15 +209,15 @@ const user = model('users', {})
 const book = model('books', {})
 
 user.define({
-	books: [book],
-	book: book
+    books: [book],
+    book: book
 })
 
 // or you can use the provided normalizr tools
 import { arrayOf } from 'modelizr/lib/normalizer'
 
 user.define({
-	books: arrayOf(book)
+    books: arrayOf(book)
 })
 ```
 
@@ -332,7 +332,7 @@ Generate and make a graphQL query
 import { query } from 'normalizr'
 
 query(
-	user()
+    user()
 ).then((res, normalize) => {})
 ```
 
@@ -346,7 +346,7 @@ Generate and make a graphQL mutation
 import { mutation } from 'normalizr'
 
 mutation(
-	user()
+    user()
 ).then((res, normalize) => {})
 ```
 
@@ -356,7 +356,7 @@ If you want the mutation to query as well you can use the `query()` mutator
 import { mutation } from 'normalizr'
 
 mutation(
-	user()
+    user()
 ).query().then((res, normalize) => {})
 ```
 
@@ -419,7 +419,7 @@ Generate nested mock data
 import { mock } from 'normalizr'
 
 mock(
-	user()
+    user()
 ).then((res, normalize) => {})
 ```
 
@@ -510,8 +510,8 @@ Normalize a response based on models
 
 ```javascript
 normalize(
-	response,
-	user()
+    response,
+    user()
 )
 ```
 
