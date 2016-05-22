@@ -1,59 +1,33 @@
 import { base, debug } from './utils'
+import mock from './mock'
 
 const request = base()
 request.Class = class extends request.Class {
 
-    constructor(query, mutations) {
-        super(null, mutations)
-    
+    constructor(models, mutations) {
+        super(models, mutations)
+
         this._mutations = {
             ...this._mutations,
             contentType: 'application/json',
-            method: null
+            method: 'POST'
         }
-    
-        this._query = query[0]
     }
 
     response() {
         if (this.valueOf('debug')) {
-            debug(this._query, `[request: ${this.valueOf('path')} <${this.valueOf('method') || 'POST'}>]`)
+            debug(this.valueOf('body'), `[request: ${this.valueOf('path')} <${this.valueOf('method') || 'POST'}>]`)
         }
 
-        if (this.valueOf('mock')) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    if (this.valueOf('mockError')) {
-                        if (this.valueOf('mockError') == 'throw') {
-                            reject(new Error('Mocked Error'))
-                        } else {
-                            resolve({
-                                status: this._error,
-                                body: {}
-                            })
-                        }
-                    } else {
-                        if (typeof this.valueOf('mock') === 'function') {
-                            return resolve(this.valueOf('mock')(this._query))
-                        }
-                        return resolve(this.valueOf('mock'))
-                    }
-                }, this.valueOf('mockDelay'))
-            })
-        }
-        return this.valueOf('api')(this._query, {
-            ...this._mutations,
-            method: this.valueOf('method') ? this.valueOf('method').toUpperCase() : null,
-            isPlain: true
-        })
+        return this.callApi(mock, this.valueOf('body'))
     }
 
-    normalize() {
-        console.warn('Cannot normalize this request type')
-    }
-
-    method = method => this.apply('method', method)
+    method = method => this.apply('method', (method || 'POST').toUpperCase())
     contentType = type => this.apply('contentType', type)
+    body = body => {
+        if (typeof body === 'object') body = JSON.stringify(body)
+        return this.apply('body', body)
+    }
 }
 
 export { request as default, request }

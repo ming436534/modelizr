@@ -51,7 +51,7 @@ mock.Class = class extends mock.Class {
 
             const getFromCache = id => {
                 let _model = model
-                let schemaAttribute = model.schemaAttribute
+                const schemaAttribute = model.schemaAttribute
 
                 /**
                  * If model is a union, pick a random model from the unions collection

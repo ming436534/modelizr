@@ -362,6 +362,33 @@ mutation(
 
 To change the mutation name and add params - you can use the `as()` and `params()` mutators
 
+### `request(...models)`
+
+Perform a plain request whos response should match the given model schema.
+
+```javascript
+import { request } from 'modelizr'
+import { user } from './models'
+
+request(
+    user()
+)
+    .method('post')
+    .contentType('application/json')
+    .mock()
+    .body({
+        firstName: "John",
+        lastName: "Doe",
+        ...
+    })
+    .then((res, normalize) => {})
+
+// or
+import { prepare } from 'modelizr'
+
+const { request } = prepare().contentType(...).get()
+```
+
 ### `Fragments`
 
 A useful pattern when making multiple queries that use the same sequence of models is to pre-define a query fragment. Something like this:
@@ -511,9 +538,7 @@ import { prepare } from 'modelizr'
 
 const prepared = prepare().path('http://...')
 
-const query = prepared.query()
-const mutation = prepared.mutation()
-const mock = prepared.getMock()
+const { query, mutation, mock } = prepared.get()
 ```
 
 Adding custom mutators:
@@ -523,7 +548,7 @@ const prepared = prepare({
     customPathMutator: apply => path => apply('path', 'http://api.example.com/' + path)
 })
 
-const query = prepared.query()
+const { query } = prepared.get()
 
 query(
     model()
@@ -533,37 +558,10 @@ query(
 **Note** all existing mutators apply to fields with the same name on the query objects collection of mutations. Eg: `.mock()` applies to a field with key `mock` and can be retrieved with
 `valueOf('mock')`.
 
-### `request(body)`
-
-Perform a plain request with the default or configured api. The api will receive an `isPlain` property in its second parameter
-To mock a normal request, you can give it a response to mock in the `.mock()` mutator. the response can be either a function or plain data.
-
-```javascript
-import { request } from 'modelizr'
-
-request({
-    email: 'johndoe@gmail.com',
-    password: 'mysecret'
-})
-    .method('post')
-    .contentType('application/json')
-    .mock({
-        name: "John",
-        email: "johndoe@gmail.com"
-    })
-    .then(res => {})
-
-// or
-import { prepare } from 'modelizr'
-
-const request = prepare().contentType(...).request()
-```
-
-### `api(query, mutations)`
+### `api(mutations)`
 
 The format of the api.
 
-+ `query [string | object]` - will be the stringified query unless using a plain request, in which case it will be the request object.
 + `mutations [object]` - an object containing all mutations (including defaults) that have occurred.
 
 mutators that are used by the default request API
@@ -574,7 +572,7 @@ mutators that are used by the default request API
 | `contentType [string]` | Request contentType header. Defaults to `application/json`| 
 | `headers [object]` | Any additional headers | 
 | `method [string]` | `post | get | put | delete` Defaults to `post` | 
-| `isPlain [boolean]` | Specify if the query is a graphQL query or not | 
+| `body [any]` | The body of the request. Only directly editable via a mutator when using the `request` tool |
 
 ##### returns
 

@@ -81,9 +81,7 @@ export const mutateUserAndFetch = (mock, delay, error) => {
 
 export const plainRequest = (mock, delay, error) => {
     request(
-        {
-            name: 'john'
-        }
+        user()
     )
         .mock(mock)
         .delay(delay)
@@ -92,6 +90,10 @@ export const plainRequest = (mock, delay, error) => {
             auth: 'token'
         })
         .requestTo('custom-request')
-        .then(res => {
+        .body({
+            name: 'john'
+        })
+        .then((res, normalize) => {
+            console.log(normalize(res.body))
         })
 }

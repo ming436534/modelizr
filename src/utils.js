@@ -89,7 +89,7 @@ const prepare = mutators => {
     })
 }
 
-const api = (query, {path, contentType, headers, method, isPlain}) => {
+const api = ({body, path, contentType, headers, method}) => {
     let status = 200
 
     return fetch(path, {
@@ -99,7 +99,7 @@ const api = (query, {path, contentType, headers, method, isPlain}) => {
             ...headers || {}
         },
         method: method || 'POST',
-        body: JSON.stringify(isPlain ? query : {query})
+        body
     }).then(res => {
         status = res.status
         return res.json()

@@ -1,3 +1,7 @@
+# Unpublished
+
++ `Breaking` - re-wrote request tool. can now specify models. added `.body()` mutator to apply a body to it
+
 # 0.6.1 (May 22nd 2016)
 
 + Deprecated query tool mutators on prepare method. Replaced with `.get()`.

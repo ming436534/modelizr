@@ -140,7 +140,7 @@ class QueryBase extends QueryMutators {
         return '{}'
     }
 
-    callApi(mock) {
+    callApi(mock, body) {
         if (this.valueOf('mock')) {
             if (this.valueOf('query')) {
                 return mock(this._models)
@@ -155,7 +155,10 @@ class QueryBase extends QueryMutators {
                 }, this.valueOf('mockDelay'))
             })
         }
-        return this.valueOf('api')(this._query, this._mutations)
+        return this.valueOf('api')({
+            ...this._mutations,
+            body: body ? body : JSON.stringify({query: this._query})
+        })
     }
 }
 

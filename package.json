@@ -8,7 +8,7 @@
     "lint": "eslint src; exit 0",
     "build": "rimraf lib && babel src -d lib",
     "prepublish": "npm run build",
-    "test": "istanbul cover _mocha --report lcovonly -- --compilers js:babel-core/register -u exports -R spec"
+    "test": "istanbul cover _mocha -- --compilers js:babel-core/register -u exports -R spec"
   },
   "repository": {
     "type": "git",
