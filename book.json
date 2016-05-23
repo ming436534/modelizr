@@ -1,0 +1,22 @@
+{
+  "gitbook": "2.5.2",
+  "title": "Modelizr",
+  "structure": {
+    "summary": "docs/readme.md",
+    "readme": "readme.md"
+  },
+  "plugins": [
+    "edit-link",
+    "github",
+    "anker-enable"
+  ],
+  "pluginsConfig": {
+    "edit-link": {
+      "base": "https://github.com/julienvincent/modelizr/tree/master",
+      "label": "Edit This Page"
+    },
+    "github": {
+      "url": "https://github.com/julienvincent/modelizr"
+    }
+  }
+}

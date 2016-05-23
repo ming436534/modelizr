@@ -8,7 +8,12 @@
     "lint": "eslint src; exit 0",
     "build": "rimraf lib && babel src -d lib",
     "prepublish": "npm run build",
-    "test": "istanbul cover _mocha -- --compilers js:babel-core/register -u exports -R list"
+    "test": "istanbul cover _mocha -- --compilers js:babel-core/register -u exports -R list",
+    "docs:clean": "rm -rf _book",
+    "docs:prepare": "gitbook install",
+    "docs:make": "npm run docs:prepare && gitbook build",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:publish": "npm run docs:clean && npm run docs:make && cd _book && git init && git add . && git commit -m 'docs' && git checkout -b gh-pages && git push git@github.com:julienvincent/modelizr gh-pages --force && cd ../ && npm run docs:clean"
   },
   "repository": {
     "type": "git",
@@ -52,7 +57,7 @@
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "json-schema-faker": "^0.2.11",
+    "json-schema-faker": "^0.3.2",
     "lodash": "^4.5.0",
     "normalizr": "^2.0.0"
   }

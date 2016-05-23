@@ -24,7 +24,7 @@ mock.Class = class extends mock.Class {
         _.forEach(opts.formats, (format, name) => {
             jsf.format(name, format)
         })
-        // jsf.option(opts.jsfOptions) // Specified in json-schema-faker docs, but not actually a property of jsf. https://github.com/json-schema-faker/json-schema-faker/issues/155
+        jsf.option(opts.jsfOptions)
 
         const mock = models => _.extractMockedObjects(_.mapValid(models, model => {
             if (typeof model.build === 'function') {

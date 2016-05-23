@@ -194,7 +194,7 @@ book.define({
 })
 ```
 
-If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step. 
+If you would like to exclude `json-schema-faker` from your production build, you can export `MODELIZR_CHEAP_MOCK` as `true` and pass your bundle through an uglify step.
 This is recommended as the `faker.js` library used is very large and should only be included during development. The resulting mocked entities will just
 contain ids
 
@@ -443,12 +443,12 @@ the same model, then their `id's` will always continue from the last mocked enti
         id: 1,
         books: [1, 2, 3, ... n]
     },
-    
+
     {
         id: 2,
         books: [n +  1, n + 2, n + 3, ...]
     },
-    
+
     ...
 ]
 ```
@@ -562,11 +562,11 @@ The format of the api.
 mutators that are used by the default request API
 
 | Option Name            | Purpose
-| ---------------------- | ---------------------- 
-| `path [string]`   | The request endpoint | 
-| `contentType [string]` | Request contentType header. Defaults to `application/json`| 
-| `headers [object]` | Any additional headers | 
-| `method [string]` | `post | get | put | delete` Defaults to `post` | 
+| ---------------------- | ----------------------
+| `path [string]`   | The request endpoint |
+| `contentType [string]` | Request contentType header. Defaults to `application/json`|
+| `headers [object]` | Any additional headers |
+| `method [string]` | `post | get | put | delete` Defaults to `post` |
 | `body [any]` | The body of the request. Only directly editable via a mutator when using the `request` tool |
 
 ##### returns
