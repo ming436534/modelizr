@@ -47,4 +47,4 @@ class ValuesOf extends Iterable {
 const arrayOf = (model, options) => new Iterable(model, options)
 const valuesOf = (model, options) => new ValuesOf(model, options)
 
-export { normalize as default, arrayOf, valuesOf, ValuesOf, Iterable }
+export { normalize as default, normalize, arrayOf, valuesOf, ValuesOf, Iterable }

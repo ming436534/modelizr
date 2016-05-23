@@ -1,5 +1,5 @@
 import { ModelBase } from './bases'
-import { unionOf as UnionOf } from 'normalizr'
+import { unionOf } from 'normalizr'
 import { _ } from './utils'
 
 class Union extends ModelBase {
@@ -17,7 +17,7 @@ class Union extends ModelBase {
     params = params => this.apply('params', params)
 }
 
-const unionOf = (key, models, options) => {
+const union = (key, models, options) => {
     options = options || {}
 
     const attribute = options.schemaAttribute ? {
@@ -50,10 +50,10 @@ const unionOf = (key, models, options) => {
     }
     union.unionOf = _.mapValues(models, model => model.schema.model)
     union.define = () => {
-        return UnionOf(_.mapValues(models, model => model.schema.model), {schemaAttribute: attribute})
+        return unionOf(_.mapValues(models, model => model.schema.model), {schemaAttribute: attribute})
     }
 
     return union
 }
 
-export { unionOf }
+export { union }

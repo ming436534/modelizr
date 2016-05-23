@@ -1,6 +1,8 @@
 # Unpublished
 
-+ `Breaking` - re-wrote request tool. can now specify models. added `.body()` mutator to apply a body to it
++ `Breaking` - Re-wrote request tool. can now specify models. added `.body()` mutator to apply a body to it
++ `Breaking` - Renamed `unionOf` to `union`.
++ The `arrayOf()` and `valuesOf()` definition tools are now exported directly from modelizr
 
 # 0.6.1 (May 22nd 2016)
 

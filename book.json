@@ -6,10 +6,15 @@
     "readme": "readme.md"
   },
   "plugins": [
+    "prism",
+    "-highlight",
     "edit-link",
     "github",
     "anker-enable"
   ],
+  "styles": {
+    "website": "docs/styles/website.css"
+  },
   "pluginsConfig": {
     "edit-link": {
       "base": "https://github.com/julienvincent/modelizr/tree/master",

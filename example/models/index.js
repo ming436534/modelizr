@@ -1,4 +1,4 @@
-import { unionOf, model } from '../../src/index'
+import { union, model } from '../../src/index'
 
 const user = model('users')
 
@@ -7,7 +7,7 @@ const book = model('books', {
     title: {type: 'string', faker: 'name.firstName'}
 })
 
-const collection = unionOf('collections', {
+const collection = union('collections', {
     books: book,
     users: user
 }, {schemaAttribute: 'type'})

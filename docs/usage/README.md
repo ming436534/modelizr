@@ -1,6 +1,8 @@
 # Usage
 
+What follows is a simple usage example for setting up and using modelizr to **mock**, **generate queries** and **normalize responses**.
+
 * [Creating Models](Models.md)
-* [Preparing Query Tools](Preparing.md)
 * [Querying](Querying.md)
 * [Mocking](Mocking.md)
+* [Validation](Validation.md)
