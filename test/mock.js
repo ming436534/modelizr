@@ -1,6 +1,6 @@
 import { describe, it } from "mocha";
 import { expect } from 'chai'
-import { model, unionOf, query } from '../src'
+import { model, union, query } from '../src'
 import _ from 'lodash'
 
 const m1 = model('m1', {
@@ -13,7 +13,7 @@ const m2 = model('m2', {
     m2_f1: {type: 'string'}
 })
 
-const u1 = unionOf("u1", {
+const u1 = union("u1", {
     m1: m1,
     m2: m2
 })
