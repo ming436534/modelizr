@@ -38,7 +38,7 @@ const base = custom => {
     return res
 }
 
-const warn = message => {
+export const warn = message => {
     if (typeof console.warn === 'function') {
         console.warn(message)
     } else {

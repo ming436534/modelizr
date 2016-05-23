@@ -15,6 +15,8 @@ mock.Class = class extends mock.Class {
             formats: {},
             jsfOptions: {},
             quantity: 20,
+            error: false,
+            delay: 0,
             ...this.valueOf('mockConfig')
         }
 
@@ -138,7 +140,7 @@ mock.Class = class extends mock.Class {
 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                const error = this.valueOf('mockError')
+                const error = opts.error
                 if (error) {
                     if (error == 'throw') {
                         reject(new Error('Mocked Error'))
@@ -154,7 +156,7 @@ mock.Class = class extends mock.Class {
                         body: mock(...this._models)
                     })
                 }
-            }, this.valueOf('mockDelay'))
+            }, opts.delay)
         })
     }
 }

@@ -1,18 +1,24 @@
-* [Usage](/docs/usage/README.md)
+* [Read Me](readme.md)
+
++ [Introduction](docs/introduction/README.md)
+
+* [Usage](docs/usage/README.md)
     * [Creating Models](docs/usage/Models.md)
     * [Querying](docs/usage/Querying.md)
     * [Mocking](docs/usage/Mocking.md)
+    * [Query Preparation](docs/usage/Preparing.md)
     * [Validation](docs/usage/Validation.md)
 
-* [Mutators](docs/mutators/README.md)
-    * [Model Mutators](docs/mutators/ModelMutators.md)
-    * [Query Mutators](docs/mutators/QueryMutators.md)
+* [Modifiers](docs/modifiers/README.md)
+    * [Model Modifiers](docs/modifiers/ModelModifiers.md)
+    * [Query Modifiers](docs/modifiers/QueryModifiers.md)
 
 * [Patterns](docs/patterns/README.md)
     * [Fragments](docs/patterns/Fragments.md)
 
 * [API Reference](docs/api/README.md)
-    * [Model Creators](docs/api/ModelCreators.md)
+    * [Model Creator](docs/api/ModelCreator.md)
+    * [Union Creator](docs/api/UnionCreator.md)
     * [Models](docs/api/Models.md)
     * [Query Tools](docs/api/QueryTools.md)
     * [Mocks](docs/api/Mocks.md)

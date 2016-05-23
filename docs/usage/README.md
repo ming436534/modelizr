@@ -5,4 +5,5 @@ What follows is a simple usage example for setting up and using modelizr to **mo
 * [Creating Models](Models.md)
 * [Querying](Querying.md)
 * [Mocking](Mocking.md)
+* [Query Preparation](Preparing.md)
 * [Validation](Validation.md)

@@ -55,6 +55,14 @@ book.define({
 })
 ```
 
+A **group** will just have a collection of users. In other words, an `arrayOf(**user**)`
+
+```javascript
+group.define({
+    users: [user]
+})
+```
+
 And finally our **owner** union will be a collection of users and groups. The union needs to have a `schemaAttribute` specified to allow normalizr to determine the model.
 
 ```javascript

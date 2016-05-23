@@ -46,7 +46,7 @@ const model = (name, schema, options) => {
 
     const _model = (params, ...models) => new Model(_model.schema, params, ...models)
     
-    const formatSchema = schema => {
+    const formatSchema = (schema, options) => {
         if (!schema.properties && !schema.required) {
             schema = {
                 properties: schema
@@ -81,7 +81,7 @@ const model = (name, schema, options) => {
         
         return schema
     }
-    schema = formatSchema(schema)
+    schema = formatSchema(schema, options)
 
     _model.schema = schema
     _model.define = definitions => {
@@ -112,8 +112,8 @@ const model = (name, schema, options) => {
     }
     _model.getKey = () => _model.schema.key
     _model.primaryKey = key => _model.schema.primaryKey = key
-    _model.setSchema = schema => {
-        _model.schema = formatSchema(schema)
+    _model.setSchema = (schema, options) => {
+        _model.schema = formatSchema(schema, options)
     }
 
     return _model

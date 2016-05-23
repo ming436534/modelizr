@@ -1,6 +1,7 @@
 # API Reference
 
-* [Model Creators](ModelCreators.md)
+* [Model Creator](ModelCreator.md)
+* [Union Creator](UnionCreator.md)
 * [Models](Models.md)
 * [Query Tools](QueryTools.md)
 * [Mocks](Mocks.md)

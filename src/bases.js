@@ -1,4 +1,4 @@
-import { _, debug, api } from './utils'
+import { _, debug, api, warn } from './utils'
 import normalize from './normalizer'
 
 class QueryMutators {
@@ -27,14 +27,28 @@ class QueryMutators {
     path = path => this.apply('path', path)
     headers = headers => this.apply('headers', {...this.valueOf('headers'), ...headers})
     debug = debug => this.apply('debug', debug === undefined ? true : debug)
-    delay = delay => this.apply('mockDelay', delay || 500)
-    error = error => this.apply('error', error === undefined ? 'throw' : error)
     custom = func => func(this.apply, this.valueOf)
 
-    mockConfig = opts => this.apply('mockConfig', opts)
+    mockConfig = opts => this.apply('mockConfig', {...this.valueOf('mockConfig'), ...opts})
     mock = (mock, opts) => {
-        if (opts) this.apply('mockConfig', opts)
+        if (opts) this.apply('mockConfig', {...this.valueOf('mockConfig'), ...opts})
         return this.apply('mock', mock === undefined ? true : mock)
+    }
+
+    error = error => {
+        warn("the .error() modifier is deprecated. Please rather specify errors via mockConfig")
+        return this.apply('mockConfig', {
+            ...this.valueOf('mockConfig') || {},
+            error: error === undefined ? 'throw' : error
+        })
+    }
+
+    delay = delay => {
+        warn("the .delay() modifier is deprecated. Please rather specify a delay via mockConfig")
+        return this.apply('mockConfig', {
+            ...this.valueOf('mockConfig') || {},
+            delay: delay || 500
+        })
     }
 }
 
@@ -144,15 +158,13 @@ class QueryBase extends QueryMutators {
         if (this.valueOf('mock')) {
             if (this.valueOf('query')) {
                 return mock(this._models)
-                    .delay(this.valueOf('mockDelay'))
-                    .error(this.valueOf('mockError'))
                     .mockConfig(this.valueOf('mockConfig'))
                     .response()
             }
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(true)
-                }, this.valueOf('mockDelay'))
+                }, (this.valueOf('mockConfig') || {delay: 0}).delay)
             })
         }
         return this.valueOf('api')({

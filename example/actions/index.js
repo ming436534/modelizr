@@ -11,7 +11,6 @@ const setup = (
         .spaces(2)
         .path('http://localhost:8000/graphql')
         .headers({ok: 'ok'})
-        .error('throw')
         .mockConfig({
             extensions: {
                 faker: faker => {
@@ -50,9 +49,10 @@ export const requestUsers = (mock, delay, error) => {
             )
         )
     )
-        .mock(mock)
-        .delay(delay)
-        .error(error ? 'throw' : false)
+        .mock(mock, {
+            delay,
+            error: error ? 'throw' : false
+        })
         .normalize(res => setEntities(res.entities))
 }
 
@@ -62,9 +62,10 @@ export const mutateUser = (mock, delay, error) => {
     )
         .as("createUser")
         .params({admin: true})
-        .mock(mock)
-        .delay(delay)
-        .error(error ? 'throw' : false)
+        .mock(mock, {
+            delay,
+            error: error ? 'throw' : false
+        })
         .then()
 }
 
@@ -72,9 +73,10 @@ export const mutateUserAndFetch = (mock, delay, error) => {
     mutation(
         user()
     )
-        .mock(mock)
-        .delay(delay)
-        .error(error ? 'throw' : false)
+        .mock(mock, {
+            delay,
+            error: error ? 'throw' : false
+        })
         .query()
         .normalize(res => setEntities(res.entities))
 }
@@ -83,9 +85,10 @@ export const plainRequest = (mock, delay, error) => {
     request(
         user()
     )
-        .mock(mock)
-        .delay(delay)
-        .error(error ? 'throw' : false)
+        .mock(mock, {
+            delay,
+            error: error ? 'throw' : false
+        })
         .headers({
             auth: 'token'
         })
