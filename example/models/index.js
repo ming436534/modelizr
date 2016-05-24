@@ -8,8 +8,8 @@ const book = model('books', {
 })
 
 const collection = union('collections', {
-    books: book,
-    users: user
+    book,
+    user
 }, {schemaAttribute: 'type'})
 
 user.setSchema({

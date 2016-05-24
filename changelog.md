@@ -1,4 +1,4 @@
-# Unpublished
+# 0.7.0 (May 24th 2016)
 
 + `Breaking` - Re-wrote request tool. can now specify models. added `.body()` mutator to apply a body to it
 + `Breaking` - Renamed `unionOf` to `union`.

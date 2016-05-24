@@ -60,20 +60,33 @@ mock.Class = class extends mock.Class {
                  */
                 if (model._isUnion) {
                     const getSchema = model => {
-                        const rand = models => {
+                        const rand = (props, models) => {
                             let result
                             let count = 0
 
-                            for (const prop in models) {
+                            for (const prop in props) {
                                 if (Math.random() < 1 / ++count) {
-                                    result = models[prop]
+                                    if (models) {
+                                        let _k;
+                                        result = _.find(models, (model, key) => {
+                                            if (model.getKey() == props[prop].key) {
+                                                _k = key
+                                                return true
+                                            }
+                                            return false
+                                        })
+                                        result.schema._definedAttribute = _k
+                                    } else {
+                                        result = props[prop]
+                                        result.schema._definedAttribute = prop
+                                    }
                                 }
                             }
 
                             return result
                         }
 
-                        if (_.size(model.properties)) return rand(model.properties)
+                        if (_.size(model.properties)) return rand(model.properties, model.models).schema
                         return rand(model.models).schema
                     }
 
@@ -81,7 +94,7 @@ mock.Class = class extends mock.Class {
                         type: 'object',
                         ...getSchema(model)
                     }
-                    _model.model = () => _model.model
+                    if (typeof _model.model !== 'function') _model.model = () => _model.model
                 }
 
                 /**
@@ -107,20 +120,20 @@ mock.Class = class extends mock.Class {
                 /**
                  * Determine if a model with the same PK is in the cache. Use it if it is.
                  */
-                const _key = model._isUnion ? model.key : _model.key
-                if (cache[_key] && cache[_key][id]) {
+                id = model._isUnion ? _.size(cache[_model.key]) + 1 : id
+                if (cache[_model.key] && cache[_model.key][id]) {
                     return mergeNested({
-                        ...cache[_key][id],
+                        ...cache[_model.key][id],
                         ...(model._isUnion ? {
-                            [schemaAttribute]: _model.key
+                            [schemaAttribute]: _model._definedAttribute
                         } : {})
                     })
                 }
 
                 let mocked = _.set(jsf(_model), primary, id)
-                if (model._isUnion) mocked = _.set(mocked, schemaAttribute, _model.key)
+                if (model._isUnion) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
 
-                cache[_key] = {...cache[_key], [id]: mocked}
+                cache[_model.key] = {...cache[_model.key], [id]: mocked}
                 return mergeNested(mocked)
             }
 

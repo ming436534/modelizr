@@ -49,9 +49,7 @@ const union = (key, models, options) => {
         return new Union(schema, _models)
     }
     union.unionOf = _.mapValues(models, model => model.schema.model)
-    union.define = () => {
-        return unionOf(_.mapValues(models, model => model.schema.model), {schemaAttribute: attribute})
-    }
+    union.define = () => unionOf(_.mapValues(models, model => model.schema.model), attribute)
 
     return union
 }
