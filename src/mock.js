@@ -38,7 +38,7 @@ mock.Class = class extends mock.Class {
             const primary = model.primaryKey || 'id'
             const response = {}
 
-            const newId = _.size(cache[model.key]) + 1
+            const newId = _.size(cache[model.model ? model.model().getKey() : model.key]) + 1
             let id = newId
 
             if (model._modelType == 'arrayOf' || model._modelType == 'valuesOf') {
@@ -94,7 +94,10 @@ mock.Class = class extends mock.Class {
                         type: 'object',
                         ...getSchema(model)
                     }
-                    if (typeof _model.model !== 'function') _model.model = () => _model.model
+                    if (typeof _model.model !== 'function') {
+                        const _m = _model.model
+                        _model.model = () => _m
+                    }
                 }
 
                 /**
@@ -120,10 +123,11 @@ mock.Class = class extends mock.Class {
                 /**
                  * Determine if a model with the same PK is in the cache. Use it if it is.
                  */
-                id = model._isUnion ? _.size(cache[_model.key]) + 1 : id
-                if (cache[_model.key] && cache[_model.key][id]) {
+                const _key = _model.model().getKey()
+                id = model._isUnion ? _.size(cache[_key]) + 1 : id
+                if (cache[_key] && cache[_key][id]) {
                     return mergeNested({
-                        ...cache[_model.key][id],
+                        ...cache[_key][id],
                         ...(model._isUnion ? {
                             [schemaAttribute]: _model._definedAttribute
                         } : {})
@@ -133,7 +137,7 @@ mock.Class = class extends mock.Class {
                 let mocked = _.set(jsf(_model), primary, id)
                 if (model._isUnion) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
 
-                cache[_model.key] = {...cache[_model.key], [id]: mocked}
+                cache[_key] = {...cache[_key], [id]: mocked}
                 return mergeNested(mocked)
             }
 
