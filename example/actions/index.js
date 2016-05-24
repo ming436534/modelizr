@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { prepare } from '../../src/index'
+import { prepare, alias } from '../../src/index'
 import { book, user, collection } from '../models/index'
 import store from '../store/index'
 
@@ -41,9 +41,13 @@ const setEntities = entities => {
 }
 
 export const requestUsers = (mock, delay, error) => {
+    const author = alias(user, "author")
+
     query(
         user(
-            book(),
+            book(
+                author()
+            ),
             collection(
                 user()
             )

@@ -1,3 +1,7 @@
+# 0.7.1 (May 24th 2016)
+
++ Fixed bug that caused multiple root models to mock conflicting `id`s
+
 # 0.7.0 (May 24th 2016)
 
 + `Breaking` - Re-wrote request tool. can now specify models. added `.body()` mutator to apply a body to it

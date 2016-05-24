@@ -4,9 +4,23 @@
 
 Generate a GraphQL query
 
+```javascript
+query(
+    user(),
+    book()
+)
+```
+
 ### `mutation(...models)`
 
 Generate a GraphQL mutation
+
+```javascript
+mutation(
+    user(),
+    book()
+)
+```
 
 ### `request(...models)`
 

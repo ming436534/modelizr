@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { QueryBase, QueryMutators } from './bases'
 import { query, mutation, request } from './index'
+import { model } from './model'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -38,7 +39,7 @@ const base = custom => {
     return res
 }
 
-export const warn = message => {
+const warn = message => {
     if (typeof console.warn === 'function') {
         console.warn(message)
     } else {
@@ -116,4 +117,9 @@ const api = ({body, path, contentType, headers, method}) => {
     })
 }
 
-export { _, base, debug, api, prepare }
+const alias = (source, key) => {
+    const _model = model(key, _.omit(source.schema, ["key"]))
+    return _model
+}
+
+export { _, base, debug, api, prepare, warn, alias }

@@ -22,3 +22,20 @@ query(
     )
 ).then( ... )
 ```
+
+### `alias(model, key)`
+
+Create an alias of a model to improve query readability. Functionally the same as `model().as(key)`
+
+```javascript
+import { alias, query } from 'modelizr'
+import { book, user } from './models'
+
+const author = alias(user, "author")
+
+query(
+    book(
+        author()
+    )
+).then( ... )
+```
