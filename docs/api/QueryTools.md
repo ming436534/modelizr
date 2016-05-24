@@ -29,13 +29,15 @@ Create a non-graphql request where the response is expected to match the given m
 ```javascript
 request(
     user()
-).mock().normalize(res => {})
+)
+    .body({ ... })
+    .normalize(res => {})
 ```
 
 ### `prepare(modifiers)`
 
 A utility method that allows you to apply modifiers to all three of the above query tools. `prepare` accepts a collection of custom modifiers that will get added to each
-query tools list of modifiers
+query tools' list of modifiers.
 
 ###### `custom modifiers`
 
@@ -46,10 +48,10 @@ Each modifier should be a nested function. The root function gets given two para
 
 The child function becomes the modifier. It accepts whatever is passed to it when called on a query tool. This function must return the result of `apply()`
 
-Here is a example of the above described pattern.
+Here is a visual example of the above described pattern.
 ```javascript
 {
-    customModifier: (apply, valueOf) => () => apply()
+    customModifier: (apply, valueOf) => val => apply('key', val)
 }
 ```
 
@@ -71,6 +73,7 @@ const { query, mutation, request } = prepare({
         quantity: 5,
         delay: 300
     })
+    .get()
 
 query(
     user()

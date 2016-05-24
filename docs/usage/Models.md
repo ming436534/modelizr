@@ -1,7 +1,7 @@
 # Creating Models
 
 Modelizr is a tool that revolves around the models you create. Generated queries, mocked data and normalizing are all based on of the structure of the models
-tha you define. The models are a mix between json-schema-faker schemas and normalizr schemas.
+that you define. The models are a mix between json-schema-faker schemas and normalizr schemas.
 
 When defining normalizr schemas, normalizr provides you with three tools - `arrayOf()`, `valuesOf()` and `unionOf` - to help describe your data structure. Modelizr
 exports similar tools **but they are not the same**. Do not attempt to use normalizr's tools when working with modelizr models. Additionally, modelizrs' version of `unionOf()`
@@ -55,7 +55,7 @@ book.define({
 })
 ```
 
-A **group** will just have a collection of users. In other words, an `arrayOf(**user**)`
+A **group** will just have a collection of users. In other words, an `arrayOf(user)`
 
 ```javascript
 group.define({
@@ -63,7 +63,8 @@ group.define({
 })
 ```
 
-And finally our **owner** union will be a collection of users and groups. The union needs to have a `schemaAttribute` specified to allow normalizr to determine the model.
+And finally our **owner** union will be a collection of users and groups. The union needs to have a `schemaAttribute` specified to allow normalizr to determine which entity belongs
+to which model.
 
 ```javascript
 const owner = union('owners', {
@@ -71,3 +72,22 @@ const owner = union('owners', {
     group
 }, {schemaAttribute: 'type'})
 ```
+If we had a set of data with the following structure:
+```javascript
+{
+    owners: [
+        {
+            id: 1,
+            ...,
+            type: "user"
+        },
+
+        {
+            id: 5,
+            users: [ ... ],
+            type: "group"
+        }
+    ]
+}
+```
+The `schemaAttribute` we defined on the **collection** union would allow normalizr to figure out the model by looking at each entities `type` field.

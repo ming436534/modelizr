@@ -1,3 +1,8 @@
+# 0.7.2 (May 24th 2016)
+
++ Updated docs.
++ Added an `alias(model, key)` tool to alias models.
+
 # 0.7.1 (May 24th 2016)
 
 + Fixed bug that caused multiple root models to mock conflicting `id`s

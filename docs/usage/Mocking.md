@@ -1,12 +1,12 @@
 # Mocking
 
-Once you have created your models and setup your queries, you pretty much get mocking for free. All you need to do is hack on a `.mock()` modifier, and the query will pass
-through the mocks and return a response that matches the model structure you gave the query tool.
+Once you have created your models and setup your queries, you essentially get mocking for free. All you need to do is hack on a `.mock()` modifier, and the query will return a
+response that matches the structure of your query.
 
-When mocking, you will never get conflicting id's on entities, no matter how deeply nested that are. If you explicitly reference the same id on a model in multiple places, you
+When mocking, you will never get conflicting id's on entities, no matter how deeply nested that are. Even if you explicitly reference the same id on a model in multiple places, you
 will still only get a single mocked entity in return.
 
-Given the following mocked query:
+For instance, given the following mocked query:
 ```javascript
 query(
     user(
@@ -19,72 +19,70 @@ query(
 We will get the following response:
 ```javascript
 {
-    body: {
-        users: [
-            {
-                id: 1,
-                firstName: " ... ",
-                lastName: " ... ",
-                books: [
-                    {
-                        id: 1,
-                        title: " ... ",
-                        publisher: " ... "
-                    },
-                    ...
-                ]
-            },
+    users: [
+        {
+            id: 1,
+            firstName: " ... ",
+            lastName: " ... ",
+            books: [
+                {
+                    id: 1,
+                    title: " ... ",
+                    publisher: " ... "
+                },
+                ...
+            ]
+        },
 
-            {
-                id: 2,
-                ...,
-                books: [
-                    {
-                        id: 21,
-                        ...
-                    }
-                ]
-            },
-            ...
-        ]
-    }
+        {
+            id: 2,
+            ...,
+            books: [
+                {
+                    id: 21,
+                    ...
+                }
+            ]
+        },
+        ...
+    ]
 }
 ```
 
-As there is no way for modelizr to determine if the top level model should be mocked as values instead of elements in an array (**Note** modelizr can infer this information __after__
-the request has completed based on the response.), you can use the `.valuesOf(schemaAttribute)` modifier to explicitly define how it should be mocked. There is also an
-`.arrayOf(schemaAttribute)` modifier to use.
+As there is no way for modelizr to determine if the top level model should be mocked as values, elements in an array or simple a lone entity (**Note** modelizr can determine
+this information __after__ the request has completed by examining the response.), you will need to use the modifiers `.valuesOf(schemaAttribute)` and `.arrayOf(schemaAttribute)`
+to infer the way in which it should be mocked.
 
-> Do not use these modifiers on child models.
+> **Do not use these modifiers on child models.**
 
 Here is how it is used:
 ```javascript
 query(
-    user().valuesOf("type")
+    user(
+        book()
+    ).valuesOf("type")
 )
 ```
 ->
 ```javascript
 {
-    body: {
-        users: {
-            1: {
-                id: 1,
-                firstName: " ... ",
-                lastName: " ... ",
-                type: "users"
-            },
-            ...
-        }
+    users: {
+        1: {
+            id: 1,
+            firstName: " ... ",
+            lastName: " ... ",
+            type: "users",
+            books: [ ... ]
+        },
+        ...
     }
 }
 ```
 
-If you would like to more precisely configure the mocking system, there is a `.mockConfig()` modifier that can be applied to any query tool.
+If you would like to more precisely configure mock generation, there is a `.mockConfig()` modifier that can be applied to any query tool.
 
 ```javascript
 query( ... )
-    .mock()
     .mockConfig({
         extensions: {
             faker: faker => {},
@@ -97,7 +95,9 @@ query( ... )
             failOnInvalidTypes: true,
             ...
         },
-        quantity: 25 // Amount of entities to generate unless otherwise specified in a query
+        quantity: 25,
+        delay: 200,
+        error: false
     })
 ```
 

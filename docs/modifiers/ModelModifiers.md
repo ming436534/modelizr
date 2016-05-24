@@ -1,6 +1,6 @@
 # Model Modifiers
 
-These modifiers only apply to **models** and **unions**.
+> These modifiers only apply to **models** and **unions**.
 
 #### `as(key)`
 
@@ -29,9 +29,9 @@ query(
 
 #### `properties(props [, overwrite])`
 
-Add additional properties to the model, if overwrite is `true`, then the models props will be overwritten.
+Add additional properties to the model, if overwrite is `true` - the models' props will be overwritten.
 
-It is advised to rather add all properties that can be returned to the model before hand, and removed the optional properties from the `required` schema field.
+It is advised to rather add all possible properties to the model before hand and then removed the optional properties from the `required` schema field, or use `.only()` and `.except()`.
 
 ```javascript
 query(

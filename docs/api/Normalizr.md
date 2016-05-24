@@ -6,13 +6,60 @@ This is a wrapper around [normalizr](https://github.com/paularmstrong/normalizr)
 
 Normalize a response based on given models. Returns the normalized flat-map
 
+Given the following response:
 ```javascript
+const response = {
+    users: [
+        {
+            id: 1,
+            ...,
+            books: [
+                {
+                    id: 1,
+                    ...
+                },
+                ...
+            ]
+        },
+        ...
+    ]
+}
+```
+
+```javascript
+// ...
+
 import { normalize } from 'modelizr'
 
 normalize(
     response,
-    user()
+    user(
+        book()
+    )
 )
+```
+Normalizr will produce the following flat-map:
+```javascript
+{
+    entities: {
+        users: {
+            1: {
+                id: 1,
+                ...,
+                books: [
+                    1,
+                    ...
+                ]
+            }
+        },
+        books: {
+            i: {
+                id: 1,
+                ...
+            }
+        }
+    }
+}
 ```
 
 ##### `arrayOf(model [, options])`

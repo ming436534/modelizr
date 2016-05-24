@@ -8,6 +8,8 @@ Create a new model that can be used in queries, mocked and used to validate enti
 + `schema [object]` - Define the structure of the model.
 + `options [object]` - Additional `normalizr` Schema options.
 
+The schema of the model should follow the [json-schema](http://json-schema.org/) spec, with the inclusion of json-schema-faker and some modelizr specific fields.
+
 ```javascript
 import { model } from 'modelizr'
 
@@ -49,7 +51,9 @@ const book = model('books', {
 
 #### `.define(relationships)`
 
-Describe the models relationship with other models. Modelizr additionally exports `arrayOf` and `valuesOf` utilities. **They are not the same as normalizrs utilities**.
+Describe the models relationship with other models. Modelizr additionally exports `arrayOf` and `valuesOf` utilities.
+
+> **They are not the same as normalizrs utilities**.
 
 ```javascript
 // ...

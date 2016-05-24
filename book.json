@@ -8,17 +8,17 @@
   "plugins": [
     "prism",
     "-highlight",
-    "edit-link",
+    "editlink",
     "github",
-    "anker-enable"
+    "anchors"
   ],
   "styles": {
     "website": "docs/styles/website.css"
   },
   "pluginsConfig": {
-    "edit-link": {
+    "editlink": {
       "base": "https://github.com/julienvincent/modelizr/tree/master",
-      "label": "Edit This Page"
+      "label": "edit"
     },
     "github": {
       "url": "https://github.com/julienvincent/modelizr"

@@ -1,6 +1,7 @@
 # Union Creator
 
-Instead of exporting a tool like `unionOf` - modelizr exports a **union creator**. It is used similarly to a model creator, and the resulting union can be used as a if it were a model.
+Instead of exporting a tool like `unionOf` - modelizr exports a **union creator**. It is used similarly to a model creator, and the resulting union can be used in the same
+manner as a **model**.
 
 #### `union(key, models, options)`
 

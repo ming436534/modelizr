@@ -2,6 +2,8 @@
 
 The created model. This can be given to query tools to generate queries, mock data and normalize responses. Can also be used to validate entities.
 
+> Entity validation does not yet exist, but it is coming.
+
 ### `model([params ,] ...models)`
 
 Define a nested query that can be generated or mocked. If nothing is given to the model, the resulting query will just contain the model key.
