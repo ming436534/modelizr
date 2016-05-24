@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { QueryBase, QueryMutators } from './bases'
-import { query, mutation, mock, request } from './index'
+import { query, mutation, request } from './index'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {
@@ -73,17 +73,11 @@ const prepare = mutators => {
             return apply(this, request)
         },
 
-        getMock: function() {
-            warn("Calling .getMock() is deprecated. Please use .get() instead")
-            return apply(this, mock)
-        },
-
         get: function() {
             return {
                 query: apply(this, query),
                 mutation: apply(this, mutation),
-                request: apply(this, request),
-                mock: apply(this, mock)
+                request: apply(this, request)
             }
         }
     })

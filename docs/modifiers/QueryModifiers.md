@@ -18,7 +18,7 @@ Can only be applied to **mutation**. Specify the name of a mutation query.
 mutation( ... ).as("createUser")
 ```
 
-#### `as(name)`
+#### `params(name)`
 
 Can only be applied to **mutation**. Add parameters to a mutation query.
 
@@ -121,7 +121,7 @@ query(
 })
 ```
 
-#### `custom((apply [, valueOf]) => apply(key, value)`
+#### `custom((apply [, valueOf]) => apply(key, value))`
 
 Make a custom modification. Similar to `prepares` custom modifiers. This can be used to make a modification to the query tool.
 
@@ -131,4 +131,40 @@ Should be given a function that can accept two parameters. `apply(key, value)` a
 query(
     user()
 ).custom((apply, valueOf) => apply('path', `${valueOf('path')}/get-users`))
+```
+
+#### `headers(headers)`
+
+Give the request headers.
+
+```javascript
+query( ... ).headers({
+    token: " ... "
+})
+```
+
+#### `method(type)`
+
+Specify the method with which to make a request. `GET`, `POST`, `PUT`, `DELETE`. This modifier only applies to **request**
+
+```javascript
+request( ... ).method('GET')
+```
+
+#### `body(requestBody)`
+
+Specify the body of the request. This modifier only applies to **request**
+
+`object` values will be stringified.
+
+```javascript
+request( ... ).body({ ... })
+```
+
+#### `contentType(type)`
+
+Specify the content-type of the request. This modifier only applies to **request**
+
+```javascript
+request( ... ).contentType('application/json')
 ```

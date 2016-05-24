@@ -1,4 +1,4 @@
-# Model Creators
+# Model Creator
 
 ## `model(key, schema, [, options])`
 
