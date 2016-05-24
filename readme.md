@@ -5,23 +5,76 @@
 
 A Combination of normalizr, json-schema-faker and GraphQL that allows you to define multipurpose models that can generate GraphQL queries, mock deeply nested data and normalize
 
-# Installation
+## Installation
 
 ```
 npm i --save modelizr
 ```
 
-# What can I use this for?
+## What can I use this for?
 
-+ Easily generating GraphQL queries and mutations based off of models.
-+ Normalizing responses using [normalizr](https://github.com/gaearon/normalizr).
-+ Mocking deeply nested queries from models.
++ Easily generating GraphQL queries from models.
++ Flat-mapping responses using [normalizr](https://github.com/gaearon/normalizr).
++ Mocking deeply nested data that match their query.
 
 ___
 
 Read my [medium post](https://medium.com/@julienvincent/modelizr-99e59c1c4431#.applec5ut) on why I wrote modelizr.
 
-# Documentation
+## What does it look like?
+
+```javascript
+import { model, query } from 'modelizr'
+
+const user = model('users', {
+    id: {type: 'primary|integer', alias: 'ID'},
+    firstName: {type: 'string', faker: 'name.firstName'}
+})
+
+const book = model('books', {
+    id: {type: 'primary|integer'},
+    title: {type: 'string'}
+})
+user.define({books: [book]})
+book.define({author: user})
+
+query(
+    user(
+        book()
+    ),
+
+    book(
+        user().as('author')
+    ).params(ids: [1, 2, 3])
+)
+    .path("http:// ... ")
+    .then((res, normalize) => {
+        normalize(res.body) // -> normalized response.
+    })
+```
+This will generate the following query and make a request using it.
+```
+{
+  users {
+     id: ID,
+     firstName,
+     books {
+        id,
+        title
+     }
+  },
+  books(ids: [1, 2, 3]) {
+     id,
+     title,
+     author {
+        id: ID,
+        firstName
+     }
+  }
+}
+```
+
+## Documentation
 
 All documentation is located at [julienvincent.github.io](http://julienvincent.github.io/modelizr)
 
@@ -32,7 +85,7 @@ All documentation is located at [julienvincent.github.io](http://julienvincent.g
 * [Todo](http://julienvincent.github.io/modelizr/docs/Todo.html)
 * [Changelog](http://julienvincent.github.io/modelizr/changelog.html)
 
-# Example
+## Example
 
 + `npm i`
 + `npm start`
@@ -40,6 +93,6 @@ All documentation is located at [julienvincent.github.io](http://julienvincent.g
 
 This is just a basic usage example. More specific examples will come.
 
-# Licence
+## Licence
 
 MIT
