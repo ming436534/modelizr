@@ -76,7 +76,7 @@ This will generate the following query and make a request using it.
 
 ## Documentation
 
-All documentation is located at [julienvincent.github.io](http://julienvincent.github.io/modelizr)
+All documentation is located at [julienvincent.github.io/modelizr](http://julienvincent.github.io/modelizr)
 
 * [Usage](http://julienvincent.github.io/modelizr/docs/usage)
 * [Patterns](http://julienvincent.github.io/modelizr/docs/patterns)

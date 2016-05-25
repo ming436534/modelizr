@@ -24,7 +24,13 @@ const union = (key, models, options) => {
         schemaAttribute: options.schemaAttribute
     } : {}
 
-    const union = (params, ..._models) => {
+    const union = (..._models) => {
+        if (typeof _models[0] === 'string') {
+            key = _.pullAt(_models, 0)[0]
+        }
+
+        let params = _.pullAt(_models, 0)[0]
+        
         if (params && params instanceof ModelBase) {
             _models.unshift(params)
             params = {}
@@ -48,6 +54,8 @@ const union = (key, models, options) => {
 
         return new Union(schema, _models)
     }
+    union.models = models
+    union.options = options
     union.unionOf = _.mapValues(models, model => model.schema.model)
     union.define = () => unionOf(_.mapValues(models, model => model.schema.model), attribute)
 

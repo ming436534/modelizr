@@ -44,7 +44,15 @@ class Model extends ModelBase {
 const model = (name, schema, options) => {
     schema = schema || {}
 
-    const _model = (params, ...models) => new Model(_model.schema, params, ...models)
+    const _model = (...models) => {
+        if (typeof models[0] === 'string') {
+            _model.schema.key = _.pullAt(models, 0)[0]
+        }
+
+        const params = _.pullAt(models, 0)[0]
+
+        return new Model(_model.schema, params, ...models)
+    }
     
     const formatSchema = (schema, options) => {
         if (!schema.properties && !schema.required) {
