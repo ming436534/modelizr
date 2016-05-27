@@ -1,5 +1,5 @@
 * [Read Me](readme.md)
-
+* [Introduction](/docs/Introduction.md)
 * [Usage](/docs/usage/README.md)
     * [Creating Models](/docs/usage/Models.md)
     * [Querying](/docs/usage/Querying.md)

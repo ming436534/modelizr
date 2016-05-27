@@ -1,3 +1,8 @@
+# Unpublished
+
++ Can now pass a key as a model or union's first argument.
++ Can now alias unions in addition to models.
+
 # 0.7.2 (May 24th 2016)
 
 + Updated docs.
