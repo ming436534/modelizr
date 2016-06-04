@@ -20,9 +20,14 @@ class Union extends ModelBase {
 const union = (key, models, options) => {
     options = options || {}
 
-    const attribute = options.schemaAttribute ? {
+    let attribute = options.schemaAttribute ? {
         schemaAttribute: options.schemaAttribute
     } : {}
+
+    attribute = options.mockAttribute ? {
+        ...attribute,
+        mockAttribute: options.mockAttribute
+    } : {...attribute}
 
     const union = (..._models) => {
         if (typeof _models[0] === 'string') {

@@ -53,7 +53,11 @@ mock.Class = class extends mock.Class {
 
             const getFromCache = id => {
                 let _model = model
-                const schemaAttribute = model.schemaAttribute
+                let schemaAttribute = model.schemaAttribute
+                
+                if (typeof schemaAttribute === 'function') {
+                    schemaAttribute = model.mockAttribute
+                }
 
                 /**
                  * If model is a union, pick a random model from the unions collection
@@ -128,14 +132,22 @@ mock.Class = class extends mock.Class {
                 if (cache[_key] && cache[_key][id]) {
                     return mergeNested({
                         ...cache[_key][id],
-                        ...(model._isUnion ? {
+                        ...(model._isUnion && schemaAttribute ? {
                             [schemaAttribute]: _model._definedAttribute
                         } : {})
                     })
                 }
+                
+                _model.properties = _.pickBy(_model.properties, (prop, name) => {
+                    if (prop.type == 'schemaAttribute') {
+                        schemaAttribute = name
+                        return false
+                    }
+                    return true
+                })
 
                 let mocked = _.set(jsf(_model), primary, id)
-                if (model._isUnion) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
+                if (model._isUnion && schemaAttribute) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
 
                 cache[_key] = {...cache[_key], [id]: mocked}
                 return mergeNested(mocked)

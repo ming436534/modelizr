@@ -51,7 +51,7 @@ export const requestUsers = (mock, delay, error) => {
             collection(
                 user()
             )
-        )
+        ).valuesOf("lel")
     )
         .mock(mock, {
             delay,
