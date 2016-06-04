@@ -8,3 +8,6 @@ coverage
 .babelrc
 .eslintrc
 .idea
+
+_book
+example

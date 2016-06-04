@@ -1,5 +1,5 @@
 import { normalize as Normalize, arrayOf as _arrayOf, valuesOf as _valuesOf, unionOf as _unionOf } from 'normalizr'
-import { _ } from './utils'
+import { _, warn } from './utils'
 
 const normalize = (response, ...query) => {
     const _query = _.mapKeys(_.mapValues(query, model => model.build()), model => model.key)
@@ -26,13 +26,13 @@ const normalize = (response, ...query) => {
 
 class Iterable {
     constructor(model, options) {
-        options = options || {}
+        if (options) warn("Modelizr's arrayOf and valuesOf definitions don't support schemaAttributes and other options. Rather use unions")
+        
         this.model = model
-        this.options = _.pick(options, ['schemaAttribute'])
     }
 
     define() {
-        return _valuesOf(this.model.schema ? this.model.schema.model : this.model.define(), this.options)
+        return _valuesOf(this.model.schema ? this.model.schema.model : this.model.define())
     }
 }
 

@@ -2,6 +2,10 @@
 
 + Can now pass a key as a model or union's first argument.
 + Can now alias unions in addition to models.
++ No longer support `schemaAttribute`'s in arrayOf and valuesOf model definitions. It is essentially syntactic-sugar for wrapping a `union` in a model definition and adds unnecessary
+complexity to modelizr.
++ Added support for a `schemaAttribute` as a `function` to manually infer schemas in a `union`.
++ Added the `'schemaAttribute'` type definition to schemas. This is used when a union has a function `schemaAttribute` option to allow modelizr to correctly mock the field on the entity.
 
 # 0.7.2 (May 24th 2016)
 

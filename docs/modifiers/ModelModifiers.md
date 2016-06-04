@@ -85,26 +85,26 @@ query(
 )
 ```
 
-#### `arrayOf(schemaAttribute)`
+#### `arrayOf()`
 
-Forcefully specify the model definition as an array. Should only be applied to top level models. infer the model based on `schemaAttribute`.
+Forcefully specify the model definition as an array. Should only be applied to top level models.
 
 ```javascript
 query(
     user(
         book()
-    ).arrayOf("type")
+    ).arrayOf()
 )
 ```
 
-#### `valuesOf(schemaAttribute)`
+#### `valuesOf()`
 
-Forcefully specify the model definition as values. Should only be applied to top level models. infer the model based on `schemaAttribute`.
+Forcefully specify the model definition as values. Should only be applied to top level models.
 
 ```javascript
 query(
     user(
         book()
-    ).valuesOf("type")
+    ).valuesOf()
 )
 ```

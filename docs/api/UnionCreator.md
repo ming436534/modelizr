@@ -23,6 +23,18 @@ const member = union('members', {
 }, {schemaAttribute: "type"})
 ```
 
+You may also pass a function to infer the schema type. The function accepts the entity.
+
+When using a function instead of a string, you will need to specify the name of the schemaAttribute that will get mocked. You can do this in each models schema, or using the
+`mockAttribute` property.
+
+```javascript
+const member = union('members', {
+    user,
+    group
+}, {schemaAttribute: entity => entity.type})
+```
+
 This can now be used in a query
 ```javascript
 // ...

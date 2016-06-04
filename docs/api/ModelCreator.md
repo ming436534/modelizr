@@ -17,7 +17,8 @@ const user = model('users', {
     properties: {
         id: {type: 'integer', alias: 'ID'},
         firstName: {type: 'string', faker: 'name.firstName'},
-        lastName: {type: 'string', faker: 'name.lastName'}
+        lastName: {type: 'string', faker: 'name.lastName'},
+        type: {type: 'schemaAttribute'}
     },
     required: ['firstname'], // If not included, defaults to all fields that are a part of properties
     primaryKey: 'id'
@@ -25,13 +26,15 @@ const user = model('users', {
 ```
 + The `primaryKey` field is used when mocking, and by normalizr when flat-mapping.
 + The `alias` property (show at the `id` field) will produce a GraphQL alias when generating the query.
++ The `schemaAttribute` type definition is used in conjunction with a union's `schemaAttribute`. Only necessary when the unions `schemaAttribute` is a function.
 
 If you only care about defining the properties of a model, then that's all you need to define.
 ```javascript
 const user = model('users', {
     id: {type: 'primary|integer'},
     firstName: {type: 'string', faker: 'name.firstName'},
-    lastName: {type: 'string', faker: 'name.lastName'}
+    lastName: {type: 'string', faker: 'name.lastName'},
+    type: {type: 'schemaAttribute'}
 })
 ```
 You specify the primary key through the `type` field - and separate the actual type with a `|`. The `required` field is automatically fulled with all properties you have defined.
@@ -66,7 +69,7 @@ user.define({
 
 book.define({
     author: user,
-    editors: valuesOf(user, {schemaAttribute: "type"})
+    editors: valuesOf(user)
 })
 ```
 Or you can use the `[]` shorthand for `arrayOf` definitions

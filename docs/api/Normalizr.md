@@ -62,10 +62,10 @@ Normalizr will produce the following flat-map:
 }
 ```
 
-##### `arrayOf(model [, options])`
+##### `arrayOf(model)`
 
 Extension of normalizrs `arrayOf` utility. Used to describe a model as an element in an array.
 
-##### `valuesOf(model [, options])`
+##### `valuesOf(model)`
 
 Extension of normalizrs `valuesOf` utility. Used to describe a model as a property in an object.
