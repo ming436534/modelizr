@@ -10,14 +10,14 @@ const book = model('books', {
 const collection = union('collections', {
     book,
     user
-}, {schemaAttribute: entity => entity.lel})
+}, {schemaAttribute: entity => entity.type})
 
 user.setSchema({
     id: {type: 'integer', alias: 'ID'},
     firstName: {type: 'string', faker: 'name.firstName'},
     lastName: {type: 'string', faker: 'name.lastName'},
     statement: {type: 'string', faker: {'custom.statement': [19]}},
-    lel: {type: 'schemaAttribute'}
+    type: {type: 'schemaAttribute'}
 })
 
 book.define({

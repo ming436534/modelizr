@@ -74,7 +74,7 @@ class QueryBase extends QueryMutators {
             if (Array.isArray(param)) return `[${param}]`
             if (typeof param === 'number') return param
             if (typeof param === 'object') return `"${JSON.stringify(param)}"`
-            
+
             return `"${param}"`
         }
 
@@ -87,10 +87,10 @@ class QueryBase extends QueryMutators {
     makeQuery(model, spaces = 3, indent = 1, prefix = false) {
         const mapProps = (props, indent) => {
             const currentIndent = `\n${this.spacer(spaces * indent)}`
-            
+
             return _.mapValid(props, (prop, key) => {
                 if (prop.model) return this.makeQuery(prop, spaces, indent, model._isUnion)
-                
+
                 if (prop.type == 'object') {
                     return this.makeQuery({
                         ...{
@@ -99,7 +99,7 @@ class QueryBase extends QueryMutators {
                         ...prop
                     }, spaces, indent)
                 }
-                
+
                 return `${currentIndent}${key}${prop.alias ? `: ${prop.alias}` : ''}`
             })
         }
@@ -199,14 +199,8 @@ class ModelBase {
     as = key => this.apply('key', key)
     params = params => this.apply('params', params)
 
-    valuesOf = attribute => {
-        this.apply('_modelType', 'valuesOf')
-        return this.apply('_attribute', attribute)
-    }
-    arrayOf = attribute => {
-        this.apply('_modelType', 'arrayOf')
-        return this.apply('_attribute', attribute)
-    }
+    valuesOf = () => this.apply('_modelType', 'valuesOf')
+    arrayOf = () => this.apply('_modelType', 'arrayOf')
 }
 
 export { ModelBase, QueryBase, QueryMutators }

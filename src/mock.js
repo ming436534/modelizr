@@ -54,7 +54,7 @@ mock.Class = class extends mock.Class {
             const getFromCache = id => {
                 let _model = model
                 let schemaAttribute = model.schemaAttribute
-                
+
                 if (typeof schemaAttribute === 'function') {
                     schemaAttribute = model.mockAttribute
                 }
@@ -71,7 +71,7 @@ mock.Class = class extends mock.Class {
                             for (const prop in props) {
                                 if (Math.random() < 1 / ++count) {
                                     if (models) {
-                                        let _k;
+                                        let _k = '';
                                         result = _.find(models, (model, key) => {
                                             if (model.getKey() == props[prop].key) {
                                                 _k = key
@@ -122,32 +122,31 @@ mock.Class = class extends mock.Class {
                         return {...gen.build(), propertyOf: key}
                     }
                     return prop
-                }), prop => prop)
+                }), (prop, name) => {
+                    if (prop.type == 'schemaAttribute') {
+                        schemaAttribute = schemaAttribute || name
+                        return false
+                    }
+                    return prop
+                })
 
                 /**
                  * Determine if a model with the same PK is in the cache. Use it if it is.
                  */
+                const shouldSetSchema = (model._isUnion && schemaAttribute)
                 const _key = _model.model().getKey()
                 id = model._isUnion ? _.size(cache[_key]) + 1 : id
                 if (cache[_key] && cache[_key][id]) {
                     return mergeNested({
                         ...cache[_key][id],
-                        ...(model._isUnion && schemaAttribute ? {
+                        ...(shouldSetSchema ? {
                             [schemaAttribute]: _model._definedAttribute
                         } : {})
                     })
                 }
-                
-                _model.properties = _.pickBy(_model.properties, (prop, name) => {
-                    if (prop.type == 'schemaAttribute') {
-                        schemaAttribute = name
-                        return false
-                    }
-                    return true
-                })
 
                 let mocked = _.set(jsf(_model), primary, id)
-                if (model._isUnion && schemaAttribute) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
+                if (shouldSetSchema) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
 
                 cache[_key] = {...cache[_key], [id]: mocked}
                 return mergeNested(mocked)

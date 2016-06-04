@@ -10,19 +10,15 @@ const normalize = (response, ...query) => {
             _unionOf(_.mapValues(entity.models, model => model.schema.model), {schemaAttribute: entity.schemaAttribute})
             : entity.model()
 
-        const attribute = entity._attribute ? {
-            schemaAttribute: entity._attribute
-        } : {}
-
         switch (entity._modelType) {
             case "valuesOf":
-                return _valuesOf(model, attribute)
+                return _valuesOf(model)
             case "arrayOf":
-                return _arrayOf(model, attribute)
+                return _arrayOf(model)
         }
 
-        if (Array.isArray(response[key])) return _arrayOf(model, attribute)
-        if (_.hasValuesOf(response[key], model)) return _valuesOf(model, attribute)
+        if (Array.isArray(response[key])) return _arrayOf(model)
+        if (_.hasValuesOf(response[key], model)) return _valuesOf(model)
 
         return model
     }))
