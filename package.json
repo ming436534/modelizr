@@ -1,6 +1,6 @@
 {
   "name": "modelizr",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Generate GraphQL queries from models that can be mocked and normalized.",
   "main": "lib/index.js",
   "scripts": {
