@@ -10,7 +10,8 @@
     "-highlight",
     "editlink",
     "github",
-    "anchors"
+    "anchors",
+    "ga"
   ],
   "styles": {
     "website": "docs/styles/website.css"
@@ -22,6 +23,9 @@
     },
     "github": {
       "url": "https://github.com/julienvincent/modelizr"
+    },
+    "ga": {
+      "token": "UA-53097839-2"
     }
   }
 }
