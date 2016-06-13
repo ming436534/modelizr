@@ -20,7 +20,13 @@
     "url": "git+https://github.com/julienvincent/modelizr.git"
   },
   "keywords": [
-    "modelizr"
+    "modelizr",
+    "graphql",
+    "model",
+    "normalizr",
+    "mock",
+    "queries",
+    "requests"
   ],
   "author": "Julien Vincent",
   "license": "MIT",

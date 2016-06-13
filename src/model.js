@@ -1,7 +1,7 @@
 import { Schema as NormalizerSchema } from 'normalizr'
 import { arrayOf, ValuesOf, Iterable } from './normalizer'
 import {ModelBase} from './bases'
-import { _ } from './utils'
+import { _, alias } from './utils'
 
 class Model extends ModelBase {
     constructor(schema, params, ...models) {
@@ -45,13 +45,14 @@ const model = (name, schema, options) => {
     schema = schema || {}
 
     const _model = (...models) => {
+        let _key
         if (typeof models[0] === 'string') {
-            _model.schema.key = _.pullAt(models, 0)[0]
+            _key = _.pullAt(models, 0)[0]
         }
 
         const params = _.pullAt(models, 0)[0]
 
-        return new Model(_model.schema, params, ...models)
+        return new Model((_key ? alias(_model, _key) : _model).schema, params, ...models)
     }
     
     const formatSchema = (schema, options) => {
