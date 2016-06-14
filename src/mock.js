@@ -148,7 +148,7 @@ mock.Class = class extends mock.Class {
                  */
                 const shouldSetSchema = (model._isUnion && schemaAttribute)
                 const _key = _model.model().getKey()
-                id = model._isUnion ? (opts.INCREMENT ? _.size(cache[_key]) + 1 : gen()) : id
+                id = model._isUnion ? (opts.idType === INCREMENT ? _.size(cache[_key]) + 1 : gen()) : id
                 if (cache[_key] && cache[_key][id]) {
                     return mergeNested({
                         ...cache[_key][id],
@@ -162,6 +162,27 @@ mock.Class = class extends mock.Class {
                 if (shouldSetSchema) mocked = _.set(mocked, schemaAttribute, _model._definedAttribute)
 
                 cache[_key] = {...cache[_key], [id]: mocked}
+
+                if (opts.generateFromParams) {
+                    _.forEach(_model.params, (param, key) => {
+                        console.log(_model)
+                        _model.properties = _.mapValues(_model.properties, (prop, _key) => {
+                            if (_key == key) {
+                                if (prop._isModel || prop._isUnion) {
+                                    return {
+                                        ...prop,
+                                        params: {
+                                            ...prop.params,
+                                            [prop.primaryKey]: param
+                                        }
+                                    }
+                                }
+                                if (typeof prop === 'string' || typeof prop === 'number') _.set(mocked, key, param)
+                            }
+                            return prop
+                        })
+                    })
+                }
                 return mergeNested(mocked)
             }
 

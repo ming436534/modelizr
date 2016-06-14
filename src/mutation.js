@@ -32,6 +32,10 @@ mutation.Class = class extends mutation.Class {
             debug(this._query, `[mutation: ${_.map(this._models, ({_schema: {key}}) => key)}]`)
         }
 
+        this.applyModification('mockConfig', {
+            generateFromParams: true,
+            ...this.getModification('mockConfig')
+        })
         return this.callApi(mock)
     }
 

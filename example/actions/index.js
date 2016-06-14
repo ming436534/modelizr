@@ -75,7 +75,9 @@ export const mutateUser = (mock, delay, error) => {
 
 export const mutateUserAndFetch = (mock, delay, error) => {
     mutation(
-        user()
+        user({id: "PRESET_ID", firstName: "Some Name", books: ["Preset_book"]},
+            book('book')
+        )
     )
         .mock(mock, {
             delay,
