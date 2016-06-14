@@ -1,3 +1,14 @@
+# Unpublished
+
++ Restructured internal api to avoid using .apply and .valueOf Object properties.
++ Added a warning for duplicate keys in a query.
++ Can now mock entities with random `UUID_V4` generated ids.
++ When mocking a `mutation`, entities will inherit properties from the parameters of the mutation.
+
+# 0.7.4 (June 15th 2016)
+
++ When aliasing a model with a string as the models first parameter, modelizr uses the alias() util to perform the alias.
+
 # 0.7.3 (June 4th 2016)
 
 + Can now pass a key as a model or union's first argument.

@@ -49,6 +49,31 @@ We will get the following response:
 }
 ```
 
+If you would rather use randomly generated id's, you can use modelizr's `UUID_V4` generator
+```javascript
+import { query, ID } from 'modelizr'
+
+query(
+    user()
+)
+    .mock(true, {
+        idType: ID.RANDOM // defaults to ID.INCREMENT
+    })
+```
+->
+```javascript
+{
+    users: {
+        c32f6a49-18ee-4786-a188-0101bf03acd1: {
+            id: "c32f6a49-18ee-4786-a188-0101bf03acd1",
+            firstName: " ... ",
+            lastName: " ... "
+        },
+        ...
+    }
+}
+```
+
 As there is no way for modelizr to determine if the top level model should be mocked as values, elements in an array or simple a lone entity (**Note** modelizr can determine
 this information __after__ the request has completed by examining the response.), you will need to use the modifiers `.valuesOf(schemaAttribute)` and `.arrayOf(schemaAttribute)`
 to infer the way in which it should be mocked.
@@ -85,20 +110,14 @@ If you would like to more precisely configure mock generation, there is a `.mock
 query( ... )
     .mockConfig({
         extensions: {
-            faker: faker => {},
-            chance: chance => {}
-        },
-        formats: {
-            semver: (gen, schema) => {}
-        },
-        jsfOptions: {
-            failOnInvalidTypes: true,
-            ...
+            faker: faker => {}
         },
         quantity: 25,
         delay: 200,
         error: false
     })
 ```
+
+Check out the entire configuration object [here](../api/Mocks.md#mock-configuration)
 
 Please refer to [json-schema-faker](https://github.com/json-schema-faker/json-schema-faker#custom-formats) to learn about these different options

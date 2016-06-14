@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { prepare, alias } from '../../src/index'
+import { prepare, alias, ID } from '../../src/index'
 import { book, user, collection } from '../models/index'
 import store from '../store/index'
 

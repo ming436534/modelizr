@@ -177,7 +177,7 @@ mock.Class = class extends mock.Class {
                                         }
                                     }
                                 }
-                                if (typeof prop === 'string' || typeof prop === 'number') _.set(mocked, key, param)
+                                if (prop.type == 'string' || prop.type == 'integer') _.set(mocked, key, param)
                             }
                             return prop
                         })

@@ -71,25 +71,18 @@ Configuration for the mocking api.
 ```javascript
 query( ... ).mockConfig({
     extensions: {
-        faker: faker => {},
-        chance: chance => {}
+        faker: faker => {}
     },
-    formats: {
-        semver: (gen, schema) => {}
-    },
-    jsfOptions: {
-        failOnInvalidTypes: true,
-        ...
-    },
-    quantity: 25, // Amount of entities to generate unless otherwise specified in a query
-    delay: 200, // Add a delay before mocking. Default is 0ms
-    error: true // Always throw an error when mocking. Default is false
+    quantity: 25
 })
 ```
 
+Check out the full configuration object [here](../api/Mocks.md#mock-configuration)
+
 #### `mock(shouldMock, config)`
 
-The first argument determines weather or not to mock the query (`true` if undefined). The second is a configuration object for the mocking api as defined above.
+The first argument determines weather or not to mock the query (`true` if undefined). The second is a configuration object for the mocking api as defined
+[here](../api/Mocks.md#mock-configuration).
 
 ```javascript
 query( ... ).mock(true, {
