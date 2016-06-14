@@ -1,8 +1,16 @@
 import { _, base } from './utils'
+import v4 from 'uuid-v4'
 
 let jsf = () => ({})
 if (!process.env.MODELIZR_CHEAP_MOCK) {
     jsf = require('json-schema-faker')
+}
+
+const RANDOM = "RANDOM"
+const INCREMENT = "INCREMENT_ID"
+const ID = {
+    INCREMENT: INCREMENT,
+    RANDOM: RANDOM
 }
 
 const mock = base()
@@ -17,8 +25,11 @@ mock.Class = class extends mock.Class {
             quantity: 20,
             error: false,
             delay: 0,
+            idType: INCREMENT,
+            idGenerator: v4,
             ...this.getModification('mockConfig')
         }
+        const gen = opts.idGenerator
 
         _.forEach(opts.extensions, (extension, name) => {
             jsf.extend(name, extension)
@@ -38,11 +49,13 @@ mock.Class = class extends mock.Class {
             const primary = model.primaryKey || 'id'
             const response = {}
 
-            const newId = _.size(cache[model.model ? model.model().getKey() : model.key]) + 1
+            const newId = opts.idType === INCREMENT ? _.size(cache[model.model ? model.model().getKey() : model.key]) + 1
+                : gen()
             let id = newId
 
             if (model._modelType == 'arrayOf' || model._modelType == 'valuesOf') {
-                id = _.range(newId, newId + opts.quantity)
+                id = opts.idType === INCREMENT ? _.range(newId, newId + opts.quantity)
+                    : _.map(_.range(0, opts.quantity), () => gen())
             }
 
             if (model.params) {
@@ -135,7 +148,7 @@ mock.Class = class extends mock.Class {
                  */
                 const shouldSetSchema = (model._isUnion && schemaAttribute)
                 const _key = _model.model().getKey()
-                id = model._isUnion ? _.size(cache[_key]) + 1 : id
+                id = model._isUnion ? (opts.INCREMENT ? _.size(cache[_key]) + 1 : gen()) : id
                 if (cache[_key] && cache[_key][id]) {
                     return mergeNested({
                         ...cache[_key][id],
@@ -157,10 +170,8 @@ mock.Class = class extends mock.Class {
                 if (model._modelType == 'valuesOf') {
                     response[model.key] = _.mapKeys(response[model.key], entity => entity[primary])
                 }
-            } else if (typeof id === 'number') {
-                response[model.key] = getFromCache(id)
             } else {
-                response[model.key] = getFromCache(1)
+                response[model.key] = getFromCache(id)
             }
 
             return response
@@ -189,4 +200,4 @@ mock.Class = class extends mock.Class {
     }
 }
 
-export { mock as default, mock }
+export { mock as default, mock, ID }

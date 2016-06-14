@@ -44,15 +44,14 @@ export const requestUsers = (mock, delay, error) => {
     const author = alias(user, "author")
 
     query(
-        // user(
-        //     book(
-        //         author()
-        //     ),
-        //     collection(
-        //         user()
-        //     )
-        // )
-        ..._.map(_.range(0, 1), i => user())
+        user(
+            book(
+                author()
+            ),
+            collection(
+                user()
+            )
+        )
     )
         .mock(mock, {
             delay,

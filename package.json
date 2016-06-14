@@ -64,6 +64,7 @@
     "isomorphic-fetch": "^2.2.1",
     "json-schema-faker": "^0.3.3",
     "lodash": "^4.13.1",
-    "normalizr": "^2.1.0"
+    "normalizr": "^2.1.0",
+    "uuid-v4": "^0.1.0"
   }
 }
