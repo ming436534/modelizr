@@ -14,41 +14,45 @@ class QueryMutators {
         this._this = target || this
     }
 
-    apply = (key, value) => {
+    applyModification = (key, value) => {
         this._this._mutations[key] = value
         return this._this
     }
-    valueOf = key => {
+    getModification = key => {
         return this._this._mutations[key]
     }
 
-    spaces = spaces => this.apply('spaces', spaces)
-    api = api => this.apply('api', api)
-    path = path => this.apply('path', path)
-    headers = headers => this.apply('headers', {...this.valueOf('headers'), ...headers})
-    debug = debug => this.apply('debug', debug === undefined ? true : debug)
-    custom = func => func(this.apply, this.valueOf)
+    spaces = spaces => this.applyModification('spaces', spaces)
+    api = api => this.applyModification('api', api)
+    path = path => this.applyModification('path', path)
+    headers = headers => this.applyModification('headers', {...this.getModification('headers'), ...headers})
+    debug = debug => this.applyModification('debug', debug === undefined ? true : debug)
+    custom = func => func(this.applyModification, this.getModification)
 
-    mockConfig = opts => this.apply('mockConfig', {...this.valueOf('mockConfig'), ...opts})
+    mockConfig = opts => this.applyModification('mockConfig', {...this.getModification('mockConfig'), ...opts})
     mock = (mock, opts) => {
-        if (opts) this.apply('mockConfig', {...this.valueOf('mockConfig'), ...opts})
-        return this.apply('mock', mock === undefined ? true : mock)
+        if (opts) this.applyModification('mockConfig', {...this.getModification('mockConfig'), ...opts})
+        return this.applyModification('mock', mock === undefined ? true : mock)
     }
 
     error = error => {
         warn("the .error() modifier is deprecated. Please rather specify errors via mockConfig")
-        return this.apply('mockConfig', {
-            ...this.valueOf('mockConfig') || {},
+        return this.applyModification('mockConfig', {
+            ...this.getModification('mockConfig') || {},
             error: error === undefined ? 'throw' : error
         })
     }
 
     delay = delay => {
         warn("the .delay() modifier is deprecated. Please rather specify a delay via mockConfig")
-        return this.apply('mockConfig', {
-            ...this.valueOf('mockConfig') || {},
+        return this.applyModification('mockConfig', {
+            ...this.getModification('mockConfig') || {},
             delay: delay || 500
         })
+    }
+
+    define = definitions => {
+        // this
     }
 }
 
@@ -62,7 +66,7 @@ class QueryBase extends QueryMutators {
             ...mutations
         }
 
-        _.forEach(mutations.custom, (mutator, key) => this[key] = mutator(this.apply, this.valueOf))
+        _.forEach(mutations.custom, (mutator, key) => this[key] = mutator(this.applyModification, this.getModification))
     }
 
     spacer(amount) {
@@ -119,7 +123,7 @@ class QueryBase extends QueryMutators {
         )
 
         return this.response().then(res => {
-            if (this.valueOf('debug')) {
+            if (this.getModification('debug')) {
                 debug(res, '[response]')
             }
 
@@ -132,14 +136,14 @@ class QueryBase extends QueryMutators {
             }
 
         return this.response().then(res => {
-            if (this.valueOf('debug')) {
+            if (this.getModification('debug')) {
                 debug(res, '[response]')
             }
             const response = normalize(
                 res.body,
                 ...this._models
             )
-            if (this.valueOf('debug')) {
+            if (this.getModification('debug')) {
                 debug(response, '[normalized response]')
             }
             return response
@@ -155,19 +159,19 @@ class QueryBase extends QueryMutators {
     }
 
     callApi(mock, body) {
-        if (this.valueOf('mock')) {
-            if (this.valueOf('query')) {
+        if (this.getModification('mock')) {
+            if (this.getModification('query')) {
                 return mock(this._models)
-                    .mockConfig(this.valueOf('mockConfig'))
+                    .mockConfig(this.getModification('mockConfig'))
                     .response()
             }
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(true)
-                }, (this.valueOf('mockConfig') || {delay: 0}).delay)
+                }, (this.getModification('mockConfig') || {delay: 0}).delay)
             })
         }
-        return this.valueOf('api')({
+        return this.getModification('api')({
             ...this._mutations,
             body: body ? body : JSON.stringify({query: this._query})
         })
@@ -191,16 +195,16 @@ class ModelBase {
         return _build
     }
 
-    apply(key, value) {
+    applyModification(key, value) {
         this._schema[key] = value
         return this
     }
 
-    as = key => this.apply('key', key)
-    params = params => this.apply('params', params)
+    as = key => this.applyModification('key', key)
+    params = params => this.applyModification('params', params)
 
-    valuesOf = () => this.apply('_modelType', 'valuesOf')
-    arrayOf = () => this.apply('_modelType', 'arrayOf')
+    valuesOf = () => this.applyModification('_modelType', 'valuesOf')
+    arrayOf = () => this.applyModification('_modelType', 'arrayOf')
 }
 
 export { ModelBase, QueryBase, QueryMutators }

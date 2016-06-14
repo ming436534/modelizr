@@ -15,18 +15,18 @@ request.Class = class extends request.Class {
     }
 
     response() {
-        if (this.valueOf('debug')) {
-            debug(this.valueOf('body'), `[request: ${this.valueOf('path')} <${this.valueOf('method') || 'POST'}>]`)
+        if (this.getModification('debug')) {
+            debug(this.getModification('body'), `[request: ${this.getModification('path')} <${this.getModification('method') || 'POST'}>]`)
         }
 
-        return this.callApi(mock, this.valueOf('body'))
+        return this.callApi(mock, this.getModification('body'))
     }
 
-    method = method => this.apply('method', (method || 'POST').toUpperCase())
-    contentType = type => this.apply('contentType', type)
+    method = method => this.applyModification('method', (method || 'POST').toUpperCase())
+    contentType = type => this.applyModification('contentType', type)
     body = body => {
         if (typeof body === 'object') body = JSON.stringify(body)
-        return this.apply('body', body)
+        return this.applyModification('body', body)
     }
 }
 

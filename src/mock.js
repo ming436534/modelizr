@@ -17,7 +17,7 @@ mock.Class = class extends mock.Class {
             quantity: 20,
             error: false,
             delay: 0,
-            ...this.valueOf('mockConfig')
+            ...this.getModification('mockConfig')
         }
 
         _.forEach(opts.extensions, (extension, name) => {

@@ -19,14 +19,14 @@ class Model extends ModelBase {
         }
     }
     
-    without = exclusion => this.apply('properties', _.omit(this._schema.properties, exclusion))
-    only = selection => this.apply('properties', _.pick(this._schema.properties, selection))
-    onlyIf = statement => this.apply('continue', statement === undefined ? true : statement)
+    without = exclusion => this.applyModification('properties', _.omit(this._schema.properties, exclusion))
+    only = selection => this.applyModification('properties', _.pick(this._schema.properties, selection))
+    onlyIf = statement => this.applyModification('continue', statement === undefined ? true : statement)
 
     normalizeAs(key) {
         const model = this._schema.model()
         model._key = key
-        return this.apply('model', () => model)
+        return this.applyModification('model', () => model)
     }
 
     properties(props, overwrite) {
@@ -34,7 +34,7 @@ class Model extends ModelBase {
             props = _.mapValues(_.mapKeys(props, prop => prop), () => ({type: 'string'}))
         }
 
-        return this.apply('properties', overwrite ? props : {
+        return this.applyModification('properties', overwrite ? props : {
             ...this._schema.properties,
             ...props
         })

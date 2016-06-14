@@ -5,14 +5,14 @@ const query = base()
 query.Class = class extends query.Class {
 
     generate() {
-        return (this._query = `{${_.mapValid(this._models, model => this.makeQuery(model.build(), this._spaces))}\n}`)
+        return (this._query = `{${_.mapValid(this._models, model => this.makeQuery(model.build(), this.getModification('spaces')))}\n}`)
     }
 
     response() {
         this.generate()
 
-        if (this.valueOf('debug')) {
-            debug(this._query, `[query: ${this._models[0]._schema.key}]`)
+        if (this.getModification('debug')) {
+            debug(this._query, `[query: ${_.map(this._models, ({_schema: {key}}) => key)}]`)
         }
 
         return this.callApi(mock)

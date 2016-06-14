@@ -9,12 +9,12 @@ class Union extends ModelBase {
         this._schema = schema
     }
 
-    apply(key, value) {
+    applyModification(key, value) {
         this._schema[key] = value
         return this
     }
 
-    params = params => this.apply('params', params)
+    params = params => this.applyModification('params', params)
 }
 
 const union = (key, models, options) => {
