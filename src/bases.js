@@ -51,14 +51,18 @@ class QueryMutators {
         })
     }
 
-    define = definitions => {
-        // this
-    }
+    // define = definitions => {
+    //     
+    // }
 }
 
 class QueryBase extends QueryMutators {
     constructor(models, mutations) {
         super()
+
+        if (_.uniqBy(models, model => (model._schema || {}).key).length !== models.length) {
+            warn("You are making a query or mutation with duplicate top level keys. Was this a mistake?")
+        }
 
         this._models = models
         this._mutations = {

@@ -52,7 +52,7 @@ export const requestUsers = (mock, delay, error) => {
         //         user()
         //     )
         // )
-        ...[..._.map(_.range(0, 3), i => user())]
+        ..._.map(_.range(0, 1), i => user())
     )
         .mock(mock, {
             delay,
