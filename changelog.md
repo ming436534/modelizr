@@ -3,6 +3,7 @@
 + `Breaking` - When `NODE_ENV` is set to `production`, the `faker` and `change` dependencies are excluded. To include them, manually extend jsf via the mocking config object.
 + Added warnings in the place of the stripped `faker` and `chance` modules.
 + Added information about the stripped modules to docs.
++ Debugger now groups requests and logs them on completion.
 
 # 0.7.5 (June 15th 2016)
 
