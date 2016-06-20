@@ -6,4 +6,5 @@ What follows is a simple usage example for setting up and using modelizr to **mo
 * [Querying](Querying.md)
 * [Mocking](Mocking.md)
 * [Query Preparation](Preparing.md)
+* [Production](Production.md)
 * [Validation](Validation.md)
