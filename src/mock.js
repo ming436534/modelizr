@@ -1,9 +1,10 @@
 import { _, base } from './utils'
 import v4 from 'uuid-v4'
 
-let jsf = () => ({})
-if (!process.env.MODELIZR_CHEAP_MOCK) {
-    jsf = require('json-schema-faker')
+import jsf from 'json-schema-faker/lib'
+if (process.env.NODE_ENV !== 'production') {
+    jsf.extend('faker', () => require('faker'))
+    jsf.extend('chance', () => require('chance'))
 }
 
 const RANDOM = "RANDOM"

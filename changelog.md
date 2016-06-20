@@ -1,11 +1,15 @@
 # Unpublished
 
++ `Breaking` - When `NODE_ENV` is set to `production`, the `faker` and `change` dependencies are excluded. To include them, manually extend jsf via the mocking config object.
+
+# 0.7.5 (June 15th 2016)
+
 + Restructured internal api to avoid using .apply and .valueOf Object properties.
 + Added a warning for duplicate keys in a query.
 + Can now mock entities with random `UUID_V4` generated ids.
 + When mocking a `mutation`, entities will inherit properties from the parameters of the mutation.
 
-# 0.7.4 (June 15th 2016)
+# 0.7.4 (June 13th 2016)
 
 + When aliasing a model with a string as the models first parameter, modelizr uses the alias() util to perform the alias.
 
