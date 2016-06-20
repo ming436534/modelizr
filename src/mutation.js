@@ -1,4 +1,4 @@
-import { _, base, debug } from './utils'
+import { _, base, getLogger } from './utils'
 import mock from './mock'
 
 const mutation = base()
@@ -29,7 +29,8 @@ mutation.Class = class extends mutation.Class {
         this.generate()
 
         if (this.getModification('debug')) {
-            debug(this._query, `[mutation: ${_.map(this._models, ({_schema: {key}}) => key)}]`)
+            this.debugger = getLogger(`[mutation: ${_.map(this._models, ({_schema: {key}}) => key)}]`)
+            this.debugger.add(this._query, "query")
         }
 
         this.applyModification('mockConfig', {

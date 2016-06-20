@@ -1,4 +1,4 @@
-import { base, debug } from './utils'
+import { base, getLogger } from './utils'
 import mock from './mock'
 
 const request = base()
@@ -16,7 +16,8 @@ request.Class = class extends request.Class {
 
     response() {
         if (this.getModification('debug')) {
-            debug(this.getModification('body'), `[request: ${this.getModification('path')} <${this.getModification('method') || 'POST'}>]`)
+            this.debugger = getLogger(`[request: ${this.getModification('path')} <${this.getModification('method') || 'POST'}>]`)
+            this.debugger.add(this.getModification('body'), "body")
         }
 
         return this.callApi(mock, this.getModification('body'))

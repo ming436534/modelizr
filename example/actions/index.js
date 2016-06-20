@@ -8,7 +8,6 @@ const setup = (
         requestTo: apply => path => apply('path', `http://localhost:8000/${path}`)
     })
         .debug()
-        .spaces(2)
         .path('http://localhost:8000/graphql')
         .headers({ok: 'ok'})
         .mockConfig({

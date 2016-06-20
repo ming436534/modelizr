@@ -1,4 +1,4 @@
-import { _, debug, api, warn } from './utils'
+import { _, api, warn } from './utils'
 import normalize from './normalizer'
 
 class QueryMutators {
@@ -127,11 +127,18 @@ class QueryBase extends QueryMutators {
         )
 
         return this.response().then(res => {
-            if (this.getModification('debug')) {
-                debug(res, '[response]')
+            if (this.debugger) {
+                this.debugger.add(res, "response")
+                this.debugger.print()
             }
 
             return res
+        }).catch(e => {
+            if (this.debugger) {
+                this.debugger.add(e, "error")
+                this.debugger.print()
+            }
+            throw e
         }).then((...args) => cb(...args, normalizr))
     }
 
@@ -140,17 +147,22 @@ class QueryBase extends QueryMutators {
             }
 
         return this.response().then(res => {
-            if (this.getModification('debug')) {
-                debug(res, '[response]')
-            }
+            if (this.debugger) this.debugger.add(res, "response")
             const response = normalize(
                 res.body,
                 ...this._models
             )
-            if (this.getModification('debug')) {
-                debug(response, '[normalized response]')
+            if (this.debugger) {
+                this.debugger.add(response, "normalized response")
+                this.debugger.print()
             }
             return response
+        }).catch(e => {
+            if (this.debugger) {
+                this.debugger.add(e, "error")
+                this.debugger.print()
+            }
+            throw e
         }).then(cb)
     }
 

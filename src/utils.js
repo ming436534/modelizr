@@ -22,10 +22,22 @@ _.hasValuesOf = (response, model) => {
     return filtered.length == _.size(response)
 }
 
-const debug = (log, name) => {
-    if (typeof console.groupCollapsed === 'function') console.groupCollapsed(name)
-    console.log(log)
-    if (typeof console.groupEnd === 'function') console.groupEnd()
+const getLogger = name => {
+    const group = []
+    const time = Date.now()
+    
+    return {
+        add: (output, name) => group.push({output, name}),
+        print: () => {
+            if (typeof console.groupCollapsed === 'function') console.groupCollapsed(`${name} [${(Date.now() - time) / 1000}s]`)
+            _.forEach(group, ({name, output}) => {
+                if (typeof console.groupCollapsed === 'function') console.groupCollapsed(name)
+                console.log(output)
+                if (typeof console.groupEnd === 'function') console.groupEnd()
+            })
+            if (typeof console.groupEnd === 'function') console.groupEnd()
+        }
+    }
 }
 
 const base = custom => {
@@ -127,4 +139,4 @@ const alias = (source, key) => {
     }
 }
 
-export { _, base, debug, api, prepare, warn, alias }
+export { _, base, getLogger, api, prepare, warn, alias }

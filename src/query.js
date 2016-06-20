@@ -1,4 +1,4 @@
-import { _, base, debug } from './utils'
+import { _, base, getLogger } from './utils'
 import mock from './mock'
 
 const query = base()
@@ -12,7 +12,8 @@ query.Class = class extends query.Class {
         this.generate()
 
         if (this.getModification('debug')) {
-            debug(this._query, `[query: ${_.map(this._models, ({_schema: {key}}) => key)}]`)
+            this.debugger = getLogger(`[query: ${_.map(this._models, ({_schema: {key}}) => key)}]`)
+            this.debugger.add(this._query, "query")
         }
 
         return this.callApi(mock)

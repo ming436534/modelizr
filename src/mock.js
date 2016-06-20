@@ -174,7 +174,6 @@ mock.Class = class extends mock.Class {
 
                 if (opts.generateFromParams) {
                     _.forEach(_model.params, (param, key) => {
-                        console.log(_model)
                         _model.properties = _.mapValues(_model.properties, (prop, _key) => {
                             if (_key == key) {
                                 if (prop._isModel || prop._isUnion) {
