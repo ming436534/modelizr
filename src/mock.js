@@ -1,16 +1,14 @@
 import { _, base, warn } from './utils'
+import jsf from 'json-schema-faker/lib'
 import v4 from 'uuid-v4'
 
-import jsf from 'json-schema-faker/lib'
 if (process.env.NODE_ENV !== 'production') {
     jsf.extend('faker', () => require('faker'))
     jsf.extend('chance', () => require('chance'))
-}
-
-if (process.env.NODE_ENV === 'production') {
+} else {
     const message = name => () => warn(`${name} has been stripped from the production build. To continue to use ${name} in production, ` +
         `you can manually pass it to modelizr. See https://julienvincent.github.io/modelizr/docs/usage/Production.html for more information.`)
-    
+
     jsf.extend('faker', () => message('faker'))
     jsf.extend('chance', () => message('chance'))
 }

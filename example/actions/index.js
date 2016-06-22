@@ -9,7 +9,6 @@ const setup = (
     })
         .debug()
         .path('http://localhost:8000/graphql')
-        .headers({ok: 'ok'})
         .mockConfig({
             extensions: {
                 faker: faker => {

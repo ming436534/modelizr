@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { QueryBase, QueryMutators } from './bases'
 import { query, mutation, request } from './index'
 import { model, union } from './model'
+import fetch from 'isomorphic-fetch'
 
 _.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 _.extractMockedObjects = array => {

@@ -1,4 +1,4 @@
-import { union, model, alias } from '../../src/index'
+import { union, model } from '../../src/index'
 
 const user = model('users')
 
