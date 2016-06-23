@@ -1,5 +1,6 @@
-import { _, api, warn } from './utils'
+import { api, warn, mapValid } from './utils'
 import normalize from './normalizer'
+import _ from 'lodash'
 
 class QueryMutators {
     constructor(target) {
@@ -88,7 +89,7 @@ class QueryBase extends QueryMutators {
         const mapProps = (props, indent) => {
             const currentIndent = `\n${this.spacer(spaces * indent)}`
 
-            return _.mapValid(props, (prop, key) => {
+            return mapValid(props, (prop, key) => {
                 if (prop.model) return this.makeQuery(prop, spaces, indent, model._isUnion)
 
                 if (prop.type == 'object') {

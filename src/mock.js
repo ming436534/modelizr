@@ -1,6 +1,7 @@
-import { _, base, warn } from './utils'
+import { base, warn, mapValid, extractMockedObjects } from './utils'
 import jsf from 'json-schema-faker/lib'
 import v4 from 'uuid-v4'
+import _ from 'lodash'
 
 if (process.env.NODE_ENV !== 'production') {
     jsf.extend('faker', () => require('faker'))
@@ -46,7 +47,7 @@ mock.Class = class extends mock.Class {
         })
         jsf.option(opts.jsfOptions)
 
-        const mock = models => _.extractMockedObjects(_.mapValid(models, model => {
+        const mock = models => extractMockedObjects(mapValid(models, model => {
             if (typeof model.build === 'function') {
                 model = model.build()
             }

@@ -1,6 +1,6 @@
 import { ModelBase } from './bases'
 import { unionOf } from 'normalizr'
-import { _ } from './utils'
+import _ from 'lodash'
 
 class Union extends ModelBase {
     constructor(schema, models) {
@@ -35,7 +35,7 @@ const union = (key, models, options) => {
         }
 
         let params = _.pullAt(_models, 0)[0]
-        
+
         if (params && params instanceof ModelBase) {
             _models.unshift(params)
             params = {}

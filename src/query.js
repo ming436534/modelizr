@@ -1,11 +1,12 @@
-import { _, base, getLogger } from './utils'
+import { base, getLogger, mapValid } from './utils'
 import mock from './mock'
+import _ from 'lodash'
 
 const query = base()
 query.Class = class extends query.Class {
 
     generate() {
-        return (this._query = `{${_.mapValid(this._models, model => this.makeQuery(model.build(), this.getModification('spaces')))}\n}`)
+        return (this._query = `{${mapValid(this._models, model => this.makeQuery(model.build(), this.getModification('spaces')))}\n}`)
     }
 
     response() {

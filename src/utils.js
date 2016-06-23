@@ -4,8 +4,8 @@ import { query, mutation, request } from './index'
 import { model, union } from './model'
 import fetch from 'isomorphic-fetch'
 
-_.mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
-_.extractMockedObjects = array => {
+export const mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
+export const extractMockedObjects = array => {
     let response = {}
     _.forEach(array, element => {
         response = {
@@ -16,7 +16,7 @@ _.extractMockedObjects = array => {
 
     return response
 }
-_.hasValuesOf = (response, model) => {
+export const hasValuesOf = (response, model) => {
     const filtered = _.filter(response, value => {
         return (model.required && model.required.length && _.filter(model.required, field => value[field]).length === model.required.length) || false
     })
@@ -26,7 +26,7 @@ _.hasValuesOf = (response, model) => {
 const getLogger = name => {
     const group = []
     const time = Date.now()
-    
+
     return {
         add: (output, name) => group.push({output, name}),
         print: () => {
@@ -140,4 +140,4 @@ const alias = (source, key) => {
     }
 }
 
-export { _, base, getLogger, api, prepare, warn, alias }
+export { base, getLogger, api, prepare, warn, alias }

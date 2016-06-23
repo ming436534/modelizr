@@ -1,5 +1,6 @@
 import { normalize as Normalize, arrayOf as _arrayOf, valuesOf as _valuesOf, unionOf as _unionOf } from 'normalizr'
-import { _, warn } from './utils'
+import { warn, hasValuesOf } from './utils'
+import _ from 'lodash'
 
 const normalize = (response, ...query) => {
     const _query = _.mapKeys(_.mapValues(query, model => model.build()), model => model.key)
@@ -18,7 +19,7 @@ const normalize = (response, ...query) => {
         }
 
         if (Array.isArray(response[key])) return _arrayOf(model)
-        if (_.hasValuesOf(response[key], model)) return _valuesOf(model)
+        if (hasValuesOf(response[key], model)) return _valuesOf(model)
 
         return model
     }))
@@ -27,7 +28,7 @@ const normalize = (response, ...query) => {
 class Iterable {
     constructor(model, options) {
         if (options) warn("Modelizr's arrayOf and valuesOf definitions don't support schemaAttributes and other options. Rather use unions")
-        
+
         this.model = model
     }
 

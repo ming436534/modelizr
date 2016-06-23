@@ -1,7 +1,8 @@
 import { Schema as NormalizerSchema } from 'normalizr'
 import { arrayOf, ValuesOf, Iterable } from './normalizer'
-import {ModelBase} from './bases'
-import { _, alias } from './utils'
+import { ModelBase } from './bases'
+import { alias } from './utils'
+import _ from 'lodash'
 
 class Model extends ModelBase {
     constructor(schema, params, ...models) {
@@ -18,7 +19,7 @@ class Model extends ModelBase {
             params
         }
     }
-    
+
     without = exclusion => this.applyModification('properties', _.omit(this._schema.properties, exclusion))
     only = selection => this.applyModification('properties', _.pick(this._schema.properties, selection))
     onlyIf = statement => this.applyModification('continue', statement === undefined ? true : statement)
@@ -54,7 +55,7 @@ const model = (name, schema, options) => {
 
         return new Model((_key ? alias(_model, _key) : _model).schema, params, ...models)
     }
-    
+
     const formatSchema = (schema, options) => {
         if (!schema.properties && !schema.required) {
             schema = {
@@ -87,7 +88,7 @@ const model = (name, schema, options) => {
             required: _.map(_.omitBy(schema.properties, prop => prop.model || typeof prop.type === 'function'), (prop, key) => key),
             ...schema
         }
-        
+
         return schema
     }
     schema = formatSchema(schema, options)
@@ -103,7 +104,7 @@ const model = (name, schema, options) => {
                 _model.schema._mockTypes[key] = 'single'
                 return definition.schema.model
             }
-            
+
             if (definition.unionOf) {
                 _model.schema._mockTypes[key] = 'single'
                 return definition.define()

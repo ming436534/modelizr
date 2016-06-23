@@ -1,5 +1,6 @@
-import { _, base, getLogger } from './utils'
+import { base, getLogger, mapValid } from './utils'
 import mock from './mock'
+import _ from 'lodash'
 
 const mutation = base()
 mutation.Class = class extends mutation.Class {
@@ -17,7 +18,7 @@ mutation.Class = class extends mutation.Class {
 
     generate() {
         return (
-            this._query = `mutation ${this.getModification('mutationName')}${this.makeParams(this.getModification('params'))} {${_.mapValid(this._models, model => {
+            this._query = `mutation ${this.getModification('mutationName')}${this.makeParams(this.getModification('params'))} {${mapValid(this._models, model => {
                 model = model.build()
                 if (this.getModification('query')) return this.makeQuery(model, this.getModification('spaces'))
                 return `\n${this.spacer(this.getModification('spaces'))}${model.key}${this.makeParams(model.params)}`
