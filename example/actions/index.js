@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { prepare, alias, ID } from '../../src/index'
-import { book, user, collection } from '../models/index'
+import {prepare, alias} from '../../src/index'
+import {book, user, collection} from '../models/index'
 import store from '../store/index'
 
 const setup = (
@@ -41,6 +41,12 @@ const setEntities = entities => {
 export const requestUsers = (mock, delay, error) => {
     const author = alias(user, "author")
 
+    query
+        .mock(mock, {
+            delay,
+            error: error ? 'throw' : false
+        })
+
     query(
         user(
             book(
@@ -50,45 +56,43 @@ export const requestUsers = (mock, delay, error) => {
                 user()
             )
         )
-    )
-        .mock(mock, {
-            delay,
-            error: error ? 'throw' : false
-        })
-        .normalize(res => setEntities(res.entities))
+    ).normalize(res => setEntities(res.entities))
 }
 
 export const mutateUser = (mock, delay, error) => {
-    mutation(
-        user()
-    )
+
+    mutation
         .as("createUser")
         .params({admin: true})
         .mock(mock, {
             delay,
             error: error ? 'throw' : false
         })
-        .then()
+
+    mutation(
+        user()
+    ).then()
 }
 
 export const mutateUserAndFetch = (mock, delay, error) => {
-    mutation(
-        user({id: "PRESET_ID", firstName: "Some Name", books: ["Preset_book"]},
-            book('book')
-        )
-    )
+
+    mutation
         .mock(mock, {
             delay,
             error: error ? 'throw' : false
         })
         .query()
-        .normalize(res => setEntities(res.entities))
+
+    mutation(
+        user({id: "PRESET_ID", firstName: "Some Name", books: ["Preset_book"]},
+            book('book')
+        )
+    ).normalize(res => setEntities(res.entities))
 }
 
 export const plainRequest = (mock, delay, error) => {
-    request(
-        user()
-    )
+
+    request
         .mock(mock, {
             delay,
             error: error ? 'throw' : false
@@ -100,7 +104,8 @@ export const plainRequest = (mock, delay, error) => {
         .body({
             name: 'john'
         })
-        .then((res, normalize) => {
-            console.log(normalize(res.body))
-        })
+
+    request(
+        user()
+    ).then((res, normalize) => console.log(normalize(res.body)))
 }

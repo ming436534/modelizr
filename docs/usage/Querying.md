@@ -10,16 +10,16 @@ can have [modifiers](../modifiers/README.md) applied to them.
 ```javascript
 import { query } from 'modelizr'
 
+query.path('http://path.to.api/graphql')
+
 query(
     user(
         book()
     ).params({ids: [1, 2, 3]})
-)
-    .path('http://path.to.api/graphql')
-    .then((res, normalize) => {
-        // res -> the response from the server
-        // normalize(res.body) // normalized response
-    })
+).then((res, normalize) => {
+    // res -> the response from the server
+    // normalize(res.body) // normalized response
+})
 ```
 
 Internally this will generate the following query and post it to `http://path.to.api/graphql` - as defined with the `.path()` modifier.
@@ -132,14 +132,15 @@ now you will need to explicitly specify this.
 ```javascript
 import { mutation } from 'graphql'
 
-mutation(
-    user({firstName: "John", lastName: "Doe"})
-)
+mutation
     .as("createUser")
     .params({admin: true})
     .path('http://path.to.api/graphql')
     .query()
-    .normalize(res => {})
+
+mutation(
+    user({firstName: "John", lastName: "Doe"})
+).normalize(res => {})
 ```
 **Note** - We passed params directly into the model without the use of a modifier. This makes more sense when making single-model mutations.
 
@@ -162,11 +163,7 @@ You will need to explicitly give this request a body.
 ```javascript
 import { request } from 'modelizr'
 
-request(
-    user(
-        book()
-    )
-)
+request
     .body({
         firstName: "John",
         lastName: "Doe"
@@ -175,5 +172,10 @@ request(
     .method("POST")
     .contentType( ... )
     .headers( ... )
-    .then((res, normalize) => {})
+
+request(
+    user(
+        book()
+    )
+).then((res, normalize) => {})
 ```

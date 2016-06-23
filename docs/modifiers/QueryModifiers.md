@@ -2,6 +2,20 @@
 
 > These modifiers only apply to query tools - **query**, **mutation** and **request**.
 
+These modifiers can be applied to either a static or an active tool.
+```javascript
+import { query } from 'modelizr'
+
+query
+    .path("http:// ... ")
+    .mock()
+    
+// same as
+query( models )
+    .path("http:// ... ")
+    .mock()
+```
+
 #### `path(endpoint)`
 
 Define the endpoint that the Fetch API should point at.
