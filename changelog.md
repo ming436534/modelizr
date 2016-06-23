@@ -4,6 +4,8 @@
 + Added warnings in the place of the stripped `faker` and `chance` modules.
 + Added information about the stripped modules to docs.
 + Debugger now groups requests and logs them on completion.
++ Realised isomorphic-fetch wasn't actually being used, and was causing modelizr to break outside of a fetch supported browser. Implemented the dependency.
++ Model parameters are now correctly parsed using `JSON.stringify()`.
 
 # 0.7.5 (June 15th 2016)
 
