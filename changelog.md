@@ -1,4 +1,4 @@
-# Unpublished
+# 0.7.5 (June 23rd 2016)
 
 + When `NODE_ENV` is set to `production`, the `faker` and `change` dependencies are excluded. To include them, manually extend jsf via the mocking config object.
 + Added warnings in the place of the stripped `faker` and `chance` modules.
