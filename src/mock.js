@@ -1,6 +1,5 @@
-import { base, warn, mapValid, extractMockedObjects } from './utils'
+import { base, warn, mapValid, extractMockedObjects, v4 } from './utils'
 import jsf from 'json-schema-faker/lib'
-import v4 from 'uuid-v4'
 import _ from 'lodash'
 
 if (process.env.NODE_ENV !== 'production') {

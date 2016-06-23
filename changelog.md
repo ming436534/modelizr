@@ -1,3 +1,8 @@
+# Unpublished
+
++ Reduced bundle size by implementing [babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash).
++ Added `faker` and `chance` as direct dependencies due to jspm being unable to find them. View [#164](https://github.com/json-schema-faker/json-schema-faker/issues/164) for more info.
+
 # 0.7.5 (June 23rd 2016)
 
 + When `NODE_ENV` is set to `production`, the `faker` and `change` dependencies are excluded. To include them, manually extend jsf via the mocking config object.

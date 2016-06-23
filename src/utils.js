@@ -1,8 +1,8 @@
-import _ from 'lodash'
 import { QueryBase, QueryMutators } from './bases'
 import { query, mutation, request } from './index'
 import { model, union } from './model'
 import fetch from 'isomorphic-fetch'
+import _ from 'lodash'
 
 export const mapValid = (array, map) => _.map(_.pickBy(array, element => element && element.continue !== false), map)
 export const extractMockedObjects = array => {
@@ -23,7 +23,7 @@ export const hasValuesOf = (response, model) => {
     return filtered.length == _.size(response)
 }
 
-const getLogger = name => {
+export const getLogger = name => {
     const group = []
     const time = Date.now()
 
@@ -41,7 +41,7 @@ const getLogger = name => {
     }
 }
 
-const base = custom => {
+export const base = custom => {
     let res = (...models) => new res.Class(models, res._mutations)
     res.Class = QueryBase
     res._mutations = {}
@@ -52,7 +52,7 @@ const base = custom => {
     return res
 }
 
-const warn = message => {
+export const warn = message => {
     if (typeof console.warn === 'function') {
         console.warn(message)
     } else {
@@ -60,7 +60,7 @@ const warn = message => {
     }
 }
 
-const prepare = mutators => {
+export const prepare = mutators => {
     const apply = (obj, target) => {
         const _target = target
 
@@ -97,7 +97,7 @@ const prepare = mutators => {
     })
 }
 
-const api = ({body, path, contentType, headers, method}) => {
+export const api = ({body, path, contentType, headers, method}) => {
     let status = 200
 
     return fetch(path, {
@@ -130,7 +130,7 @@ const api = ({body, path, contentType, headers, method}) => {
     })
 }
 
-const alias = (source, key) => {
+export const alias = (source, key) => {
     if (source.unionOf) {
         const _union = union(key, source.models, source.options)
         return _union
@@ -140,4 +140,12 @@ const alias = (source, key) => {
     }
 }
 
-export { base, getLogger, api, prepare, warn, alias }
+export const v4 = () => {
+    let uuid = ''
+    for (let i = 0; i < 32; i++) {
+        let value = Math.random() * 16 | 0
+        if (i > 4 && i < 21 && ! (i % 4)) uuid += '-'
+        uuid += ((i === 12) ? 4 : ((i === 16) ? (value & 3 | 8) : value)).toString(16)
+    }
+    return uuid
+}
