@@ -12,6 +12,7 @@ const setup = (
         .mockConfig({
             extensions: {
                 faker: faker => {
+                    // example from json-schema-fakers readme
                     faker.custom = {
                         statement: length => {
                             return faker.name.firstName() + " has " + faker.finance.amount() + " on " + faker.finance.account(length) + ".";
@@ -60,7 +61,6 @@ export const requestUsers = (mock, delay, error) => {
 }
 
 export const mutateUser = (mock, delay, error) => {
-
     mutation
         .as("createUser")
         .params({admin: true})
@@ -75,7 +75,6 @@ export const mutateUser = (mock, delay, error) => {
 }
 
 export const mutateUserAndFetch = (mock, delay, error) => {
-
     mutation
         .mock(mock, {
             delay,
@@ -91,7 +90,6 @@ export const mutateUserAndFetch = (mock, delay, error) => {
 }
 
 export const plainRequest = (mock, delay, error) => {
-
     request
         .mock(mock, {
             delay,

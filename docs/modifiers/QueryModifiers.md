@@ -9,7 +9,7 @@ import { query } from 'modelizr'
 query
     .path("http:// ... ")
     .mock()
-    
+
 // same as
 query( models )
     .path("http:// ... ")
@@ -21,7 +21,7 @@ query( models )
 Define the endpoint that the Fetch API should point at.
 
 ```javascript
-query( ... ).path("http:// ... ")
+query.path("http:// ... ")
 ```
 
 #### `as(name)`
@@ -29,7 +29,7 @@ query( ... ).path("http:// ... ")
 Can only be applied to **mutation**. Specify the name of a mutation query.
 
 ```javascript
-mutation( ... ).as("createUser")
+mutation.as("createUser")
 ```
 
 #### `params(name)`
@@ -37,7 +37,7 @@ mutation( ... ).as("createUser")
 Can only be applied to **mutation**. Add parameters to a mutation query.
 
 ```javascript
-mutation( ... ).params({forceDelete: true})
+mutation.params({forceDelete: true})
 ```
 
 #### `api(function)`
@@ -46,7 +46,7 @@ Replace the default Fetch API with your own custom api. Please read up on the [f
 
 ```javascript
 const customAPI = mutations => { ... }
-query( ... ).api(customAPI)
+query.api(customAPI)
 ```
 
 #### `spaces(amount)`
@@ -54,14 +54,14 @@ query( ... ).api(customAPI)
 Specify by how many spaces to indent the generated query
 
 ```javascript
-query( ... ).spaces(2)
+query.spaces(2)
 ```
 
 #### `generate()`
 
 Causes the query tool to return the generated query as a string.
 
-> No modifiers can be chained after using this modifier
+> No modifiers can be chained after using this modifier, and cannot be used on static tools.
 
 Does not apply to **request**.
 
@@ -83,7 +83,7 @@ console.log(query( ... ).generate())
 Configuration for the mocking api.
 
 ```javascript
-query( ... ).mockConfig({
+query.mockConfig({
     extensions: {
         faker: faker => {}
     },
@@ -99,7 +99,7 @@ The first argument determines weather or not to mock the query (`true` if undefi
 [here](../api/Mocks.md#mock-configuration).
 
 ```javascript
-query( ... ).mock(true, {
+query.mock(true, {
     quantity: 3,
     error: true
 })
@@ -109,7 +109,7 @@ query( ... ).mock(true, {
 
 Generate the query and send it to the specified GraphQL server. You will get a promise returned and can continue chaining `.then` and `.catch`.
 
-> No modifiers can be chained after using this modifier
+> No modifiers can be chained after using this modifier, and cannot be used on static tools.
 
 You will be given the response as the first argument, and a normalize tool as the second.
 
@@ -126,7 +126,7 @@ query(
 
 Similar to `.then()`, except this will also attempt to normalize the response and give you the normalized response.
 
-> No modifiers can be chained after using this modifier
+> No modifiers can be chained after using this modifier, and cannot be used on static tools.
 
 ```javascript
 query(
@@ -144,9 +144,7 @@ Should be given a function that can accept two parameters. `apply(key, value)` a
 [custom modifiers](../api/QueryTools.md#custom-modifiers)
 
 ```javascript
-query(
-    user()
-).custom((apply, valueOf) => apply('path', `${valueOf('path')}/get-users`))
+query.custom((apply, valueOf) => apply('path', `${valueOf('path')}/get-users`))
 ```
 
 #### `headers(headers)`
@@ -154,7 +152,7 @@ query(
 Give the request or query some headers.
 
 ```javascript
-query( ... ).headers({
+query.headers({
     token: " ... "
 })
 ```
@@ -164,7 +162,7 @@ query( ... ).headers({
 Specify the content-type of the request
 
 ```javascript
-request( ... ).contentType('application/json')
+request.contentType('application/json')
 ```
 
 #### `method(type)`
@@ -172,7 +170,7 @@ request( ... ).contentType('application/json')
 Specify the method with which to make a request. `GET`, `POST`, `PUT`, `DELETE`. This modifier only applies to **request**
 
 ```javascript
-request( ... ).method('GET')
+request.method('GET')
 ```
 
 #### `body(requestBody)`
@@ -182,5 +180,5 @@ Specify the body of the request. This modifier only applies to **request**
 `object` values will be stringified.
 
 ```javascript
-request( ... ).body({ ... })
+request.body({ ... })
 ```

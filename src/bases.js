@@ -51,10 +51,6 @@ class QueryMutators {
             delay: delay || 500
         })
     }
-
-    // define = definitions => {
-    //     
-    // }
 }
 
 class QueryBase extends QueryMutators {

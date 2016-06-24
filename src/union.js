@@ -9,11 +9,6 @@ class Union extends ModelBase {
         this._schema = schema
     }
 
-    applyModification(key, value) {
-        this._schema[key] = value
-        return this
-    }
-
     params = params => this.applyModification('params', params)
 }
 
