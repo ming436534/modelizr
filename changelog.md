@@ -1,9 +1,9 @@
-# 0.7.6 (June 24th 2016)
+# 0.7.7 (June 24th 2016)
 
 + Reduced bundle size by implementing [babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash).
 + Added `faker` and `chance` as direct dependencies due to jspm being unable to find them. View [#1938](https://github.com/jspm/jspm-cli/issues/1938) for more info.
 
-# 0.7.5 (June 23rd 2016)
+# 0.7.6 (June 23rd 2016)
 
 + When `NODE_ENV` is set to `production`, the `faker` and `change` dependencies are excluded. To include them, manually extend jsf via the mocking config object.
 + Added warnings in the place of the stripped `faker` and `chance` modules.
