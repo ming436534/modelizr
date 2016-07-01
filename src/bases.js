@@ -76,7 +76,7 @@ class QueryBase extends QueryMutators {
 
     makeParams(params) {
         if (!_.isEmpty(params)) {
-            return `(${_.filter(_.map(params, (param, key) => param ? `${key}: ${JSON.stringify(param)}` : null), param => param)})`
+            return `(${_.filter(_.map(params, (param, key) => param ? `${key}: ${JSON.stringify(param).replace(/\"([^(\")"]+)\":/g,"$1:")}` : null), param => param)})`
         }
         return ''
     }
