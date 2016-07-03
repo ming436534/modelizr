@@ -1,3 +1,8 @@
+# 0.7.8 (July 3rd 2016)
+
++ Merged PR to fix nested parametrization in queries.
++ Added `self` check when importing `isomorphic-fetch` to allow use in react-native.
+
 # 0.7.7 (June 24th 2016)
 
 + Reduced bundle size by implementing [babel-plugin-lodash](https://github.com/lodash/babel-plugin-lodash).
