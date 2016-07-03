@@ -3,7 +3,7 @@ import { query, mutation, request } from './index'
 import { model, union } from './model'
 import _ from 'lodash'
 
-if (typeof self !== 'undefined') {
+if (typeof navigator === 'undefined' || navigator.product != 'ReactNative') {
     require('isomorphic-fetch')
 }
 
