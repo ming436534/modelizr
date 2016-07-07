@@ -1,3 +1,7 @@
+# 0.7.9 (July 7th 2016)
+
++ Fixes a bug where mutations with array type presets get incorrect ids.
+
 # 0.7.8 (July 3rd 2016)
 
 + Merged PR to fix nested parametrization in queries.
