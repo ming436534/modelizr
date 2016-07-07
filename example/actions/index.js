@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import {prepare, alias} from '../../src/index'
-import {book, user, collection} from '../models/index'
+import { prepare, alias } from '../../src/index'
+import { book, user, collection } from '../models/index'
 import store from '../store/index'
 
 const setup = (
@@ -42,12 +42,6 @@ const setEntities = entities => {
 export const requestUsers = (mock, delay, error) => {
     const author = alias(user, "author")
 
-    query
-        .mock(mock, {
-            delay,
-            error: error ? 'throw' : false
-        })
-
     query(
         user(
             book(
@@ -57,40 +51,45 @@ export const requestUsers = (mock, delay, error) => {
                 user()
             )
         )
-    ).normalize(res => setEntities(res.entities))
+    )
+        .mock(mock, {
+            delay,
+            error: error ? 'throw' : false
+        })
+        .normalize(res => setEntities(res.entities))
 }
 
 export const mutateUser = (mock, delay, error) => {
-    mutation
+    mutation(
+        user()
+    )
         .as("createUser")
         .params({admin: true})
         .mock(mock, {
             delay,
             error: error ? 'throw' : false
         })
-
-    mutation(
-        user()
-    ).then()
+        .then()
 }
 
 export const mutateUserAndFetch = (mock, delay, error) => {
-    mutation
+    mutation(
+        user({id: "PRESET_ID", firstName: "Some Name", books: ["Preset_book"]},
+            book('books')
+        )
+    )
         .mock(mock, {
             delay,
             error: error ? 'throw' : false
         })
         .query()
-
-    mutation(
-        user({id: "PRESET_ID", firstName: "Some Name", books: ["Preset_book"]},
-            book('book')
-        )
-    ).normalize(res => setEntities(res.entities))
+        .normalize(res => setEntities(res.entities))
 }
 
 export const plainRequest = (mock, delay, error) => {
-    request
+    request(
+        user()
+    )
         .mock(mock, {
             delay,
             error: error ? 'throw' : false
@@ -102,8 +101,5 @@ export const plainRequest = (mock, delay, error) => {
         .body({
             name: 'john'
         })
-
-    request(
-        user()
-    ).then((res, normalize) => console.log(normalize(res.body)))
+        .then((res, normalize) => console.log(normalize(res.body)))
 }
