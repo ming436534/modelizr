@@ -136,6 +136,20 @@ query(
 })
 ```
 
+#### `middleware(middleware)`
+
+Add middleware to the request api. Accepts an array of functions. Each function is given the response, a resolve function and a reject function. Each middleware **must** call `next`.
+
+```javascript
+query(
+    user()
+)
+    .middleware([(res, next, reject) => next(res)])
+    .normalize(res => {
+        // res -> the normalized response
+    })
+```
+
 #### `custom((apply [, valueOf]) => apply(key, value))`
 
 Make a custom modification. Similar to `prepares` custom modifiers. Used for once-off, anonymous modifications.
