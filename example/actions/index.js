@@ -24,6 +24,12 @@ const setup = (
             jsfOptions: {},
             quantity: 20
         })
+        .middleware([
+            (res, next) => {
+                console.log('middleware')
+                next()
+            }
+        ])
 )
 
 const {query, mutation, request} = setup.get()

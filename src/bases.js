@@ -1,4 +1,4 @@
-import { api, warn, mapValid } from './utils'
+import { api, warn, mapValid, applyMiddleware } from './utils'
 import normalize from './normalizer'
 import _ from 'lodash'
 
@@ -51,6 +51,8 @@ class QueryMutators {
             delay: delay || 500
         })
     }
+
+    middleware = middleware => this.applyModification('middleware', [...this.getModification('middleware') || [], ...middleware])
 }
 
 class QueryBase extends QueryMutators {
@@ -76,7 +78,7 @@ class QueryBase extends QueryMutators {
 
     makeParams(params) {
         if (!_.isEmpty(params)) {
-            return `(${_.filter(_.map(params, (param, key) => param ? `${key}: ${JSON.stringify(param).replace(/\"([^(\")"]+)\":/g,"$1:")}` : null), param => param)})`
+            return `(${_.filter(_.map(params, (param, key) => param ? `${key}: ${JSON.stringify(param).replace(/\"([^(\")"]+)\":/g, "$1:")}` : null), param => param)})`
         }
         return ''
     }
@@ -115,44 +117,52 @@ class QueryBase extends QueryMutators {
             ...this._models
         )
 
-        return this.response().then(res => {
-            if (this.debugger) {
-                this.debugger.add(res, "response")
-                this.debugger.print()
-            }
+        return this.response()
+            .then(res => {
+                if (this.debugger) {
+                    this.debugger.add(res, "response")
+                    this.debugger.print()
+                }
 
-            return res
-        }).catch(e => {
-            if (this.debugger) {
-                this.debugger.add(e, "error")
-                this.debugger.print()
-            }
-            throw e
-        }).then((...args) => cb(...args, normalizr))
+                return res
+            })
+            .catch(e => {
+                if (this.debugger) {
+                    this.debugger.add(e, "error")
+                    this.debugger.print()
+                }
+                throw e
+            })
+            .then(res => applyMiddleware(this.getModification('middleware'), res))
+            .then(res => cb(res, normalizr))
     }
 
     normalize(cb) {
         cb = cb || function() {
             }
 
-        return this.response().then(res => {
-            if (this.debugger) this.debugger.add(res, "response")
-            const response = normalize(
-                res.body,
-                ...this._models
-            )
-            if (this.debugger) {
-                this.debugger.add(response, "normalized response")
-                this.debugger.print()
-            }
-            return response
-        }).catch(e => {
-            if (this.debugger) {
-                this.debugger.add(e, "error")
-                this.debugger.print()
-            }
-            throw e
-        }).then(cb)
+        return this.response()
+            .then(res => applyMiddleware(this.getModification('middleware'), res))
+            .then(res => {
+                if (this.debugger) this.debugger.add(res, "response")
+                const response = normalize(
+                    res.body,
+                    ...this._models
+                )
+                if (this.debugger) {
+                    this.debugger.add(response, "normalized response")
+                    this.debugger.print()
+                }
+                return response
+            })
+            .catch(e => {
+                if (this.debugger) {
+                    this.debugger.add(e, "error")
+                    this.debugger.print()
+                }
+                throw e
+            })
+            .then(cb)
     }
 
     response() {

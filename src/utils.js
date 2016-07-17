@@ -152,3 +152,18 @@ export const v4 = () => {
     }
     return uuid
 }
+
+export const applyMiddleware = (middleware, res) => {
+    return new Promise((resolve, reject) => {
+        const callNext = (index = 0, nextRes = res) => {
+            if (middleware.length - 1 == index) return middleware[index](nextRes, (res = nextRes) => resolve(res), reject)
+            middleware[index](nextRes, (res = nextRes) => callNext(index + 1, res), reject)
+        }
+
+        if (middleware && middleware.length) {
+            callNext()
+        } else {
+            resolve(res)
+        }
+    })
+}
