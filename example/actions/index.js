@@ -50,6 +50,7 @@ export const requestUsers = (mock, delay, error) => {
 
     query(
         user(
+            {awesome: false},
             book(
                 author()
             ),
