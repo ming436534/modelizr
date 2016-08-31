@@ -75,22 +75,22 @@ export const prepare = mutators => {
     }
 
     return base({
-        query: function () {
+        query: function() {
             warn("Calling .query() is deprecated. Please use .get() instead")
             return apply(this, query)
         },
 
-        mutation: function () {
+        mutation: function() {
             warn("Calling .mutation() is deprecated. Please use .get() instead")
             return apply(this, mutation)
         },
 
-        request: function () {
+        request: function() {
             warn("Calling .request() is deprecated. Please use .get() instead")
             return apply(this, request)
         },
 
-        get: function () {
+        get: function() {
             return {
                 query: apply(this, query),
                 mutation: apply(this, mutation),
@@ -100,7 +100,7 @@ export const prepare = mutators => {
     })
 }
 
-export const api = ({body, path, contentType, headers, method}) => {
+export const api = ({body, path, contentType, headers, method = "POST"}) => {
     let status = 200
 
     return fetch(path, {
@@ -109,8 +109,11 @@ export const api = ({body, path, contentType, headers, method}) => {
             'Content-Type': contentType || 'application/json',
             ...headers || {}
         },
-        method: method || 'POST',
-        body
+        method: method,
+        ...(
+            method.toLowerCase() != "get" && method.toLowerCase() != "head" ?
+            {body} : {}
+        )
     }).then(res => {
         status = res.status
         return res.json()
