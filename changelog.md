@@ -1,3 +1,9 @@
+# 0.7.10
+
++ Can now use middleware with modelizr responses.
++ Fixed bug that prevented top-level parameters with a value of false from being removed.
++ GET and HEAD requests cannot have a body. Fetch API updated to include a check for method type before adding a body.
+
 # 0.7.9 (July 7th 2016)
 
 + Fixes a bug where mutations with array type presets get incorrect ids.
