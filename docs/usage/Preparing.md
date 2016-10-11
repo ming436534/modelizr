@@ -8,7 +8,7 @@ To solve this, modelizr exports a `prepare()` helper which allows you to chain m
 all three query tools.
 
 ```javascript
-import { prepare } from 'mdoelizr'
+import { prepare } from 'modelizr'
 
 const {
     query,
