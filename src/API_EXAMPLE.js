@@ -3,18 +3,18 @@ import modelizr, { union } from 'modelizr'
 const User = {
     normalizeAs: "Shops",
     fields: {
-        id: String,
+        id: {_type: String, _faker: "name.firstName"},
         name: String,
         surname: String,
+        dates: [String],
         location: {
             latitude: Number,
             longitude: Number
-        }
-    },
-    primaryKey: "id",
-    relationships: {
+        },
+        gender: {_type: String, _pattern: "male|female"},
         Friends: ["Friend"]
-    }
+    },
+    primaryKey: "id"
 }
 
 const Friend = {
