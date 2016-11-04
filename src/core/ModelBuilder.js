@@ -4,17 +4,19 @@ import _ from 'lodash'
 import { ModelFunction } from '../types'
 
 export const CreateModel = (newModel): ModelFunction => {
-    const Model: ModelFunction = (fieldName: ?String | ?Object | ?ModelFunction, params: ?Object | ?ModelFunction, ...models: Array<ModelFunction>) => {
+    const Model: ModelFunction = (fieldName: ?String | ?Object | ?ModelFunction,
+                                  params: ?Object | ?ModelFunction,
+                                  ...models: Array<ModelFunction>) => {
+
         const NextModel = {...Model}
 
         if (typeof fieldName === 'string') {
             NextModel.ModelName = fieldName
 
-            if (typeof fieldName === 'function') {
+            if (typeof params === 'function') {
                 models.unshift(params)
             }
-
-            if (typeof fieldName === 'object') {
+            if (typeof params === 'object') {
                 NextModel.Params = {...NextModel.Params, ...params}
             }
         } else {
@@ -23,7 +25,6 @@ export const CreateModel = (newModel): ModelFunction => {
             if (typeof fieldName === 'function') {
                 models.unshift(fieldName)
             }
-
             if (typeof fieldName === 'object') {
                 NextModel.Params = {...NextModel.Params, ...fieldName}
             }

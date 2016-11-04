@@ -1,15 +1,21 @@
 // @flow
 import _ from 'lodash'
 
-export default (type: any): String => {
+export const isValidType = (type: any): String => {
     if (Array.isArray(type)) {
         type = type[0]
     }
 
-    const TypeMap = [
+    const InstanceTypeMap = [
         [String, "string"],
         [Number, "integer"],
         [Date, "date"]
+    ]
+
+    const StringTypeMap = [
+        "string",
+        "integer",
+        "date"
     ]
 
     // Field is already in a correct form
@@ -19,13 +25,16 @@ export default (type: any): String => {
                 return "integer"
             }
             default: {
-                return type
+                if (_.find(StringTypeMap, StringType => StringType == type)) {
+                    return type
+                }
+                return false
             }
         }
     }
 
-    const typeInMap = _.find(TypeMap, ([_type]) => _type === type)
+    const typeInMap = _.find(InstanceTypeMap, ([_type]) => _type === type)
     if (typeInMap) return typeInMap[1]
 
-    throw new Error("Unknown type provided in model")
+    return false
 }

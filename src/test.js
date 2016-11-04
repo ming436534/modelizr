@@ -1,11 +1,22 @@
 import _ from 'lodash'
 
-import CreateModel from './core/CreateModel'
+import Modelizr from './core/Modelizr'
 
-const A = CreateModel("ModelA")
-const B = CreateModel("ModelB")
+const client = new Modelizr({
+    models: {
+        User: {
+            fields: {
+                name: String,
+                surname: String,
+                Friends: ["Friend"]
+            }
+        },
+        Friend: {
+            fields: {
+                id: String
+            }
+        }
+    }
+})
 
-console.log(A(B))
-
-console.log(A)
-console.log(B)
+console.log(client.ClientState.models.User)
