@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import Modelizr from './core/Modelizr'
+import { union } from './tools/Collections'
 
 const client = new Modelizr({
     models: {
@@ -8,9 +9,14 @@ const client = new Modelizr({
             fields: {
                 name: String,
                 surname: String,
-                Friends: ["Friend"]
+                Friends: ["Friend"],
+                Unions: ["Union"]
             }
         },
+        Union: union({
+            models: ["User", "Friend"],
+            schemaAttribute: "__type"
+        }),
         Friend: {
             fields: {
                 id: String
@@ -19,4 +25,4 @@ const client = new Modelizr({
     }
 })
 
-console.log(client.ClientState.models.User)
+console.log(client.models)

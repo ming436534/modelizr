@@ -1,9 +1,10 @@
 // @flow
-import { Schema, arrayOf } from 'normalizr'
+import { Schema, arrayOf, unionOf } from 'normalizr'
 import _ from 'lodash'
 
 import CreateModel from './ModelBuilder'
 import { isValidType } from '../tools/TypeMap'
+import FETCH_API from '../tools/Fetch'
 import { ModelFunction } from '../types'
 
 type ModelDataType = {
@@ -13,14 +14,22 @@ type ModelDataType = {
     normalizrSchema: Schema
 }
 
+type UnionDataType = {
+    normalizeAs: ?String,
+    models: Array<String>,
+    schemaAttribute: String | Function,
+    _unionDataType: Boolean
+}
+
 type ClientStateType = {
     config: {
         endpoint: String,
+        api: Function,
         headers: ?Object<String>,
         mock: ?Boolean,
         debug: ?Boolean
     },
-    models: Object<ModelDataType>
+    models: Object<ModelDataType | UnionDataType>
 }
 
 export default class Modelizr {
@@ -30,65 +39,96 @@ export default class Modelizr {
 
     models: Object<ModelFunction> = {};
 
-    constructor(InitialClientState: ClientDescriptionType) {
+    constructor(InitialClientState: ClientStateType) {
         if (!InitialClientState) throw new Error("Modelizr expects a Client State as its first parameter")
+        if (!InitialClientState.config.endpoint && !InitialClientState.api) throw new Error("Please provide a base endpoint to make queries to")
 
         this.ClientState = {...InitialClientState}
 
         this.generateModelFunctions()
-        this.defineRelationships()
+        this.defineUnionRelationships()
+        this.defineModelRelationships()
+
+        const defaultConfig = {
+            mock: false,
+            debug: true,
+            api: FETCH_API
+        }
     }
 
     generateModelFunctions() {
         const {models} = this.ClientState
 
         _.forEach(models, (data, name) => {
-            const ModelData: ModelDataType = {...data}
+            const ModelData: ModelDataType | UnionDataType = {...data}
 
             if (!ModelData.normalizeAs) ModelData.normalizeAs = name
             if (!ModelData.primaryKey) ModelData.primaryKey = "id"
 
-            ModelData.normalizrSchema = new Schema(ModelData.normalizeAs)
+            if (!ModelData._unionDataType) ModelData.normalizrSchema = new Schema(ModelData.normalizeAs)
 
             this.ClientState.models[name] = ModelData
             this.models[name] = CreateModel(name)
         })
     }
 
-    defineRelationships() {
+    defineUnionRelationships() {
         const {models} = this.ClientState
 
-        _.forEach(models, (ModelData: ModelDataType, modelName: String) => {
-            // Filter out all non-model field types
-            const ModelFields = _.pickBy(ModelData.fields, (field, fieldName) => {
-                let isArray = false
-                if (Array.isArray(field)) {
-                    isArray = true
-                    field = field[0]
-                }
-                if (typeof field === 'string' && !isValidType(field)) {
-                    if (models[field]) return true
-                    console.warn(
-                        `Field { ${fieldName}: ${isArray && "["}"${field}"${isArray && "]"} } on '${modelName}' points to an unknown model`
-                    )
-                }
-            })
+        _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: String) => {
+            // Describe all union normalizr schemas
+            if (ModelData._unionDataType) {
+                // filter out all non-existing models and warn about them
+                const ExistingModels = _.filter(ModelData.models, model => {
+                    if (models[model]) return true
+                    console.warn(`Model ${model} on union "${modelName}" points to an unknown model`)
+                })
 
-            ModelData.normalizrSchema.define(
-                _.mapValues(ModelFields, field => {
-                        let isArray = false
-                        if (Array.isArray(field)) {
-                            isArray = true
-                            field = field[0]
-                        }
-
-                        const ChildModel: ModelDataType = models[field]
-
-                        if (isArray) return arrayOf(ChildModel.normalizrSchema)
-                        return ChildModel.normalizrSchema
-                    }
+                ModelData.normalizrSchema = unionOf(_.map(ExistingModels, model =>
+                        ({[model]: models[model].normalizrSchema})),
+                    {schemaAttribute: ModelData.schemaAttribute}
                 )
-            )
+            }
+        })
+    }
+
+    defineModelRelationships() {
+        const {models} = this.ClientState
+
+        _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: String) => {
+            // Describe all model relationships to the normalizr schema
+            if (!ModelData._unionDataType) {
+                // Filter out all non-model field types
+                const ModelFields = _.pickBy(ModelData.fields, (field, fieldName) => {
+                    let isArray = false
+                    if (Array.isArray(field)) {
+                        isArray = true
+                        field = field[0]
+                    }
+                    if (typeof field === 'string' && !isValidType(field)) {
+                        if (models[field]) return true
+                        console.warn(
+                            `Field { ${fieldName}: ${isArray && "["}"${field}"${isArray && "]"} } on '${modelName}' points to an unknown model`
+                        )
+                    }
+                })
+
+                ModelData.normalizrSchema.define(
+                    _.mapValues(ModelFields, field => {
+                            let isArray = false
+                            if (Array.isArray(field)) {
+                                isArray = true
+                                field = field[0]
+                            }
+
+                            const ChildModel: ModelDataType | UnionDataType = models[field]
+
+                            if (isArray) return arrayOf(ChildModel.normalizrSchema)
+                            return ChildModel.normalizrSchema
+                        }
+                    )
+                )
+            }
         })
     }
 }
