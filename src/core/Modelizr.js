@@ -27,7 +27,8 @@ export default class Modelizr {
         const defaultConfig = {
             mock: false,
             debug: true,
-            api: FETCH_API
+            api: FETCH_API,
+            throwOnErrors: true
         }
 
         this.ClientState.config = {

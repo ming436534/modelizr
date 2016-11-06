@@ -2,6 +2,7 @@
 import { normalizeFunctionParameters } from './Filters'
 import generate from '../core/QueryGeneration'
 import Normalizr from '../data/Normalization'
+import { GraphQLError } from './Collections'
 import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 
@@ -30,6 +31,15 @@ type RequestObject = {
     normalize: (cb: Function) => Promise<RequestResponse>,
 }
 
+/**
+ * The fetch implementation that is used to make requests.
+ *
+ * It returns a promise containing a RequestResponse type object.
+ *
+ * @param config
+ * @return {Promise.<RequestResponse>|*|Promise.<{response: *}>}
+ * @constructor
+ */
 export const FETCH_API = (config: ConfigType) => {
     const method: string = (config.method || "POST").toUpperCase()
     let server_response
@@ -49,10 +59,16 @@ export const FETCH_API = (config: ConfigType) => {
             server_response = res
             return res.json()
         })
-        .then(res => ({
-            response: server_response,
-            ...res
-        }))
+        .then(res => {
+            if (res.errors) {
+                if (config.throwOnErrors) throw new GraphQLError("The request ended with errors.", res.errors)
+            }
+
+            return {
+                response: server_response,
+                ...res
+            }
+        })
 }
 
 export const RequestBuilder = (ClientState: ClientStateType,

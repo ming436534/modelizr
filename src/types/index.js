@@ -33,9 +33,10 @@ export type ConfigType = {
     api: Function,
     headers: ?Object<string>,
     method: ?string,
-    mock: ?Boolean,
-    debug: ?Boolean,
-    body: ?Object
+    mock: ?boolean,
+    debug: ?boolean,
+    body: ?Object,
+    throwOnErrors: boolean
 }
 
 export type ClientStateType = {

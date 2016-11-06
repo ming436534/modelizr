@@ -36,7 +36,7 @@ const client = new Modelizr({
         }
     },
     config: {
-        endpoint: "https://"
+        endpoint: "https://api.yumochefs.com/graphql"
     }
 })
 
