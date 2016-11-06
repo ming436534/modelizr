@@ -38,7 +38,6 @@ export const FETCH_API = (config: ConfigType) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZmZmUwYWY4LTlkNjktNDdmMy1iMjZiLTQ1ZjAzYTRkYmEyMCIsImlhdCI6MTQ3ODQ0NTQxMn0.mo4iLAjO0K0UnAUBTIoh332rJft8bARhLl9gwCb0oP0",
             ...config.headers
         },
         method,
