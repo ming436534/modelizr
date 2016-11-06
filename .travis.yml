@@ -1,4 +1,10 @@
 language: node_js
 node_js:
-  - 5.1
+  - 6
+
+script:
+  - npm run flow
+  - npm run lint
+  - npm test
+
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

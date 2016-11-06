@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node example/index.js",
     "lint": "eslint src; exit 0",
+    "flow": "flow",
     "build": "rimraf lib && babel src -d lib",
     "prepublish": "npm run build",
     "test": "istanbul cover _mocha -- --compilers js:babel-core/register -u exports -R list",
@@ -54,6 +55,7 @@
     "eslint": "^2.10.2",
     "eslint-plugin-babel": "^3.2.0",
     "express": "^4.13.4",
+    "flow-bin": "^0.34.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
