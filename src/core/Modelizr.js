@@ -11,7 +11,6 @@ import { ModelFunction, ClientStateType, UnionDataType, ModelDataType } from '..
 export default class Modelizr {
 
     ClientState: ClientStateType;
-    config: ConfigType;
 
     models: Object<ModelFunction> = {};
 
@@ -29,6 +28,11 @@ export default class Modelizr {
             mock: false,
             debug: true,
             api: FETCH
+        }
+
+        this.ClientState.config = {
+            ...defaultConfig,
+            ...InitialClientState.config
         }
     }
 

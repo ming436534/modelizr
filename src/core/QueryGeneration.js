@@ -34,8 +34,16 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
         _.map(queryModels, (ModelFunction: ModelFunction): FieldMap => {
             const ModelData: ModelDataType | UnionDataType = models[ModelFunction.ModelName]
 
+            const filter = fields =>
+                _.pickBy(fields, (type, field) => {
+                    const {only, without} = ModelFunction.Filters
+                    if (only) return _.find(only, _field => _field == field)
+                    if (without) return !_.find(without, _field => _field == field)
+                    return true
+                })
+
             const pruneFields = (fields): String | FieldMap =>
-                _.map(getPlainFields(fields), (type, field) =>
+                _.map(filter(getPlainFields(fields)), (type, field) =>
                     isValidType(type) ? field : {name: field, fields: pruneFields(type)}
                 )
 

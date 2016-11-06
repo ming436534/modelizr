@@ -42,7 +42,19 @@ export const CreateModel = (newModel): ModelFunction => {
         Model.FieldName = newModel
         Model.Params = {}
         Model.Children = []
+        Model.Filters = {}
         Model._isModelizrModel = true
+
+        const setFilter = (key, value) => CreateModel({
+            ...Model,
+            Filters: {
+                ...Model.Filters,
+                [key]: value
+            }
+        })
+
+        Model.only = (fields: Array<String>) => setFilter("only", fields)
+        Model.without = (fields: Array<String>) => setFilter("without", fields)
     }
 
     return Model

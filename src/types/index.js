@@ -3,7 +3,13 @@ export type ModelFunction = {
     FieldName: String,
     Params: Object,
     Children: Array<String>,
-    _isModelizrModel: boolean
+    _isModelizrModel: boolean,
+    Filters: ?{
+        only: ?Array<String>,
+        without: ?Array<String>
+    },
+    only: (fields: Array<String>) => ModelFunction,
+    without: (fields: Array<String>) => ModelFunction
 }
 
 export type ModelDataType = {
