@@ -1,6 +1,10 @@
 // @flow
 import _ from 'lodash'
 
+/**
+ * Checks if a piece of information is a valid data description
+ * @param type
+ */
 export const isValidType = (type: any): Boolean => {
     if (Array.isArray(type)) {
         type = type[0]
@@ -18,6 +22,10 @@ export const isValidType = (type: any): Boolean => {
     return _.find(TypeMap, _type => _type === type)
 }
 
+/**
+ * Strips a collection of fields of all model relationships
+ * @param fields
+ */
 export const getPlainFields = (fields: Object) =>
     _.pickBy(fields, field => {
         const check = field => typeof field === "object" || isValidType(field)
