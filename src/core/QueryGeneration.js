@@ -26,7 +26,7 @@ type FieldMap = {
  */
 const SPACES = 2
 const createIndent = (spaces: Number): String =>
-    _.join(_.times((spaces * SPACES) + 1, ""), " ")
+    _.join(_.times((spaces * SPACES) + 1, () => ""), " ")
 
 /**
  * Construct a valid GraphQL parameter string from an object

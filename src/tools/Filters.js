@@ -51,9 +51,9 @@ type NormalizedParameters = {
  * @return NormalizedParameters
  */
 export const normalizeFunctionParameters = (name, params, models): NormalizedParameters => {
+    const trueModels = models
     let trueName,
-        trueParams = {},
-        trueModels = models
+        trueParams = {}
 
     if (typeof name === 'string') {
         trueName = name

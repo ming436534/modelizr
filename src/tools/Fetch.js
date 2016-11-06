@@ -85,7 +85,7 @@ export const RequestBuilder = (ClientState: ClientStateType,
                 ...res,
                 ...normalize(res.data)
             }))
-        },
+        }
     }
 
     return REQUEST
