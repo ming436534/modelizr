@@ -8,6 +8,7 @@ import _ from 'lodash'
 import { ClientStateType, ConfigType } from '../types'
 
 export const FETCH_API = (config: ConfigType) => {
+    const method: String = (config.method || "POST").toUpperCase()
     let server_response
 
     return fetch(config.endpoint, {
@@ -16,8 +17,10 @@ export const FETCH_API = (config: ConfigType) => {
             'Content-Type': 'application/json',
             ...config.headers
         },
-        method: "POST",
-        body: JSON.stringify(config.body)
+        method,
+        ...(method != "GET" && method != "HEAD" ? {
+            body: JSON.stringify(config.body)
+        } : {})
     })
         .then(res => {
             server_response = res
@@ -36,10 +39,14 @@ export const RequestBuilder = (ClientState: ClientStateType,
     const query: String = generate({ClientState, queryModels: models, queryType, queryName: name, queryParams: params})
     const config: ConfigType = {
         ...ClientState.config,
-        body: queryType == 'request' ? {} : {query}
+        body: queryType == 'fetch' ? {} : {query}
     }
 
-    const normalize = res => Normalizr(res, models)
+    const normalize = res => Normalizr({
+        Data: res,
+        ModelFunctions: models,
+        ClientState
+    })
 
     let REQUEST = {}
     const setConfig: Function = _.curry((key: String, useDefault: Boolean, value: ?any): REQUEST => {
@@ -58,6 +65,7 @@ export const RequestBuilder = (ClientState: ClientStateType,
         api: setConfig("api", false),
         endpoint: setConfig("endpoint", false),
         headers: headers => setConfig("endpoint", false)({...config.headers, ...headers}),
+        method: setConfig("method", "POST"),
         mock: setConfig("mock", true),
         debug: setConfig("debug", true),
         body: setConfig("body", {}),
@@ -75,7 +83,7 @@ export const RequestBuilder = (ClientState: ClientStateType,
         normalize(cb) {
             REQUEST.then((res, normalize) => cb({
                 ...res,
-                ...normalize(res)
+                ...normalize(res.data)
             }))
         },
     }

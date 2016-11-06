@@ -52,7 +52,10 @@ export default class Modelizr {
             if (!ModelData.normalizeAs) ModelData.normalizeAs = name
             if (!ModelData.primaryKey) ModelData.primaryKey = "id"
 
-            if (!ModelData._unionDataType) ModelData.normalizrSchema = new Schema(ModelData.normalizeAs)
+            if (!ModelData._unionDataType) ModelData.normalizrSchema = new Schema(ModelData.normalizeAs, {
+                idAttribute: ModelData.primaryKey,
+                ...ModelData.normalizrOptions || {}
+            })
 
             this.ClientState.models[name] = ModelData
             this.models[name] = CreateModel(name)
@@ -134,8 +137,5 @@ export default class Modelizr {
 
     query = (...args) => RequestBuilder(this.ClientState, "query")(...args)
     mutate = (...args) => RequestBuilder(this.ClientState, "mutation")(...args)
-
-    fetch(...args) {
-
-    }
+    fetch = (...args) => RequestBuilder(this.ClientState, "fetch")(...args)
 }

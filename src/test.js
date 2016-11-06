@@ -26,6 +26,7 @@ const client = new Modelizr({
         },
 
         Meal: {
+            normalizeAs: "Meals",
             fields: {
                 id: String,
                 portions: Number
@@ -39,7 +40,7 @@ const client = new Modelizr({
 
 const {models: {User, Friend, Union, Meal}} = client
 
-client.query(
+client.fetch(
     // Friend({ids: [1, 2, 3]},
     //     User.without(["id"]),
     //     Union(
@@ -48,6 +49,7 @@ client.query(
     // )
     Meal("Meals")
 ).generate(query => console.log(query))
-.normalize(res => {
-    console.log(res)
-})
+    .body({query: "{Meals {id}}"})
+    .normalize(res => {
+        console.log(res)
+    })

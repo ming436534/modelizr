@@ -1,8 +1,8 @@
 // @flow
 
 /**
- * A public helper function that adds a union description key
- * to a Data model.
+ * A public helper function that adds a union description property
+ * to a Data Model.
  *
  * @param UnionDescription
  */

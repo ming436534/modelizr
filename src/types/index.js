@@ -16,7 +16,8 @@ export type ModelDataType = {
     normalizeAs: ?String,
     fields: Object,
     primaryKey: ?String,
-    normalizrSchema: Object
+    normalizrSchema: Object,
+    normalizrOptions: ?Object
 }
 
 export type UnionDataType = {
@@ -30,6 +31,7 @@ export type ConfigType = {
     endpoint: String,
     api: Function,
     headers: ?Object<String>,
+    method: ?String,
     mock: ?Boolean,
     debug: ?Boolean,
     body: ?Object

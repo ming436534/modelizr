@@ -48,7 +48,7 @@ type NormalizedParameters = {
  * @param name
  * @param params
  * @param models
- * @return {{name: ?String, params: {}, models: [ModelFunction]}}
+ * @return NormalizedParameters
  */
 export const normalizeFunctionParameters = (name, params, models): NormalizedParameters => {
     let trueName,
