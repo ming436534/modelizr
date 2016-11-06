@@ -35,7 +35,7 @@ const client = new Modelizr({
 
 console.log(generate({
     ClientState: client.ClientState,
-    queryModels: [client.models.Friend({lol: "awsome", hello: {ok: "ok"}}, client.models.User)],
+    queryModels: [client.models.Friend({lol: "awsome", hello: {ok: "ok"}}, client.models.User, client.models.Union(client.models.User))],
     queryType: "query",
     queryParams: {ok: "ok"}
 }))

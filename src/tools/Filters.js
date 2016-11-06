@@ -19,4 +19,8 @@ export const isValidType = (type: any): Boolean => {
 }
 
 export const getPlainFields = (fields: Object) =>
-    _.pickBy(fields, field => typeof field === "object" || isValidType(field))
+    _.pickBy(fields, field => {
+        const check = field => typeof field === "object" || isValidType(field)
+        if (Array.isArray(field)) return check(field[0])
+        return check(field)
+    })
