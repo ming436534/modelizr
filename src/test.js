@@ -1,17 +1,19 @@
+/* eslint-disable */
 import Modelizr, { union } from './index'
 
 const client = new Modelizr({
     models: {
         User: {
+            normalizeAs: "Users",
             fields: {
                 id: String,
-                name: String,
-                surname: String,
-                Friends: ["Friend"],
-                Unions: ["Union"]
+                // name: String,
+                // surname: String,
+                // Friends: ["Friend"],
+                // Groups: ["Group"]
             }
         },
-        Union: union({
+        Group: union({
             models: ["User", "Friend"],
             schemaAttribute: "__type"
         }),
@@ -24,12 +26,12 @@ const client = new Modelizr({
                 }
             }
         },
-
         Meal: {
             normalizeAs: "Meals",
             fields: {
                 id: String,
-                portions: Number
+                portions: Number,
+                chef: "User"
             }
         }
     },
@@ -38,18 +40,26 @@ const client = new Modelizr({
     }
 })
 
-const {models: {User, Friend, Union, Meal}} = client
+const {models: {User, Friend, Union, Meal}, query, mutate, fetch} = client
 
-client.fetch(
+// query(
+//     User({ids: [1, 2, 3, 4]},
+//         Friend("MyFriends"),
+//         Meal("myMeals")
+//     )
+// ).generate(query => console.log(query))
+
+client.mutate(
     // Friend({ids: [1, 2, 3]},
     //     User.without(["id"]),
     //     Union(
     //         User.only(["name", "surname"])
     //     )
     // )
-    Meal("Meals")
+    Meal("Meals",
+        User("chef")
+    )
 ).generate(query => console.log(query))
-    .body({query: "{Meals {id}}"})
     .normalize(res => {
         console.log(res)
     })

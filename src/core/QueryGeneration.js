@@ -7,15 +7,15 @@ import { ClientStateType, ModelFunction, ModelDataType, UnionDataType } from '..
 type GeneratorParameters = {
     ClientState: ClientStateType,
     queryModels: Array<ModelFunction>,
-    queryType: String,
-    queryName: ?String,
+    queryType: string,
+    queryName: ?string,
     queryParams: ?Object
 }
 
 type FieldMap = {
-    name: String,
+    name: string,
     params: ?Object,
-    fields: Array<String | FieldMap>
+    fields: Array<string | FieldMap>
 }
 
 /**
@@ -25,14 +25,14 @@ type FieldMap = {
  * @type {number}
  */
 const SPACES = 2
-const createIndent = (spaces: Number): String =>
+const createIndent = (spaces: number): string =>
     _.join(_.times((spaces * SPACES) + 1, () => ""), " ")
 
 /**
  * Construct a valid GraphQL parameter string from an object
  * @param params
  */
-const buildParameters = (params: ?Object<any>): String => {
+const buildParameters = (params: ?Object): string => {
     if (!params || _.isEmpty(params)) return ""
     return `(${_.map(_.pickBy(params, param => param || param === false), (param, key) =>
         `${key}: ${JSON.stringify(param).replace(/"([^(")"]+)":/g, "$1:")}`)})`
@@ -48,7 +48,7 @@ const buildParameters = (params: ?Object<any>): String => {
  * @param queryParams
  * @returns {string}
  */
-export default ({ClientState, queryModels, queryType, queryName, queryParams}: GeneratorParameters): String => {
+export default ({ClientState, queryModels, queryType, queryName, queryParams}: GeneratorParameters): string => {
     const {models} = ClientState
 
     /**
@@ -58,7 +58,7 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
      * @param queryModels
      * @param prefix
      */
-    const makeMap = (queryModels: Array<ModelFunction>, prefix: Boolean = false): Array<FieldMap> =>
+    const makeMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> =>
         _.map(queryModels, (ModelFunction: ModelFunction): FieldMap => {
             const ModelData: ModelDataType | UnionDataType = models[ModelFunction.ModelName]
 
@@ -83,7 +83,7 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
              * @param fields
              * @returns FieldMap
              */
-            const pruneFields = (fields: Object): String | FieldMap =>
+            const pruneFields = (fields: Object): Array<string | FieldMap> =>
                 _.map(filter(getPlainFields(fields)), (type, field) =>
                     isValidType(type) ? field : {name: field, fields: pruneFields(type)}
                 )
@@ -104,7 +104,7 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
      * @param indent
      * @returns String
      */
-    const GenerateFields = (FieldMap: FieldMap, indent: Number = 2): String =>
+    const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string =>
         `\n${createIndent(indent - 1)}${FieldMap.name}${buildParameters(FieldMap.params)} {${_.map(FieldMap.fields, field =>
             typeof field === 'string' ? `\n${createIndent(indent)}${field}` :
                 `${GenerateFields(field, indent + 1)}`

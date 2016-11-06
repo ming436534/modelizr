@@ -36,8 +36,8 @@ export const getPlainFields = (fields: Object) =>
     })
 
 type NormalizedParameters = {
-    name: String,
-    params: Object<any>,
+    name?: string,
+    params: Object,
     models: Array<ModelFunction>
 }
 
@@ -50,7 +50,9 @@ type NormalizedParameters = {
  * @param models
  * @return NormalizedParameters
  */
-export const normalizeFunctionParameters = (name, params, models): NormalizedParameters => {
+export const normalizeFunctionParameters = (name: string | Object | ModelFunction,
+                                            params: Object | ModelFunction,
+                                            models: Array<ModelFunction>): NormalizedParameters => {
     const trueModels = models
     let trueName,
         trueParams = {}

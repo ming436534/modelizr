@@ -28,14 +28,15 @@ type NormalizedData = {
  * @param ClientState
  * @return NormalizedData
  */
-export default ({Data, ModelFunctions, ClientState}: NormalizationParameters): NormalizedData => {
+export default ({Data, ModelFunctions, ClientState}: NormalizationParameters): NormalizedData | Object => {
     const {models} = ClientState
 
     // Create a map of ModelFunctions who's keys match those of the Data result
-    const KeyedFunctions: Object<ModelFunction> = _.mapKeys(ModelFunctions,
+    const KeyedFunctions: {[key:string]: ModelFunction} = _.mapKeys(ModelFunctions,
         (ModelFunction: ModelFunction) =>
             ModelFunction.FieldName)
 
+    if (!Data) return {}
     return normalize(Data, _.mapValues(KeyedFunctions, (ModelFunction: ModelFunction) => {
         const Entities = Data[ModelFunction.FieldName]
         const ModelData: ModelDataType = models[ModelFunction.ModelName]

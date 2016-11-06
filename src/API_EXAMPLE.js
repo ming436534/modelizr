@@ -1,3 +1,4 @@
+/* eslint-disable */
 import modelizr, { union } from 'modelizr'
 
 const User = {

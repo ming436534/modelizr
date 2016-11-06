@@ -7,14 +7,38 @@ import _ from 'lodash'
 
 import { ClientStateType, ConfigType } from '../types'
 
+type RequestFunction = (value: any) => RequestObject
+
+type RequestResponse = {
+    response: Object,
+    data: Object,
+    errors: Object,
+    entities: ?Object,
+    result: ?Object
+}
+
+type RequestObject = {
+    api: RequestFunction,
+    endpoint: RequestFunction,
+    headers: RequestFunction,
+    method: RequestFunction,
+    mock: RequestFunction,
+    debug: RequestFunction,
+    body: RequestFunction,
+    generate: RequestFunction,
+    then: (cb: Function) => Promise<RequestResponse>,
+    normalize: (cb: Function) => Promise<RequestResponse>,
+}
+
 export const FETCH_API = (config: ConfigType) => {
-    const method: String = (config.method || "POST").toUpperCase()
+    const method: string = (config.method || "POST").toUpperCase()
     let server_response
 
     return fetch(config.endpoint, {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZmZmUwYWY4LTlkNjktNDdmMy1iMjZiLTQ1ZjAzYTRkYmEyMCIsImlhdCI6MTQ3ODQ0NTQxMn0.mo4iLAjO0K0UnAUBTIoh332rJft8bARhLl9gwCb0oP0",
             ...config.headers
         },
         method,
@@ -33,10 +57,12 @@ export const FETCH_API = (config: ConfigType) => {
 }
 
 export const RequestBuilder = (ClientState: ClientStateType,
-                               queryType: String) => (queryName, queryParams, ...queryModels) => {
+                               queryType: string) => (queryName: String | Object,
+                                                      queryParams: Object,
+                                                      ...queryModels: Array<Object>): RequestObject => {
     const {name, params, models} = normalizeFunctionParameters(queryName, queryParams, queryModels)
 
-    const query: String = generate({ClientState, queryModels: models, queryType, queryName: name, queryParams: params})
+    const query: string = generate({ClientState, queryModels: models, queryType, queryName: name, queryParams: params})
     const config: ConfigType = {
         ...ClientState.config,
         body: queryType == 'fetch' ? {} : {query}
@@ -48,8 +74,9 @@ export const RequestBuilder = (ClientState: ClientStateType,
         ClientState
     })
 
-    let REQUEST = {}
-    const setConfig: Function = _.curry((key: String, useDefault: Boolean, value: ?any): REQUEST => {
+    // eslint-disable-next-line prefer-const
+    let REQUEST: RequestObject
+    const setConfig: Function = _.curry((key: string, useDefault: Boolean, value: ?any): RequestObject => {
         if (!value && value !== false) {
             if (useDefault) {
                 value = useDefault
@@ -77,11 +104,11 @@ export const RequestBuilder = (ClientState: ClientStateType,
         },
 
         then(cb) {
-            config.api(config)
+            return config.api(config)
                 .then(res => cb(res, normalize))
         },
         normalize(cb) {
-            REQUEST.then((res, normalize) => cb({
+            return REQUEST.then((res, normalize) => cb({
                 ...res,
                 ...normalize(res.data)
             }))

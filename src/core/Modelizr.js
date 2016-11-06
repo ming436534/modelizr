@@ -11,7 +11,7 @@ import { ModelFunction, ClientStateType, UnionDataType, ModelDataType } from '..
 export default class Modelizr {
 
     ClientState: ClientStateType;
-    models: Object<ModelFunction> = {};
+    models: {[key:string]: ModelFunction} = {};
 
     constructor(InitialClientState: ClientStateType) {
         if (!InitialClientState) throw new Error("Modelizr expects a Client State as its first parameter")
@@ -70,7 +70,7 @@ export default class Modelizr {
     buildUnionSchemas() {
         const {models} = this.ClientState
 
-        _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: String) => {
+        _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: string) => {
             if (ModelData._unionDataType) {
                 // filter out all non-existing models and warn about them
                 const ExistingModels = _.filter(ModelData.models, model => {
@@ -95,27 +95,27 @@ export default class Modelizr {
         const {models} = this.ClientState
 
         type UnwrappedField = {
-            field: String,
-            isArray: Boolean
+            field: string,
+            isArray: boolean
         }
 
         /**
          * Utility that flattens a field wrapped in an array
          * @param field
          */
-        const unWrapArray = (field: Array<String> | String): UnwrappedField =>
+        const unWrapArray = (field: Array<string> | string): UnwrappedField =>
             Array.isArray(field) ? {isArray: true, field: field[0]} :
             {isArray: false, field}
 
-        _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: String) => {
+        _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: string) => {
             if (!ModelData._unionDataType) {
                 // Filter out any model references that do not exist in our data set
-                const ModelFields = _.pickBy(ModelData.fields, (wrappedField, fieldName: String) => {
+                const ModelFields = _.pickBy(ModelData.fields, (wrappedField, fieldName: string) => {
                     const {isArray, field} = unWrapArray(wrappedField)
                     if (typeof field === 'string' && !isValidType(field)) {
                         if (models[field]) return true
                         console.warn(
-                            `Field { ${fieldName}: ${isArray && "["}"${field}"${isArray && "]"} } on '${modelName}' points to an unknown model`
+                            `Field { ${fieldName}: ${isArray ? "[" : ""}"${field}"${isArray ? "]" : ""} } on '${modelName}' points to an unknown model`
                         )
                     }
                 })
@@ -135,7 +135,7 @@ export default class Modelizr {
         })
     }
 
-    query = (...args) => RequestBuilder(this.ClientState, "query")(...args)
-    mutate = (...args) => RequestBuilder(this.ClientState, "mutation")(...args)
-    fetch = (...args) => RequestBuilder(this.ClientState, "fetch")(...args)
+    query = (...args: Array<any>) => RequestBuilder(this.ClientState, "query")(...args)
+    mutate = (...args: Array<any>) => RequestBuilder(this.ClientState, "mutation")(...args)
+    fetch = (...args: Array<any>) => RequestBuilder(this.ClientState, "fetch")(...args)
 }

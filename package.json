@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "node example/index.js",
-    "lint": "eslint src; exit 0",
+    "lint": "eslint src",
     "flow": "flow",
     "build": "rimraf lib && babel src -d lib",
     "prepublish": "npm run build",

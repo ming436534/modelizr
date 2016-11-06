@@ -17,7 +17,7 @@ import { ModelFunction } from '../types'
  * @return {ModelFunction}
  * @constructor
  */
-export const CreateModel = (newModel): ModelFunction => {
+export const CreateModel = (newModel: Object | string): ModelFunction => {
 
     /**
      * The ModelFunction that is returned. This stores information for
@@ -30,7 +30,7 @@ export const CreateModel = (newModel): ModelFunction => {
      * @param childModels
      * @return {ModelFunction}
      */
-    const Model: ModelFunction = (fieldName: ?String | ?Object | ?ModelFunction,
+    const Model: ModelFunction = (fieldName: ?string | ?Object | ?ModelFunction,
                                   modelParams: ?Object | ?ModelFunction,
                                   ...childModels: Array<ModelFunction>) => {
         const {name, params, models} = normalizeFunctionParameters(fieldName, modelParams, childModels)
@@ -61,8 +61,8 @@ export const CreateModel = (newModel): ModelFunction => {
             }
         })
 
-        Model.only = (fields: Array<String>) => setFilter("only", fields)
-        Model.without = (fields: Array<String>) => setFilter("without", fields)
+        Model.only = (fields: Array<string>) => setFilter("only", fields)
+        Model.without = (fields: Array<string>) => setFilter("without", fields)
     }
 
     return Model

@@ -1,37 +1,38 @@
 export type ModelFunction = {
-    ModelName: String,
-    FieldName: String,
+    (name: Object | string, params: Object | ModelFunction, models: Array<ModelFunction>): ModelFunction;
+    ModelName: string,
+    FieldName: string,
     Params: Object,
-    Children: Array<String>,
+    Children: Array<string>,
     _isModelizrModel: boolean,
     Filters: ?{
-        only: ?Array<String>,
-        without: ?Array<String>
+        only: ?Array<string>,
+        without: ?Array<string>
     },
-    only: (fields: Array<String>) => ModelFunction,
-    without: (fields: Array<String>) => ModelFunction
+    only: (fields: Array<string>) => ModelFunction,
+    without: (fields: Array<string>) => ModelFunction
 }
 
 export type ModelDataType = {
-    normalizeAs: ?String,
+    normalizeAs: ?string,
     fields: Object,
-    primaryKey: ?String,
+    primaryKey: ?string,
     normalizrSchema: Object,
     normalizrOptions: ?Object
 }
 
 export type UnionDataType = {
-    normalizeAs: ?String,
-    models: Array<String>,
-    schemaAttribute: String | Function,
+    normalizeAs: ?string,
+    models: Array<string>,
+    schemaAttribute: string | Function,
     _unionDataType: Boolean
 }
 
 export type ConfigType = {
-    endpoint: String,
+    endpoint: string,
     api: Function,
-    headers: ?Object<String>,
-    method: ?String,
+    headers: ?Object<string>,
+    method: ?string,
     mock: ?Boolean,
     debug: ?Boolean,
     body: ?Object
