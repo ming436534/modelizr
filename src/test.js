@@ -40,26 +40,13 @@ const client = new Modelizr({
     }
 })
 
-const {models: {User, Friend, Union, Meal}, query, mutate, fetch} = client
+const {models: {User, Friend, Meal}, query, mutate, fetch} = client
 
-// query(
-//     User({ids: [1, 2, 3, 4]},
-//         Friend("MyFriends"),
-//         Meal("myMeals")
-//     )
-// ).generate(query => console.log(query))
-
-client.mutate(
-    // Friend({ids: [1, 2, 3]},
-    //     User.without(["id"]),
-    //     Union(
-    //         User.only(["name", "surname"])
-    //     )
-    // )
+query(
     Meal("Meals",
         User("chef")
     )
-).generate(query => console.log(query))
+)
     .normalize(res => {
         console.log(res)
     })

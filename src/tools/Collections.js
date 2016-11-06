@@ -16,13 +16,16 @@ type ErrorsType = {
     locations: Array<{line: number, column: number}>
 }
 
+/**
+ * An error type that denotes a response containing
+ * GraphQL errors
+ */
 export class GraphQLError extends Error {
 
     errors: Array<ErrorsType>;
 
     constructor(message: string, errors: Array<ErrorsType>) {
         super(message)
-
         this.errors = errors
     }
 }

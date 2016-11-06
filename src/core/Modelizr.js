@@ -76,6 +76,7 @@ export default class Modelizr {
                 // filter out all non-existing models and warn about them
                 const ExistingModels = _.filter(ModelData.models, model => {
                     if (models[model]) return true
+                    // eslint-disable-next-line no-console
                     console.warn(`Model "${model}" on union ${modelName} points to an unknown model`)
                 })
 
@@ -115,6 +116,7 @@ export default class Modelizr {
                     const {isArray, field} = unWrapArray(wrappedField)
                     if (typeof field === 'string' && !isValidType(field)) {
                         if (models[field]) return true
+                        // eslint-disable-next-line no-console
                         console.warn(
                             `Field { ${fieldName}: ${isArray ? "[" : ""}"${field}"${isArray ? "]" : ""} } on '${modelName}' points to an unknown model`
                         )
