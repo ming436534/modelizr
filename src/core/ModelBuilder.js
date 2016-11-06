@@ -8,10 +8,10 @@ export const CreateModel = (newModel): ModelFunction => {
                                   params: ?Object | ?ModelFunction,
                                   ...models: Array<ModelFunction>) => {
 
-        const NextModel = {...Model}
+        const NextModel: ModelFunction = {...Model}
 
         if (typeof fieldName === 'string') {
-            NextModel.ModelName = fieldName
+            NextModel.FieldName = fieldName
 
             if (typeof params === 'function') {
                 models.unshift(params)
@@ -30,7 +30,7 @@ export const CreateModel = (newModel): ModelFunction => {
             }
         }
 
-        models.forEach((model: ModelFunction) => NextModel.Children = [...NextModel.Children, model.ModelName])
+        models.forEach((model: ModelFunction) => NextModel.Children = [...NextModel.Children, model])
 
         return CreateModel(NextModel)
     }
@@ -39,6 +39,7 @@ export const CreateModel = (newModel): ModelFunction => {
         _.forEach(newModel, (value, key) => Model[key] = value)
     } else {
         Model.ModelName = newModel
+        Model.FieldName = newModel
         Model.Params = {}
         Model.Children = []
         Model._isModelizrModel = true

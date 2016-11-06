@@ -3,34 +3,10 @@ import { Schema, arrayOf, unionOf } from 'normalizr'
 import _ from 'lodash'
 
 import CreateModel from './ModelBuilder'
-import { isValidType } from '../tools/TypeMap'
-import FETCH_API from '../tools/Fetch'
-import { ModelFunction } from '../types'
+import { isValidType } from '../tools/Filters'
+import { FETCH } from '../tools/Fetch'
 
-type ModelDataType = {
-    normalizeAs: ?String,
-    fields: Object,
-    primaryKey: ?String,
-    normalizrSchema: Schema
-}
-
-type UnionDataType = {
-    normalizeAs: ?String,
-    models: Array<String>,
-    schemaAttribute: String | Function,
-    _unionDataType: Boolean
-}
-
-type ClientStateType = {
-    config: {
-        endpoint: String,
-        api: Function,
-        headers: ?Object<String>,
-        mock: ?Boolean,
-        debug: ?Boolean
-    },
-    models: Object<ModelDataType | UnionDataType>
-}
+import { ModelFunction, ClientStateType, UnionDataType, ModelDataType } from '../types'
 
 export default class Modelizr {
 
@@ -52,7 +28,7 @@ export default class Modelizr {
         const defaultConfig = {
             mock: false,
             debug: true,
-            api: FETCH_API
+            api: FETCH
         }
     }
 
@@ -81,7 +57,7 @@ export default class Modelizr {
                 // filter out all non-existing models and warn about them
                 const ExistingModels = _.filter(ModelData.models, model => {
                     if (models[model]) return true
-                    console.warn(`Model ${model} on union "${modelName}" points to an unknown model`)
+                    console.warn(`Model "${model}" on union ${modelName} points to an unknown model`)
                 })
 
                 ModelData.normalizrSchema = unionOf(_.map(ExistingModels, model =>
@@ -130,5 +106,17 @@ export default class Modelizr {
                 )
             }
         })
+    }
+
+    query(...args) {
+
+    }
+
+    mutate(...args) {
+
+    }
+
+    fetch(...args) {
+
     }
 }

@@ -1,5 +1,9 @@
 // @flow
 
-export default () => {
+export const FETCH = () => {
+
+}
+
+export const CALL_API = () => {
 
 }
