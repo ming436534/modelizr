@@ -1,35 +1,18 @@
 // @flow
+import { normalizeFunctionParameters } from '../tools/Filters'
 import _ from 'lodash'
 
 import { ModelFunction } from '../types'
 
 export const CreateModel = (newModel): ModelFunction => {
     const Model: ModelFunction = (fieldName: ?String | ?Object | ?ModelFunction,
-                                  params: ?Object | ?ModelFunction,
-                                  ...models: Array<ModelFunction>) => {
-
+                                  modelParams: ?Object | ?ModelFunction,
+                                  ...childModels: Array<ModelFunction>) => {
+        const {name, params, models} = normalizeFunctionParameters(fieldName, modelParams, childModels)
         const NextModel: ModelFunction = {...Model}
 
-        if (typeof fieldName === 'string') {
-            NextModel.FieldName = fieldName
-
-            if (typeof params === 'function') {
-                models.unshift(params)
-            }
-            if (typeof params === 'object') {
-                NextModel.Params = {...NextModel.Params, ...params}
-            }
-        } else {
-            if (params) models.unshift(params)
-
-            if (typeof fieldName === 'function') {
-                models.unshift(fieldName)
-            }
-            if (typeof fieldName === 'object') {
-                NextModel.Params = {...NextModel.Params, ...fieldName}
-            }
-        }
-
+        if (name) NextModel.FieldName = name
+        NextModel.Params = {...NextModel.Params, ...params}
         models.forEach((model: ModelFunction) => NextModel.Children = [...NextModel.Children, model])
 
         return CreateModel(NextModel)

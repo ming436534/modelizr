@@ -1,8 +1,4 @@
-import _ from 'lodash'
-
-import Modelizr from './core/Modelizr'
-import { union } from './tools/Collections'
-import generate from './core/QueryGeneration'
+import Modelizr, { union } from './index'
 
 const client = new Modelizr({
     models: {
@@ -27,16 +23,31 @@ const client = new Modelizr({
                     latitude: Number
                 }
             }
+        },
+
+        Meal: {
+            fields: {
+                id: String,
+                portions: Number
+            }
         }
     },
     config: {
-        endpoint: "http://"
+        endpoint: "https://api.yumochefs.com/graphql"
     }
 })
 
-console.log(generate({
-    ClientState: client.ClientState,
-    queryModels: [client.models.Friend({lol: "awsome", hello: {ok: "ok"}}, client.models.User.without(["id"]), client.models.Union(client.models.User))],
-    queryType: "query",
-    queryParams: {ok: "ok"}
-}))
+const {models: {User, Friend, Union, Meal}} = client
+
+client.query(
+    // Friend({ids: [1, 2, 3]},
+    //     User.without(["id"]),
+    //     Union(
+    //         User.only(["name", "surname"])
+    //     )
+    // )
+    Meal("Meals")
+).generate(query => console.log(query))
+.normalize(res => {
+    console.log(res)
+})

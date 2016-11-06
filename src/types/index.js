@@ -26,13 +26,16 @@ export type UnionDataType = {
     _unionDataType: Boolean
 }
 
+export type ConfigType = {
+    endpoint: String,
+    api: Function,
+    headers: ?Object<String>,
+    mock: ?Boolean,
+    debug: ?Boolean,
+    body: ?Object
+}
+
 export type ClientStateType = {
-    config: {
-        endpoint: String,
-        api: Function,
-        headers: ?Object<String>,
-        mock: ?Boolean,
-        debug: ?Boolean
-    },
+    config: ConfigType,
     models: Object<ModelDataType | UnionDataType>
 }

@@ -4,14 +4,13 @@ import _ from 'lodash'
 
 import CreateModel from './ModelBuilder'
 import { isValidType } from '../tools/Filters'
-import { FETCH } from '../tools/Fetch'
+import { FETCH_API, RequestBuilder } from '../tools/Fetch'
 
 import { ModelFunction, ClientStateType, UnionDataType, ModelDataType } from '../types'
 
 export default class Modelizr {
 
     ClientState: ClientStateType;
-
     models: Object<ModelFunction> = {};
 
     constructor(InitialClientState: ClientStateType) {
@@ -20,14 +19,15 @@ export default class Modelizr {
 
         this.ClientState = {...InitialClientState}
 
+        // order is important
         this.generateModelFunctions()
-        this.defineUnionRelationships()
+        this.buildUnionSchemas()
         this.defineModelRelationships()
 
         const defaultConfig = {
             mock: false,
             debug: true,
-            api: FETCH
+            api: FETCH_API
         }
 
         this.ClientState.config = {
@@ -36,6 +36,13 @@ export default class Modelizr {
         }
     }
 
+    /**
+     * Create ModelFunctions from the given model Data.
+     *
+     * If the DataType is a model (and not a union) then build
+     * its normalizr schema. We do not create schemas' for unions until
+     * after _all_ model schemas are present.
+     */
     generateModelFunctions() {
         const {models} = this.ClientState
 
@@ -52,11 +59,15 @@ export default class Modelizr {
         })
     }
 
-    defineUnionRelationships() {
+    /**
+     * Build all normalizr schemas for union DataTypes. A check
+     * to make sure the union is nor referencing imaginary models
+     * is performed.
+     */
+    buildUnionSchemas() {
         const {models} = this.ClientState
 
         _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: String) => {
-            // Describe all union normalizr schemas
             if (ModelData._unionDataType) {
                 // filter out all non-existing models and warn about them
                 const ExistingModels = _.filter(ModelData.models, model => {
@@ -64,6 +75,7 @@ export default class Modelizr {
                     console.warn(`Model "${model}" on union ${modelName} points to an unknown model`)
                 })
 
+                // create a normalizr union
                 ModelData.normalizrSchema = unionOf(_.map(ExistingModels, model =>
                         ({[model]: models[model].normalizrSchema})),
                     {schemaAttribute: ModelData.schemaAttribute}
@@ -72,19 +84,31 @@ export default class Modelizr {
         })
     }
 
+    /**
+     * Recursively populate relationship information of each models
+     * normalizr schema
+     */
     defineModelRelationships() {
         const {models} = this.ClientState
 
+        type UnwrappedField = {
+            field: String,
+            isArray: Boolean
+        }
+
+        /**
+         * Utility that flattens a field wrapped in an array
+         * @param field
+         */
+        const unWrapArray = (field: Array<String> | String): UnwrappedField =>
+            Array.isArray(field) ? {isArray: true, field: field[0]} :
+            {isArray: false, field}
+
         _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: String) => {
-            // Describe all model relationships to the normalizr schema
             if (!ModelData._unionDataType) {
-                // Filter out all non-model field types
-                const ModelFields = _.pickBy(ModelData.fields, (field, fieldName) => {
-                    let isArray = false
-                    if (Array.isArray(field)) {
-                        isArray = true
-                        field = field[0]
-                    }
+                // Filter out any model references that do not exist in our data set
+                const ModelFields = _.pickBy(ModelData.fields, (wrappedField, fieldName: String) => {
+                    const {isArray, field} = unWrapArray(wrappedField)
                     if (typeof field === 'string' && !isValidType(field)) {
                         if (models[field]) return true
                         console.warn(
@@ -93,14 +117,10 @@ export default class Modelizr {
                     }
                 })
 
+                // Call `define` on the models normalizr schema
                 ModelData.normalizrSchema.define(
-                    _.mapValues(ModelFields, field => {
-                            let isArray = false
-                            if (Array.isArray(field)) {
-                                isArray = true
-                                field = field[0]
-                            }
-
+                    _.mapValues(ModelFields, wrappedField => {
+                            const {isArray, field} = unWrapArray(wrappedField)
                             const ChildModel: ModelDataType | UnionDataType = models[field]
 
                             if (isArray) return arrayOf(ChildModel.normalizrSchema)
@@ -112,13 +132,8 @@ export default class Modelizr {
         })
     }
 
-    query(...args) {
-
-    }
-
-    mutate(...args) {
-
-    }
+    query = (...args) => RequestBuilder(this.ClientState, "query")(...args)
+    mutate = (...args) => RequestBuilder(this.ClientState, "mutation")(...args)
 
     fetch(...args) {
 
