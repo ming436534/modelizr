@@ -1,3 +1,7 @@
+# `V1` IS ON ITS WAY!
+
+To keep track of `v1` you can visit the [v1](https://github.com/julienvincent/modelizr/tree/v1) branch
+
 # modelizr
 [![Coverage Status](https://coveralls.io/repos/github/julienvincent/modelizr/badge.svg?branch=master)](https://coveralls.io/github/julienvincent/modelizr?branch=master)
 [![Build Status](https://travis-ci.org/julienvincent/modelizr.svg?branch=master)](https://travis-ci.org/julienvincent/modelizr)
