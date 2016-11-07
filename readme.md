@@ -1,6 +1,13 @@
 # `V1` IS ON ITS WAY!
 
-To keep track of `v1` you can visit the [v1](https://github.com/julienvincent/modelizr/tree/v1) branch
+The upcoming `v1` is _mostly_ on feature parity, and will need further testing before coming out of beta releases. At this moment there
+is no documentation of the new API, nor are their any form of tests.
+
+If you would like to use `v1` now, you get get it by running:
+
+`$ npm i --save modelizr@1.0.0-beta.3`
+
+You can check out the `example` folder for a simple usage example.
 
 # modelizr
 [![Coverage Status](https://coveralls.io/repos/github/julienvincent/modelizr/badge.svg?branch=master)](https://coveralls.io/github/julienvincent/modelizr?branch=master)
