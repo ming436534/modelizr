@@ -1,8 +1,4 @@
-export * from './model'
-export * from './union'
-export * from './mock'
-export * from './mutation'
-export * from './query'
-export * from './request'
-export { prepare, alias } from './utils'
-export { normalize, arrayOf, valuesOf } from './normalizer'
+import Modelizr from './core/Modelizr'
+export { union, GraphQLError } from './tools/public'
+
+export { Modelizr as default, Modelizr }

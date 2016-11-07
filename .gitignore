@@ -1,10 +1,10 @@
 .idea
-node_modules
-lib
-npm-debug.log
-
 .DS_Store
 
-coverage
+npm-debug.log
+yarn-error.log
 
+coverage
 _book
+node_modules
+lib

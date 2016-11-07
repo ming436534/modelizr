@@ -1,11 +1,13 @@
-import { compose, createStore } from 'redux'
-import { Enhancer } from '../components/DevTool'
+import { compose, createStore, applyMiddleware } from 'redux'
+import DevTools from '../app/components/DevTools'
 import reducers from '../reducers/index'
+import thunk from 'redux-thunk'
 
 const store = createStore(
     reducers,
     compose(
-        Enhancer.instrument()
+        applyMiddleware(thunk),
+        DevTools.instrument()
     )
 )
 

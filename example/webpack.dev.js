@@ -2,7 +2,7 @@ module.exports = {
     devtool: 'cheap-module-source-map',
     entry: [
         'babel-polyfill',
-        `${__dirname}/components/Root.js`
+        `${__dirname}/app/app.js`
     ],
     output: {
         path: '/',
@@ -13,7 +13,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loaders: ['babel'],
+                loaders: ['babel?presets=react'],
                 exclude: /node_modules/
             }
         ]

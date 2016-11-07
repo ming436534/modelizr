@@ -1,32 +1,24 @@
-import { union, model } from '../../src/index'
+import Modelizr, { union } from '../../src'
 
-const user = model('users')
+import Person from './Person'
+import Cat from './Cat'
+import Dog from './Dog'
 
-const book = model('books', {
-    id: {type: 'integer'},
-    title: {type: 'string', faker: 'name.firstName'}
+const client = new Modelizr({
+    models: {
+        Person,
+        Cat,
+        Dog,
+        Animal: union({
+            normalizeAs: "Animals",
+            models: ["Cat", "Dog"],
+            schemaAttribute: "__type"
+        }),
+    },
+    config: {
+        endpoint: "http://localhost:8000/graphql",
+        mock: true
+    }
 })
 
-const collection = union('collections', {
-    book,
-    user
-}, {schemaAttribute: entity => entity.type})
-
-user.setSchema({
-    id: {type: 'integer', alias: 'ID'},
-    firstName: {type: 'string', faker: 'name.firstName'},
-    lastName: {type: 'string', faker: 'name.lastName'},
-    statement: {type: 'string', faker: {'custom.statement': [19]}},
-    type: {type: 'schemaAttribute'}
-})
-
-book.define({
-    author: user
-})
-
-user.define({
-    books: [book],
-    collections: [collection]
-})
-
-export { book, user, collection }
+export default client

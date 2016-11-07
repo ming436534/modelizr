@@ -1,5 +1,5 @@
 {
     "presets": ["es2015", "stage-0"],
-    "plugins": ["lodash"],
+    "plugins": ["transform-flow-strip-types", "lodash"],
     "ignore": ["lib/*"]
 }
