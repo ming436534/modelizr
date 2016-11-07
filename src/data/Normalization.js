@@ -22,11 +22,6 @@ type NormalizedData = {
  * This will map over the provided models and pass in a normalizr schema containing
  * each models schema. If the entities from the response that match the model are
  * an array, the schema will be wrapped in arrayOf().
- *
- * @param Data
- * @param ModelFunctions
- * @param ClientState
- * @return NormalizedData
  */
 export default ({Data, ModelFunctions, ClientState}: NormalizationParameters): NormalizedData | Object => {
     const {models} = ClientState

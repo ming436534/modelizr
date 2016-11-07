@@ -33,8 +33,7 @@ const v4 = (): string => {
 export default (clientState: ClientStateType, queryModels: Array<ModelFunction>) => {
     const mockConfig = clientState.config.mock
 
-    /**
-     * Generate some fake information based on the type of a field.
+    /* Generate some fake information based on the type of a field.
      * If the field type is an object, then we handle first the
      * __faker case, and second the __pattern case.
      *
@@ -43,7 +42,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
      *
      * If the __pattern property is set, split the property by the
      * delimiter "|" and select one of the resulting strings
-     */
+     * */
     const generate = (type: any): any => {
         if (typeof type === 'object') {
             const {__type, __faker, __pattern} = type

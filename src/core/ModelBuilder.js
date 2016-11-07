@@ -12,24 +12,14 @@ import { ModelFunction } from '../types'
  * The resulting ModelFunction is an eternity method, meaning the result
  * of calling it is a new ModelFunction that contains the changes to the
  * original.
- *
- * @param newModel
- * @return {ModelFunction}
- * @constructor
  */
 export const CreateModel = (newModel: Object | string): ModelFunction => {
 
-    /**
-     * The ModelFunction that is returned. This stores information for
+    /* The ModelFunction that is returned. This stores information for
      * query generation such as the FieldName, ModelName of the data it
      * represents, query parameters and all children models it should
      * generate.
-     *
-     * @param fieldName
-     * @param modelParams
-     * @param childModels
-     * @return {ModelFunction}
-     */
+     * */
     const Model: ModelFunction = (fieldName: ?string | ?Object | ?ModelFunction,
                                   modelParams: ?Object | ?ModelFunction,
                                   ...childModels: Array<ModelFunction>) => {

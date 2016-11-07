@@ -5,7 +5,6 @@ import { ModelFunction } from '../types'
 
 /**
  * Checks if a piece of information is a valid data description
- * @param type
  */
 export const isValidType = (type: any): Boolean => {
     if (Array.isArray(type)) {
@@ -26,7 +25,6 @@ export const isValidType = (type: any): Boolean => {
 
 /**
  * Strips a collection of fields of all model relationships
- * @param fields
  */
 export const getPlainFields = (fields: Object) =>
     _.pickBy(fields, field => {
@@ -44,11 +42,6 @@ type NormalizedParameters = {
 /**
  * Given three parameters, figure out the type of each param and return
  * a corrected set of parameters.
- *
- * @param name
- * @param params
- * @param models
- * @return NormalizedParameters
  */
 export const normalizeFunctionParameters = (name: string | Object | ModelFunction,
                                             params: Object | ModelFunction,
