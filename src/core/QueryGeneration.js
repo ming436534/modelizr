@@ -110,5 +110,5 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
                 `${GenerateFields(field, indent + 1)}`
         )}\n${createIndent(indent - 1)}}`
 
-    return `${queryType} ${queryName || queryType}${buildParameters(queryParams)} {${_.map(FieldMaps, FieldMap => GenerateFields(FieldMap))}\n}`
+    return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParams)} {${_.map(FieldMaps, FieldMap => GenerateFields(FieldMap))}\n}`
 }

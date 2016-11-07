@@ -1,22 +1,5 @@
-import _ from 'lodash'
-import { SET_ENTITIES } from '../actions/index'
-
-const combineReducers = reducers => (state, action) => {
-    const combine = (reducers, state) => {
-        return {
-            ...state,
-            ..._.mapValues(reducers, (value, key) => {
-                if (typeof value === 'function') {
-                    return value(state ? state[key] : state, action)
-                } else {
-                    return combine(reducers[key], state ? state[key] : undefined)
-                }
-            })
-        }
-    }
-
-    return combine(reducers, state)
-}
+import { SET_ENTITIES, TOGGLE_MOCK } from '../actions/index'
+import { combineReducers } from 'redux'
 
 const entityReducer = entityType => (state = {}, action) => {
     switch (action.type) {
@@ -31,9 +14,24 @@ const entityReducer = entityType => (state = {}, action) => {
     }
 }
 
-export default combineReducers({
-    entities: {
-        users: entityReducer('users'),
-        books: entityReducer('books')
+const settingsReducer = (state = {
+    mock: false
+}, action) => {
+    switch (action.type) {
+        case TOGGLE_MOCK: {
+            return {...state, mock: !state.mock}
+        }
+
+        default: {
+            return state
+        }
     }
+}
+
+export default combineReducers({
+    People: entityReducer('People'),
+    Cats: entityReducer('Cats'),
+    Dogs:entityReducer('Dogs'),
+    Animals: entityReducer('Animals'),
+    Settings: settingsReducer
 })

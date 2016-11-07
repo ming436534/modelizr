@@ -6,10 +6,15 @@
  *
  * @param UnionDescription
  */
-export const union = (UnionDescription: Object) => ({
-    ...UnionDescription,
-    _unionDataType: true
-})
+export const union = (UnionDescription: Object) => {
+    if (!UnionDescription.schemaAttribute)
+        throw new Error("A union requires a schemaAttribute")
+
+    return {
+        ...UnionDescription,
+        _unionDataType: true
+    }
+}
 
 type ErrorsType = {
     message: string,

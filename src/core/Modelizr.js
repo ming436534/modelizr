@@ -15,7 +15,6 @@ export default class Modelizr {
 
     constructor(InitialClientState: ClientStateType) {
         if (!InitialClientState) throw new Error("Modelizr expects a Client State as its first parameter")
-        if (!InitialClientState.config.endpoint && !InitialClientState.api) throw new Error("Please provide a base endpoint to make queries to")
 
         this.ClientState = {...InitialClientState}
 
@@ -33,8 +32,10 @@ export default class Modelizr {
 
         this.ClientState.config = {
             ...defaultConfig,
-            ...InitialClientState.config
+            ...InitialClientState.config || {}
         }
+        if (!this.ClientState.config.endpoint)
+            throw new Error("Please provide a base endpoint to make queries to")
     }
 
     /**
