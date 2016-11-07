@@ -10,10 +10,18 @@ export const toggleMock = () => ({
 
 export const SET_ENTITIES = "SET_ENTITIES"
 
-export const fetchPeople = () => () => {
+export const fetchPeople = mock => dispatch => {
     query(
-        Person()
-    ).then(res => {
-        console.log(res)
-    })
+        Person("People",
+            Animal("Pets",
+                Cat, Dog
+            ),
+            Person("Friend")
+        )
+    ).mock(mock ? {
+        People: Array
+    } : false).normalize(res => dispatch({
+        type: SET_ENTITIES,
+        payload: res.entities
+    }))
 }

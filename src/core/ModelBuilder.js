@@ -46,12 +46,18 @@ export const CreateModel = (newModel: Object | string): ModelFunction => {
     if (typeof newModel === 'object') {
         _.forEach(newModel, (value, key) => Model[key] = value)
     } else {
+
+        /* We want to store the model name and field name
+         * separately as the field name can change on a per
+         * query basis, while the model name must always
+         * remain consistent.
+         * */
         Model.ModelName = newModel
         Model.FieldName = newModel
+
         Model.Params = {}
         Model.Children = []
         Model.Filters = {}
-        Model._isModelizrModel = true
 
         const setFilter = (key, value) => CreateModel({
             ...Model,
@@ -61,6 +67,9 @@ export const CreateModel = (newModel: Object | string): ModelFunction => {
             }
         })
 
+        /* Model functions that allows for white-listing and
+         * black-listing model fields on a per-query basis.
+         * */
         Model.only = (fields: Array<string>) => setFilter("only", fields)
         Model.without = (fields: Array<string>) => setFilter("without", fields)
     }

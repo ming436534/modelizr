@@ -21,7 +21,9 @@ enhance(class Example extends Component {
 
     action = name => e => {
         e.preventDefault()
-        this.props.actions[name]()
+        const {Settings} = this.props
+
+        this.props.actions[name](Settings.mock)
     }
 
     render() {

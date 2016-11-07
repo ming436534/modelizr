@@ -21,17 +21,12 @@ type FieldMap = {
 /**
  * Utility method that generates a certain amount of spaces
  * in a string.
- *
- * @type {number}
  */
 const SPACES = 2
 const createIndent = (spaces: number): string =>
     _.join(_.times((spaces * SPACES) + 1, () => ""), " ")
 
-/**
- * Construct a valid GraphQL parameter string from an object
- * @param params
- */
+/* Construct a valid GraphQL parameter string from an object */
 const buildParameters = (params: ?Object): string => {
     if (!params || _.isEmpty(params)) return ""
     return `(${_.map(_.pickBy(params, param => param || param === false), (param, key) =>
@@ -40,33 +35,18 @@ const buildParameters = (params: ?Object): string => {
 
 /**
  * Generate a GraphQL query from a collection of modelizr models.
- *
- * @param ClientState
- * @param queryModels
- * @param queryType
- * @param queryName
- * @param queryParams
- * @returns {string}
  */
 export default ({ClientState, queryModels, queryType, queryName, queryParams}: GeneratorParameters): string => {
     const {models} = ClientState
 
-    /**
-     * This compiles a FieldMap from a a collection of models. It is much
+    /* This compiles a FieldMap from a a collection of models. It is much
      * easier to generate a query from a normalized description of fields.
-     *
-     * @param queryModels
-     * @param prefix
-     */
+     * */
     const makeMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> =>
         _.map(queryModels, (ModelFunction: ModelFunction): FieldMap => {
             const ModelData: ModelDataType | UnionDataType = models[ModelFunction.ModelName]
 
-            /**
-             * Utility that strips modifier rejected fields.
-             * @param fields
-             * @returns fields
-             */
+            /* Utility that strips modifier rejected fields. */
             const filter = fields =>
                 _.pickBy(fields, (type, field) => {
                     const {only, without} = ModelFunction.Filters
@@ -75,14 +55,10 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
                     return true
                 })
 
-            /**
-             * Filter out fields that have been rejected via modifiers and
+            /* Filter out fields that have been rejected via modifiers and
              * strip any model relationships from the fields and recursively
              * generate a FieldMap.
-             *
-             * @param fields
-             * @returns FieldMap
-             */
+             * */
             const pruneFields = (fields: Object): Array<string | FieldMap> =>
                 _.map(filter(getPlainFields(fields)), (type, field) =>
                     isValidType(type) ? field : {name: field, fields: pruneFields(type)}
@@ -97,13 +73,11 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
 
     const FieldMaps: Array<FieldMap> = makeMap(queryModels)
 
-    /**
-     * Generate an indented and multi-lined GraphQL query string from our FieldMap
-     *
-     * @param FieldMap
-     * @param indent
-     * @returns String
-     */
+    /* Generate an indented and multi-lined GraphQL query string
+     * from our FieldMap. The type and name of the generated
+     * query will be determined based on the queryType and queryName
+     * parameters.
+     * */
     const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string =>
         `\n${createIndent(indent - 1)}${FieldMap.name}${buildParameters(FieldMap.params)} {${_.map(FieldMap.fields, field =>
             typeof field === 'string' ? `\n${createIndent(indent)}${field}` :

@@ -3,11 +3,9 @@ import { combineReducers } from 'redux'
 
 const entityReducer = entityType => (state = {}, action) => {
     switch (action.type) {
-        case SET_ENTITIES:
-            if (action.entity == entityType) {
-                return {...state, ...action.collection}
-            }
-            return state
+        case SET_ENTITIES: {
+            return {...state, ...action.payload[entityType] || {}}
+        }
 
         default:
             return state
@@ -31,7 +29,7 @@ const settingsReducer = (state = {
 export default combineReducers({
     People: entityReducer('People'),
     Cats: entityReducer('Cats'),
-    Dogs:entityReducer('Dogs'),
+    Dogs: entityReducer('Dogs'),
     Animals: entityReducer('Animals'),
     Settings: settingsReducer
 })

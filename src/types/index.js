@@ -4,7 +4,6 @@ export type ModelFunction = {
     FieldName: string,
     Params: Object,
     Children: Array<string>,
-    _isModelizrModel: boolean,
     Filters: ?{
         only: ?Array<string>,
         without: ?Array<string>
@@ -33,7 +32,7 @@ export type ConfigType = {
     api: Function,
     headers: ?Object<string>,
     method: ?string,
-    mock: ?boolean,
+    mock: ?boolean | Object,
     debug: ?boolean,
     body: ?Object,
     throwOnErrors: boolean

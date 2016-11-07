@@ -16,7 +16,8 @@ const client = new Modelizr({
         }),
     },
     config: {
-        endpoint: "http://localhost:8000/graphql"
+        endpoint: "http://localhost:8000/graphql",
+        mock: true
     }
 })
 
