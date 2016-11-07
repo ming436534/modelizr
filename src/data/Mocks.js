@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { ClientStateType, ModelDataType, UnionDataType, ModelFunction } from '../types'
 
 let createFaker = () => {
+    // eslint-disable-next-line no-console
     console.warn("Faker has been stripped from the production build")
     return false
 }
@@ -83,7 +84,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 
     const MockModels = (models: Array<ModelFunction>) => {
         const mock = (Model: ModelFunction | Object) => {
-            let ModelFunction = Model
+            let CurrentModel = Model
             let fieldsToMock = {}
             let ModelData: ?ModelDataType | UnionDataType = false
             let schemaAttribute: ?string = null
@@ -100,8 +101,8 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
                 if (ModelData._unionDataType) {
                     if (!Model.Children.length) throw new Error(`No children were given to union ${Model.FieldName}`)
                     schemaAttribute = ModelData.schemaAttribute
-                    ModelFunction = _.sample(Model.Children)
-                    ModelData = clientState.models[ModelFunction.ModelName]
+                    CurrentModel = _.sample(Model.Children)
+                    ModelData = clientState.models[CurrentModel.ModelName]
                 }
                 fieldsToMock = getPlainFields(ModelData.fields)
             } else {
@@ -122,9 +123,10 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
              * to figure out if they should be mocked as a collection or as
              * a single entity.
              * */
-            const KeyedFunctions = _.mapKeys(ModelFunction.Children, (model: ModelFunction) => model.FieldName)
+            const KeyedFunctions = _.mapKeys(CurrentModel.Children, (model: ModelFunction) => model.FieldName)
             const mockedChildren = _.mapValues(KeyedFunctions, (model: ModelFunction, fieldName: string) => {
-                if (ModelData.fields && Array.isArray(ModelData.fields[fieldName])) return _.map(_.times(10), () => mock(model))
+                if (ModelData && ModelData.fields && Array.isArray(ModelData.fields[fieldName]))
+                    return _.map(_.times(10), () => mock(model))
                 return mock(model)
             })
 
@@ -136,8 +138,8 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
             /* Replace the generated primaryKey data with a V4 UUID string and, if
              * the model is a union type, set its schemaAttribute accordingly.
              * */
-            if (mockedFields[ModelData.primaryKey]) mockedFields[ModelData.primaryKey] = v4()
-            if (schemaAttribute) mockedFields[schemaAttribute] = ModelFunction.ModelName
+            if (ModelData && mockedFields[ModelData.primaryKey]) mockedFields[ModelData.primaryKey] = v4()
+            if (schemaAttribute) mockedFields[schemaAttribute] = CurrentModel.ModelName
 
             return mockedFields
         }
@@ -157,6 +159,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 
     return new Promise(resolve => resolve({
         server_response: {},
-        data: MockModels(queryModels)
+        data: MockModels(queryModels),
+        errors: null
     }))
 }

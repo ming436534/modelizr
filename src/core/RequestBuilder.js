@@ -94,7 +94,7 @@ export default (ClientState: ClientStateType,
      * */
     const MAKE_REQUEST = () => (config.mock ? Mock({...ClientState, config}, models) : config
         .api(config))
-        .then((res: RequestResponse) => {
+        .then((res) => {
             logger.add("Server Response", res.server_response || {})
             logger.add("GraphQL response", {
                 data: res.data,
