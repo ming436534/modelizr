@@ -48,7 +48,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
             const {__type, __faker, __pattern} = type
 
             if (__faker) {
-                const faker = createFaker()
+                const faker = clientState.config.faker || createFaker() // check if a faker instance has been provided in config
                 if (!faker) return generate(__type)
                 return _.result(faker, __faker)
             }
@@ -102,6 +102,11 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
                     schemaAttribute = ModelData.schemaAttribute
                     CurrentModel = _.sample(Model.Children)
                     ModelData = clientState.models[CurrentModel.ModelName]
+
+                    /* If the schemaAttribute of the union is a function, then look for
+                     * a schemaType on the chosen model.
+                     * */
+                    if (typeof schemaAttribute === 'function') schemaAttribute = ModelData.schemaType
                 }
                 fieldsToMock = getPlainFields(ModelData.fields)
             } else {

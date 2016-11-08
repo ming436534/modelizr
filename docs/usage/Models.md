@@ -1,93 +1,72 @@
 # Creating Models
 
-Modelizr is a tool that revolves around the models you create. Generated queries, mocked data and normalizing are all based on of the structure of the models
-that you define. The models are a mix between json-schema-faker schemas and normalizr schemas.
+Modelizr is a tool that revolves around the models you create. Query generation, data mocking and normalization` are all based on the structure of the models
+that you build.
 
-When defining normalizr schemas, normalizr provides you with three tools - `arrayOf()`, `valuesOf()` and `unionOf` - to help describe your data structure. Modelizr
-exports similar tools **but they are not the same**. Do not attempt to use normalizr's tools when working with modelizr models. Additionally, modelizrs' version of `unionOf()`
-(called `union`) should be used in a similar manner to `models` - but more on that later.
+In this usage example we will be creating 4 models:
 
-Going forward with this usage example, we will be creating three models - **user**, **group** and **book** - and a union model - **owner**. Each model will get a key to describe
-its entity collection, and a schema to describe the structure of the model.
++ Person `[model]`
++ Dog `[model]`
++ Cat `[Model]`
++ Animal `[union(Dog, Cat)]`
 
-```javascript
-import { model, union } from 'modelizr'
+Models are just json objects that are then interpreted into modelizr models. When creating these models we need to describe:
 
-const user = model('users', {
-    id: {type: "primary"},
-    firstName: {type: "string", faker: "name.firstName"},
-    lastName: {type: "string", faker: "name.lastName"}
-})
++ The model's **name**. This is later used internally and externally as a reference.
++ The model's **normalization key**. This is a key that all variations of the model will be normalized under.
++ The model's **fields** and **field types**. These are used when generating the GraphQL request and mocking a response.
 
-const book = model('books', {
-    id: {type: "primary"},
-    title: {type: "string"},
-    publisher: {type: "string"}
-})
-
-const group = model('groups', {
-    id: {type: "primary"}
-})
-```
-These are basic model representations. Look at the [API reference](../api/ModelCreator.md) to see what else can be done with schemas.
-
-We can now further describe the relationship between these two models. A **user** might own a collection of books, which would result in an array of the **book** model.
+Model fields can also contain relationship references to other models by referencing their model name and collection's of data can be referenced with an array `[ ]`.
 
 ```javascript
-import { arrayOf } from 'modelizr'
-
-user.define({
-    books: arrayOf(book)
-})
-```
-Or as a shorthand for `arrayOf` we can wrap the model in `[]`.
-```javascript
-user.define({
-    books: [book]
-})
-```
-
-A **book** might have an author, which would result in a single **user** model. We can define this like so:
-
-```javascript
-book.define({
-    author: user
-})
-```
-
-A **group** will just have a collection of users. In other words, an `arrayOf(user)`
-
-```javascript
-group.define({
-    users: [user]
-})
-```
-
-And finally our **owner** union will be a collection of users and groups. The union needs to have a `schemaAttribute` specified to allow normalizr to determine which entity belongs
-to which model.
-
-```javascript
-const owner = union('owners', {
-    user,
-    group
-}, {schemaAttribute: 'type'})
-```
-If we had a set of data with the following structure:
-```javascript
-{
-    owners: [
-        {
-            id: 1,
-            ...,
-            type: "user"
-        },
-
-        {
-            id: 5,
-            users: [ ... ],
-            type: "group"
-        }
-    ]
+const Person = {
+    normalizeAs: "People",
+    fields: {
+        id: String,
+        firstName: String,
+        age: Number,
+        Friend: "Person",
+        Pets: ["Animals"]
+    },
+    primaryKey: "id"
 }
 ```
-The `schemaAttribute` we defined on the **collection** union would allow normalizr to figure out the model by looking at each entities `type` field.
+
+```javascript
+const Dog = {
+    normalizeAs: "Dogs",
+    fields: {
+        __type: String,
+        id: String,
+        breed: String,
+        Owner: "Person"
+    },
+    primaryKey: "id"
+}
+```
+
+```javascript
+const Cat = {
+    normalizeAs: "Cats",
+    fields: {
+        __type: String,
+        id: String,
+        type: String,
+        Owner: "Person"
+    },
+    primaryKey: "id"
+}
+```
+
+Creating a union is done using a utility tool. To create a union you need to define an array of **models** of which it is a union of, and a schemaAttribute which is a key on each model
+that describes the type of model it is.
+
+```javascript
+import { union } from 'modelizr'
+
+const Animal = union({
+    normalizeAs: "Pets",
+    models: ["Cat", "Dog"],
+    schemaAttribute: "__type"
+})
+```

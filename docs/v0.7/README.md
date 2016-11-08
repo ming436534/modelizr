@@ -6,6 +6,7 @@
     * [Mocking](/docs/usage/Mocking.md)
     * [Query Preparation](/docs/usage/Preparing.md)
     * [Production](/docs/usage/Production.md)
+    * [Validation](/docs/usage/Validation.md)
 * [Patterns](/docs/patterns/README.md)
     * [Fragments](/docs/patterns/Fragments.md)
 * [Modifiers](/docs/modifiers/README.md)
