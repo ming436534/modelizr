@@ -24,13 +24,13 @@ export type UnionDataType = {
     normalizeAs: ?string,
     models: Array<string>,
     schemaAttribute: string | Function,
-    _unionDataType: Boolean
+    _unionDataType: boolean
 }
 
 export type ConfigType = {
     endpoint: string,
     api: Function,
-    headers: ?Object<string>,
+    headers: ?{[key: string]: string},
     method: ?string,
     mock: ?boolean | Object,
     debug: ?boolean,
@@ -40,11 +40,11 @@ export type ConfigType = {
 
 export type ClientStateType = {
     config: ConfigType,
-    models: Object<ModelDataType | UnionDataType>
+    models: {[key: string]: ModelDataType | UnionDataType}
 }
 
 export type RequestResponse = {
-    response: ?Object,
+    server_response: ?Object,
     data: Object,
     errors: Object,
     entities: ?Object,
