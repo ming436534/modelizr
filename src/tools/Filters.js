@@ -16,8 +16,9 @@ export const isValidType = (type: any): Boolean => {
     }
 
     const TypeMap = [
+        Boolean, "boolean",
         String, "string",
-        Number, "number", "integer"
+        Number, "number", "integer", "float"
     ]
 
     return _.find(TypeMap, _type => _type === type)

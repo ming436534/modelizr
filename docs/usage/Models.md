@@ -65,7 +65,6 @@ that describes the type of model it is.
 import { union } from 'modelizr'
 
 const Animal = union({
-    normalizeAs: "Pets",
     models: ["Cat", "Dog"],
     schemaAttribute: "__type"
 })

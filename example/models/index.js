@@ -10,7 +10,6 @@ const client = new Modelizr({
         Cat,
         Dog,
         Animal: union({
-            normalizeAs: "Animals",
             models: ["Cat", "Dog"],
             schemaAttribute: "__type"
         }),

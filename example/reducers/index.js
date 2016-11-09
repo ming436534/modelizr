@@ -30,6 +30,5 @@ export default combineReducers({
     People: entityReducer('People'),
     Cats: entityReducer('Cats'),
     Dogs: entityReducer('Dogs'),
-    Animals: entityReducer('Animals'),
     Settings: settingsReducer
 })
