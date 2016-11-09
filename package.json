@@ -1,6 +1,6 @@
 {
   "name": "modelizr",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "description": "Generate GraphQL queries from Data Models that can be mocked and normalized.",
   "main": "lib/index.js",
   "scripts": {
