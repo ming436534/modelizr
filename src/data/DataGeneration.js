@@ -25,7 +25,7 @@ export const generator = (fakerInstance: Object): Function => (type: any): any =
 
         if (__faker) {
             const faker = fakerInstance || createFaker() // check if a faker instance has been provided in config
-            if (!faker) return generate(__type)
+            if (!faker) return generator(fakerInstance)(__type)
             return _.result(faker, __faker)
         }
 
