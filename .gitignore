@@ -8,3 +8,4 @@ coverage
 _book
 node_modules
 lib
+types

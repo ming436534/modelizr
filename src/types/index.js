@@ -42,3 +42,27 @@ export type ClientStateType = {
     config: ConfigType,
     models: Object<ModelDataType | UnionDataType>
 }
+
+export type RequestResponse = {
+    response: ?Object,
+    data: Object,
+    errors: Object,
+    entities: ?Object,
+    result: ?Object
+}
+
+export type RequestFunction = (value: any) => RequestObject
+
+export type RequestObject = {
+    api: RequestFunction,
+    endpoint: RequestFunction,
+    headers: RequestFunction,
+    method: RequestFunction,
+    mock: RequestFunction,
+    debug: RequestFunction,
+    body: RequestFunction,
+    throwOnErrors: RequestFunction,
+    generate: RequestFunction,
+    then: (cb: Function) => Promise<RequestResponse>,
+    normalize: (cb: Function) => Promise<RequestResponse>,
+}
