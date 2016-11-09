@@ -28,8 +28,31 @@ export const CreateModel = (newModel: Object | string): ModelFunction => {
 
         if (name) NextModel.FieldName = name
         NextModel.Params = {...NextModel.Params, ...params}
-        models.forEach((model: ModelFunction) => NextModel.Children = [...NextModel.Children, model])
 
+        /* A utility method that recursively merges new child models
+         * into existing the existing collection of child models.
+         *
+         * It uses the models' FieldName and not their ModelName
+         * to match new => old as we do not want to overwrite
+         * non-related fields.
+         * */
+        const mergeChildren = (oldChildren, newChildren) => ([
+            ..._.filter(oldChildren, (oldChildModel: ModelFunction) =>
+                !_.find(newChildren, (newChildModel: ModelFunction) => newChildModel.FieldName == oldChildModel.FieldName)
+            ),
+            ..._.map(newChildren, (newChildModel: ModelFunction) => {
+                const previousChildModel: ModelFunction = _.find(oldChildren, (childModel: ModelFunction) =>
+                childModel.FieldName == newChildModel.FieldName)
+
+                return previousChildModel ? CreateModel({
+                    ...previousChildModel,
+                    ...newChildModel,
+                    Children: mergeChildren(previousChildModel.Children, newChildModel.Children)
+                }) : newChildModel
+            })
+        ])
+
+        NextModel.Children = mergeChildren(NextModel.Children, models)
         return CreateModel(NextModel)
     }
 

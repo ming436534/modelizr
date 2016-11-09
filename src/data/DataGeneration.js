@@ -45,7 +45,7 @@ export const generator = (fakerInstance: Object): Function => (type: any): any =
         switch (type) {
             case String:
             case "string": {
-                return v4().substring(0, 8)
+                return v4().substring(0, 10)
             }
 
             case Number:
