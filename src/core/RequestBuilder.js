@@ -93,7 +93,7 @@ export default (ClientState: ClientStateType,
     REQUEST = {
         api: setConfig("api", false),
         endpoint: setConfig("endpoint", false),
-        headers: headers => setConfig("endpoint", false)({...config.headers, ...headers}),
+        headers: headers => setConfig("headers", false)({...config.headers, ...headers}),
         method: setConfig("method", "POST"),
         mock: setConfig("mock", true),
         debug: setConfig("debug", true),
