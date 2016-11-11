@@ -26,7 +26,7 @@ export default class Modelizr {
 
         const defaultConfig = {
             mock: false,
-            debug: true,
+            debug: false,
             api: FETCH_API,
             throwOnErrors: true
         }
