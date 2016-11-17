@@ -41,6 +41,8 @@ export const generator = (fakerInstance: Object): Function => (type: any): any =
             }
             return result
         }
+
+        return generator(fakerInstance)(__type)
     } else {
         switch (type) {
             case String:

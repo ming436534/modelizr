@@ -62,6 +62,11 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
             const pruneFields = (fields: Object): Array<string | FieldMap> =>
                 _.map(filter(getPlainFields(fields)), (type, field) => {
                         if (Array.isArray(type)) type = type[0]
+
+                        /* We check for a __alias property on the field type.
+                         * If one if found, use it instead of the fieldName
+                         * */
+                        if (typeof type === 'object' && type.__alias) field = `${field}: ${type.__alias}`
                         return isValidType(type) ? field : {name: field, fields: pruneFields(type)}
                     }
                 )
