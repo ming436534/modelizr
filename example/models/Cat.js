@@ -6,5 +6,9 @@ export default {
         name: String,
         type: String,
         Owner: "Person"
+    },
+    alias: {
+        id: "ID",
+        name: "NAME"
     }
 }

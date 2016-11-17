@@ -60,8 +60,10 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
              * generate a FieldMap.
              * */
             const pruneFields = (fields: Object): Array<string | FieldMap> =>
-                _.map(filter(getPlainFields(fields)), (type, field) =>
-                    isValidType(type) ? field : {name: field, fields: pruneFields(type)}
+                _.map(filter(getPlainFields(fields)), (type, field) => {
+                        if (Array.isArray(type)) type = type[0]
+                        return isValidType(type) ? field : {name: field, fields: pruneFields(type)}
+                    }
                 )
 
             return {
@@ -78,11 +80,15 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
      * query will be determined based on the queryType and queryName
      * parameters.
      * */
-    const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string =>
-        `\n${createIndent(indent - 1)}${FieldMap.name}${buildParameters(FieldMap.params)} {${_.map(FieldMap.fields, field =>
+    const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string => {
+        const {name, fields, params} = FieldMap
+        const length = !!fields.length
+
+        return `\n${createIndent(indent - 1)}${name}${buildParameters(params)} ${length ? "{" : ""}${_.map(fields, field =>
             typeof field === 'string' ? `\n${createIndent(indent)}${field}` :
                 `${GenerateFields(field, indent + 1)}`
-        )}\n${createIndent(indent - 1)}}`
+        )}\n${createIndent(indent - 1)}${length ? "}" : ""}`
+    }
 
     return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParams)} {${_.map(FieldMaps, FieldMap => GenerateFields(FieldMap))}\n}`
 }
