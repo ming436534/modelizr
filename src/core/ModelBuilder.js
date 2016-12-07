@@ -71,22 +71,31 @@ export const CreateModel = (newModel: Object | string): ModelFunction => {
         Model.Params = {}
         Model.Children = []
         Model.Filters = {}
-
-        const setFilter = (key, value) => CreateModel({
-            ...Model,
-            Filters: {
-                ...Model.Filters,
-                [key]: value
-            }
-        })
-
-        /* Model functions that allows for white-listing and
-         * black-listing model fields on a per-query basis.
-         * */
-        Model.only = (fields: Array<string>) => setFilter("only", fields)
-        Model.without = (fields: Array<string>) => setFilter("without", fields)
-        Model.empty = () => setFilter("empty", true)
+        Model.FieldParams = {}
     }
+
+    const setFilter = (key, value) => CreateModel({
+        ...Model,
+        Filters: {
+            ...Model.Filters,
+            [key]: value
+        }
+    })
+
+    /* Model functions that allows for white-listing and
+     * black-listing model fields on a per-query basis.
+     * */
+    Model.only = (fields: Array<string>) => setFilter("only", fields)
+    Model.without = (fields: Array<string>) => setFilter("without", fields)
+    Model.empty = () => setFilter("empty", true)
+
+    Model.fields = fieldParams => CreateModel({
+        ...Model,
+        FieldParams: {
+            ...Model.FieldParams,
+            ...fieldParams
+        }
+    })
 
     return Model
 }

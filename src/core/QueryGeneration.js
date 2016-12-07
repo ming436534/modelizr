@@ -65,7 +65,7 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
                         /* This variable is used to keep track of collection object-type fields.
                          * These fields should not have a sub-selection of fields in the GraphQL
                          * query, but should still be defined in our model for accurate mock
-                         * generation. 
+                         * generation.
                          * */
                         let arrayType = false
 
@@ -74,11 +74,28 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
                             arrayType = true
                         }
 
+                        /* Utility that allows adding parameters to individual fields. */
+                        const addParams = field => {
+                            const fieldParams = ModelFunction.FieldParams
+                            const findParams = field =>
+                                _.find(fieldParams, (params, fieldName) => fieldName == field)
+
+                            if (typeof field === 'string') {
+                                const params = findParams(field)
+                                if (params) return {fields: [], name: field, params}
+                            } else {
+                                const params = findParams(field.name)
+                                if (params) return {...field, params}
+                            }
+                            
+                            return field
+                        }
+
                         /* We check for a __alias property on the field type.
                          * If one if found, use it instead of the fieldName
                          * */
                         if (typeof type === 'object' && type.__alias) field = `${field}: ${type.__alias}`
-                        return isValidType(type) || arrayType ? field : {name: field, fields: pruneFields(type)}
+                        return addParams(isValidType(type) || arrayType ? field : {name: field, fields: pruneFields(type)})
                     }
                 )
 

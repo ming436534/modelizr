@@ -9,9 +9,11 @@ export type ModelFunction = {
         without: ?Array<string>,
         empty: ?boolean
     },
+    FieldParams: {[field: string]: any},
     only: (fields: Array<string>) => ModelFunction,
     without: (fields: Array<string>) => ModelFunction,
-    empty: () => ModelFunction
+    empty: () => ModelFunction,
+    fields: () => ModelFunction
 }
 
 export type ModelDataType = {
