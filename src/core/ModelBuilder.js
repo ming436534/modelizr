@@ -30,11 +30,11 @@ export const CreateModel = (newModel: Object | string): ModelFunction => {
         NextModel.Params = {...NextModel.Params, ...params}
 
         /* A utility method that recursively merges new child models
-         * into existing the existing collection of child models.
+         * into the existing collection of child models.
          *
          * It uses the models' FieldName and not their ModelName
          * to match new => old as we do not want to overwrite
-         * non-related fields.
+         * unrelated fields.
          * */
         const mergeChildren = (oldChildren, newChildren) => ([
             ..._.filter(oldChildren, (oldChildModel: ModelFunction) =>
@@ -85,6 +85,7 @@ export const CreateModel = (newModel: Object | string): ModelFunction => {
          * */
         Model.only = (fields: Array<string>) => setFilter("only", fields)
         Model.without = (fields: Array<string>) => setFilter("without", fields)
+        Model.empty = () => setFilter("empty", true)
     }
 
     return Model

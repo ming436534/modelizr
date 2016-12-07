@@ -12,7 +12,7 @@ export const SET_ENTITIES = "SET_ENTITIES"
 
 export const fetchPeople = mock => dispatch => {
     query(
-        Person("People",
+        Person("People", {},
             Animal("Pets",
                 Cat, Dog
             ),

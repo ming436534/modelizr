@@ -49,9 +49,10 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
             /* Utility that strips modifier rejected fields. */
             const filter = fields =>
                 _.pickBy(fields, (type, field) => {
-                    const {only, without} = ModelFunction.Filters
+                    const {only, without, empty} = ModelFunction.Filters
                     if (only) return _.find(only, _field => _field == field)
                     if (without) return !_.find(without, _field => _field == field)
+                    if (empty) return false
                     return true
                 })
 
@@ -61,13 +62,23 @@ export default ({ClientState, queryModels, queryType, queryName, queryParams}: G
              * */
             const pruneFields = (fields: Object): Array<string | FieldMap> =>
                 _.map(filter(getPlainFields(fields)), (type, field) => {
-                        if (Array.isArray(type)) type = type[0]
+                        /* This variable is used to keep track of collection object-type fields.
+                         * These fields should not have a sub-selection of fields in the GraphQL
+                         * query, but should still be defined in our model for accurate mock
+                         * generation. 
+                         * */
+                        let arrayType = false
+
+                        if (Array.isArray(type)) {
+                            type = type[0]
+                            arrayType = true
+                        }
 
                         /* We check for a __alias property on the field type.
                          * If one if found, use it instead of the fieldName
                          * */
                         if (typeof type === 'object' && type.__alias) field = `${field}: ${type.__alias}`
-                        return isValidType(type) ? field : {name: field, fields: pruneFields(type)}
+                        return isValidType(type) || arrayType ? field : {name: field, fields: pruneFields(type)}
                     }
                 )
 

@@ -6,10 +6,12 @@ export type ModelFunction = {
     Children: Array<string>,
     Filters: ?{
         only: ?Array<string>,
-        without: ?Array<string>
+        without: ?Array<string>,
+        empty: ?boolean
     },
     only: (fields: Array<string>) => ModelFunction,
-    without: (fields: Array<string>) => ModelFunction
+    without: (fields: Array<string>) => ModelFunction,
+    empty: () => ModelFunction
 }
 
 export type ModelDataType = {
