@@ -38,7 +38,7 @@ export const FETCH_API = (config: ConfigType) => {
              * an error of type GraphQLError.
              * */
             if (res.errors && config.throwOnErrors) {
-                if (config.throwOnErrors) throw new GraphQLError("The server response contains GraphQL errors", res.errors)
+                if (config.throwOnErrors) throw new GraphQLError("The GraphQL server responded with errors.", res.errors)
             }
 
             return {

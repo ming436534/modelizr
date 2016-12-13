@@ -23,12 +23,13 @@ type ErrorsType = {
  * An error type that denotes a response containing
  * GraphQL errors
  */
-export class GraphQLError extends Error {
+export class GraphQLError {
 
-    errors: Array<ErrorsType>;
+    graphQLErrors: Array<ErrorsType>;
+    message: string;
 
-    constructor(message: string, errors: Array<ErrorsType>) {
-        super(message)
-        this.errors = errors
+    constructor(message: ?string, errors: Array<ErrorsType>) {
+        this.message = message || "The GraphQL server responded with errors."
+        this.graphQLErrors = errors
     }
 }
