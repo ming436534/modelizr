@@ -1,13 +1,15 @@
-src/*
+src
 docs
-!lib
 
-test
+__tests__
 coverage
 
 .babelrc
 .eslintrc
 .idea
+.DS_Store
+.flowconfig
+.travis.yml
 
 _book
 example

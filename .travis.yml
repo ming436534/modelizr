@@ -8,8 +8,8 @@ before_install:
 install: yarn
 
 script:
-  - npm run flow
-  - npm run lint
-  - npm test
+  - yarn run flow
+  - yarn run lint
+  - yarn test
 
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
