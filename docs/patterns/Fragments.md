@@ -4,13 +4,15 @@ A useful pattern when making multiple queries that use the same sequence of mode
 
 fragments.js
 ```javascript
-import { user, book } from './models'
+const {models} = new Modelizr({})
 
-const BookFragment = book(
-    user().as('author')
+const {User, Dog} = models
+
+const DogFragment = Dog(
+    user("Owner")
 )
 
-export { BookFragment }
+export { DogFragment }
 ```
 
 actions.js

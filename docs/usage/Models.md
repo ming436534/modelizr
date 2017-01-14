@@ -69,3 +69,23 @@ const Animal = union({
     schemaAttribute: "__type"
 })
 ```
+
+Now that we have defined out model data, we can pass it into modelizr get get back model functions which are used when making queries:
+
+```javascript
+import { Modelizr } from 'modelizr'
+
+const {models, query, mutate, fetch} = new Modelizr({
+    models: {
+        User,
+        Dog,
+        Cat,
+        Animal
+    },
+    config: {
+        endpoint: "http:// ..."
+    }
+})
+
+// models = {User, Dog, Cat, Animal}: Object<Function>
+```

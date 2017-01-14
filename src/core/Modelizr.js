@@ -13,6 +13,7 @@ export default class Modelizr {
 
     ClientState: ClientStateType;
     models: {[key:string]: ModelFunction} = {};
+    normalizr: ?Function
 
     constructor(InitialClientState: ClientStateType) {
         if (!InitialClientState) throw new Error("Modelizr expects a Client State as its first parameter")
@@ -37,6 +38,12 @@ export default class Modelizr {
         }
         if (!this.ClientState.config.endpoint)
             throw new Error("Please provide a base endpoint to make queries to")
+
+        this.normalizr = (model: ModelFunction) => (Data: Object) => Normalizr({
+            Data,
+            ModelFunctions: [model],
+            ClientState: this.ClientState
+        })
     }
 
     /* Create ModelFunctions from the given model Data.
@@ -103,7 +110,7 @@ export default class Modelizr {
         /* Utility that flattens a field wrapped in an array */
         const unWrapArray = (field: Array<string> | string): UnwrappedField =>
             Array.isArray(field) ? {isArray: true, field: field[0]} :
-            {isArray: false, field}
+                {isArray: false, field}
 
         _.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: string) => {
             if (!ModelData._unionDataType) {

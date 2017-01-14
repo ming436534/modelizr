@@ -1,14 +1,10 @@
 {
-  "gitbook": "2.5.2",
+  "gitbook": "3.2.2",
   "title": "Modelizr",
-  "structure": {
-    "summary": "docs/readme.md",
-    "readme": "readme.md"
-  },
+  "author": "Julien Vincent",
   "plugins": [
     "prism",
     "-highlight",
-    "editlink",
     "github",
     "anchors",
     "ga"
@@ -17,10 +13,6 @@
     "website": "docs/styles/website.css"
   },
   "pluginsConfig": {
-    "editlink": {
-      "base": "https://github.com/julienvincent/modelizr/tree/master",
-      "label": "edit"
-    },
     "github": {
       "url": "https://github.com/julienvincent/modelizr"
     },
