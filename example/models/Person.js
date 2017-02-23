@@ -12,7 +12,7 @@ export default {
 		// 	latitude: Number,
 		// 	longitude: Number
 		// },
-		// Pets: ["Animal"],
-		// Friend: "Person"
+		Pets: ["Animal"],
+		Friend: "Person"
 	}
 }

@@ -1,6 +1,6 @@
 // @flow
 import { ClientStateType, ModelFunction, ModelDataType, UnionDataType } from '../types'
-import { stripRelationships } from '../tools/Filters'
+import { stripRelationships } from '../tools/filters'
 import _ from 'lodash'
 
 type GeneratorParameters = {
@@ -43,12 +43,12 @@ export default ({clientState, queryModels, queryType, queryName, queryParameters
 	 * */
 	const createMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> => (
 		_.map(queryModels, (modelFunction: ModelFunction): FieldMap => {
-			const modelData: ModelDataType | UnionDataType = models[modelFunction.ModelName]
+			const modelData: ModelDataType | UnionDataType = models[modelFunction.modelName]
 
 			/* Utility that strips modifier rejected fields. */
 			const filter = fields => (
 				_.pickBy(fields, (field, fieldName: string) => {
-					const {only, without, empty} = modelFunction.Filters
+					const {only, without, empty} = modelFunction.filters
 					if (only) return _.find(only, field => field == fieldName)
 					if (without) return !_.find(without, field => field == fieldName)
 					if (empty) return false
@@ -73,9 +73,9 @@ export default ({clientState, queryModels, queryType, queryName, queryParameters
 			)
 
 			return {
-				name: `${prefix ? "... on " : ""}${modelFunction.FieldName}`,
-				params: modelFunction.Params,
-				fields: [...pruneFields(modelData.fields), ...createMap(modelFunction.Children, modelData._unionDataType)]
+				name: `${prefix ? "... on " : ""}${modelFunction.fieldName}`,
+				params: modelFunction.params,
+				fields: [...pruneFields(modelData.fields), ...createMap(modelFunction.children, modelData._unionDataType)]
 			}
 		})
 	)

@@ -12,17 +12,12 @@ export const SET_ENTITIES = "SET_ENTITIES"
 
 export const fetchPeople = mock => dispatch => {
 	query(
-		Person(
-			Animal(
-				Cat
-			)
+		Person("Peoples", {},
+			Animal("Pets",
+				Cat, Dog
+			),
+			// Person("Friend")
 		)
-		// Person("Peoples", {},
-		// 	Animal("Pets",
-		// 		Cat, Dog
-		// 	),
-		// 	Person("Friend")
-		// )
 	).normalize(res => dispatch({
 		type: SET_ENTITIES,
 		payload: res.entities

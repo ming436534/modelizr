@@ -2,29 +2,17 @@
 import { ModelFunction, ModelDataCollection, ModelDataType } from '../types'
 import _ from 'lodash'
 
-/* Checks if a piece of information is a valid
- * data description
- * */
-export const isValidType = (field: {type: any}): Boolean => {
-	let {type} = field
-
-	if (Array.isArray(type)) {
-		type = type[0]
-	}
-
-	const validTypes = [
-		Boolean,
-		String,
-		Number
-	]
-
-	return _.find(validTypes, validType => validType === type)
-}
-
 /* Strips a collection of fields of all model relationships
  * */
 export const stripRelationships = (fields: Object) => (
-	_.pickBy(fields, field => typeof field.type !== "string")
+	_.pickBy(fields, field => {
+		const check = type => typeof type !== "string"
+
+		if (Array.isArray(field.type)) {
+			return check(field.type[0])
+		}
+		return check(field.type)
+	})
 )
 
 type NormalizedParameters = {
@@ -64,7 +52,7 @@ export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCol
 			return {
 				...model,
 				fields: _.mapValues(model.fields, field => {
-					if (typeof field === "object") return field
+					if (typeof field === "object" && !Array.isArray(field)) return field
 
 					return {
 						type: field

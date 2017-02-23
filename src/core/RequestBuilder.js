@@ -1,5 +1,5 @@
 // @flow
-import { normalizeFunctionParameters } from '../tools/Filters'
+import { normalizeFunctionParameters } from '../tools/filters'
 import { createLogger } from '../tools/logger'
 import generate from '../core/QueryGeneration'
 import Normalizr from '../data/Normalization'
@@ -41,10 +41,10 @@ export default (clientState: ClientStateType,
 	/* A utility method that, when given a response - calls our internal
 	 * Normalize method with both the given response and the model tree.
 	 * */
-	const normalize = (Data: Object) => Normalizr({
-		Data,
-		ModelFunctions: models,
-		ClientState: clientState
+	const normalize = (data: Object) => Normalizr({
+		data,
+		modelFunctions: models,
+		clientState
 	})
 
 	// eslint-disable-next-line prefer-const

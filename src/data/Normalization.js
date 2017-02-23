@@ -23,22 +23,22 @@ type NormalizedData = {
  * each models schema. If the entities from the response that match the model are
  * an array, the schema will be wrapped in arrayOf().
  */
-export default ({Data, ModelFunctions, ClientState}: NormalizationParameters): NormalizedData | Object => {
-	const {models} = ClientState
+export default ({data, modelFunctions, clientState}: NormalizationParameters): NormalizedData | Object => {
+	const {models} = clientState
 
 	/* Create a map of ModelFunctions who's keys match
 	 * those of the Data result
 	 * */
-	const KeyedFunctions: {[key:string]: ModelFunction} = _.mapKeys(ModelFunctions,
-		(ModelFunction: ModelFunction) =>
-			ModelFunction.FieldName)
+	const keyedFunctions: {[key:string]: ModelFunction} = _.mapKeys(modelFunctions,
+		(modelFunction: ModelFunction) =>
+			modelFunction.fieldName)
 
-	if (!Data) return {}
-	return normalize(Data, _.mapValues(KeyedFunctions, (ModelFunction: ModelFunction) => {
-		const Entities = Data[ModelFunction.FieldName]
-		const ModelData: ModelDataType = models[ModelFunction.ModelName]
+	if (!data) return {}
+	return normalize(data, _.mapValues(keyedFunctions, (modelFunction: ModelFunction) => {
+		const entities = data[modelFunction.fieldName]
+		const modelData: ModelDataType = models[modelFunction.modelName]
 
-		if (Array.isArray(Entities)) return arrayOf(ModelData.normalizrSchema)
-		return ModelData.normalizrSchema
+		if (Array.isArray(entities)) return arrayOf(modelData.normalizrSchema)
+		return modelData.normalizrSchema
 	}))
 }

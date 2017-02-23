@@ -1,19 +1,17 @@
 export type ModelFunction = {
 	(name: Object | string, params: Object | ModelFunction, models: Array<ModelFunction>): ModelFunction;
-	ModelName: string,
-	FieldName: string,
-	Params: Object,
-	Children: Array<string>,
-	Filters: ?{
+	modelName: string,
+	fieldName: string,
+	params: Object,
+	children: Array<string>,
+	filters: ?{
 		only: ?Array<string>,
 		without: ?Array<string>,
 		empty: ?boolean
 	},
-	FieldParams: {[field: string]: any},
 	only: (fields: Array<string>) => ModelFunction,
 	without: (fields: Array<string>) => ModelFunction,
-	empty: () => ModelFunction,
-	fields: () => ModelFunction
+	empty: () => ModelFunction
 }
 
 export type ModelDatatypeField = {

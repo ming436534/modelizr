@@ -1,5 +1,5 @@
 // @flow
-import { stripRelationships, isValidType } from '../tools/Filters'
+import { stripRelationships } from '../tools/filters'
 import { generator } from './DataGeneration'
 import { v4 } from '../tools/uuid'
 import _ from 'lodash'
@@ -18,53 +18,39 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 	const generate = generator(clientState.config.faker)
 
 	const mockModels = (models: Array<ModelFunction>) => {
-		const mock = (Model: ModelFunction | Object) => {
-			let CurrentModel = Model
-			let fieldsToMock = {}
-			let ModelData: ?ModelDataType | UnionDataType = false
+		const mock = (model: ModelFunction | Object) => {
+			let currentModel = model
+			let modelData: ?ModelDataType | UnionDataType = clientState.models[model.modelName]
 			let schemaAttribute: ?string = null
 
-			/* Check to see if we are mocking a Model or a nested set of fields */
-			if (typeof Model === 'function') {
-				ModelData = clientState.models[Model.ModelName]
+			/* If the model being mocked is a Union, then it has no actual 'fields'
+			 * that we can mock. We need to keep track of its schemaAttribute and
+			 * then randomly select one of its Child Models. We override the
+			 * currently set ModelFunction with this chosen Model.
+			 * */
+			if (modelData._unionDataType) {
+				if (!model.children.length) throw new Error(`No children were given to union ${model.fieldName}`)
+				schemaAttribute = modelData.schemaAttribute
+				currentModel = _.sample(model.children)
+				modelData = clientState.models[currentModel.modelName]
 
-				/* If the model being mocked is a Union, then it has no actual 'fields'
-				 * that we can mock. We need to keep track of its schemaAttribute and
-				 * then randomly select one of its Child Models. We override the
-				 * currently set ModelFunction with this chosen Model.
+				/* If the schemaAttribute of the union is a function, then look for
+				 * a schemaType on the chosen model.
 				 * */
-				if (ModelData._unionDataType) {
-					if (!Model.Children.length) throw new Error(`No children were given to union ${Model.FieldName}`)
-					schemaAttribute = ModelData.schemaAttribute
-					CurrentModel = _.sample(Model.Children)
-					ModelData = clientState.models[CurrentModel.ModelName]
-
-					/* If the schemaAttribute of the union is a function, then look for
-					 * a schemaType on the chosen model.
-					 * */
-					if (typeof schemaAttribute === 'function') schemaAttribute = ModelData.schemaType
-				}
-				fieldsToMock = stripRelationships(ModelData.fields)
-			} else {
-				fieldsToMock = stripRelationships(Model)
+				if (typeof schemaAttribute === 'function') schemaAttribute = modelData.schemaType
 			}
+			const fieldsToMock = stripRelationships(modelData.fields)
 
 			/* Map over the filtered set of fields and generate information
 			 * based on their data type. If the field is a nested set of fields,
 			 * pass that field back into our mock function.
 			 * */
 			let mockedFields = _.mapValues(fieldsToMock, field => {
-				const generateOrMock = type => {
-					if (typeof type === 'object' && !isValidType(type)) return mock(type)
-					return generate(type)
+				if (Array.isArray(field.type)) {
+					return _.map(_.times(10), () => generate(field))
 				}
 
-				if (Array.isArray(field)) {
-					field = field[0]
-					return _.map(_.times(10), () => generateOrMock(field))
-				}
-
-				return generateOrMock(field)
+				return generate(field)
 			})
 
 			/* If this model is querying child models, then they also need
@@ -72,9 +58,9 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			 * to figure out if they should be mocked as a collection or as
 			 * a single entity.
 			 * */
-			const KeyedFunctions = _.mapKeys(CurrentModel.Children, (model: ModelFunction) => model.FieldName)
-			const mockedChildren = _.mapValues(KeyedFunctions, (model: ModelFunction, fieldName: string) => {
-				if (ModelData && ModelData.fields && Array.isArray(ModelData.fields[fieldName]))
+			const keyedFunctions = _.mapKeys(currentModel.children, (model: ModelFunction) => model.fieldName)
+			const mockedChildren = _.mapValues(keyedFunctions, (model: ModelFunction, fieldName: string) => {
+				if (modelData && modelData.fields && Array.isArray(modelData.fields[fieldName].type))
 					return _.map(_.times(10), () => mock(model))
 				return mock(model)
 			})
@@ -87,8 +73,8 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			/* Replace the generated primaryKey data with a V4 UUID string and, if
 			 * the model is a union type, set its schemaAttribute accordingly.
 			 * */
-			if (ModelData && mockedFields[ModelData.primaryKey]) mockedFields[ModelData.primaryKey] = v4()
-			if (schemaAttribute) mockedFields[schemaAttribute] = CurrentModel.ModelName
+			if (modelData && mockedFields[modelData.primaryKey]) mockedFields[modelData.primaryKey] = v4()
+			if (schemaAttribute) mockedFields[schemaAttribute] = currentModel.modelName
 
 			return mockedFields
 		}
@@ -96,8 +82,8 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 		/* We look at mock config to determine if we should generate an array
 		 * of data or single entities
 		 * */
-		const KeyedFunctions = _.mapKeys(models, (model: ModelFunction) => model.FieldName)
-		return _.mapValues(KeyedFunctions, (model, field) => {
+		const keyedFunctions = _.mapKeys(models, (model: ModelFunction) => model.fieldName)
+		return _.mapValues(keyedFunctions, (model, field) => {
 			if (typeof mockConfig === 'object') {
 				if (mockConfig[field] && mockConfig[field] === Array)
 					return _.map(_.times(10), () => mock(model))

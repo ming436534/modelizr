@@ -3,9 +3,9 @@ import { ModelFunction, ClientStateType, UnionDataType, ModelDataType, ModelData
 import { Schema, arrayOf, unionOf } from 'normalizr'
 import _ from 'lodash'
 
-import { normalizeModelData } from '../tools/Filters'
+import { normalizeModelData } from '../tools/filters'
 import requestBuilder from './RequestBuilder'
-import { FETCH_API } from '../tools/Fetch'
+import { FETCH_API } from '../tools/fetch'
 import createModel from './ModelBuilder'
 
 export default class Modelizr {
@@ -73,11 +73,11 @@ export default class Modelizr {
 	buildUnionSchemas() {
 		const {models} = this.clientState
 
-		_.forEach(models, (ModelData: ModelDataType | UnionDataType, modelName: string) => {
-			if (ModelData._unionDataType) {
+		_.forEach(models, (modelData: ModelDataType | UnionDataType, modelName: string) => {
+			if (modelData._unionDataType) {
 
 				/* filter out all non-existing models and warn about them */
-				const ExistingModels = _.filter(ModelData.models, model => {
+				const existingModels = _.filter(modelData.models, model => {
 					if (models[model]) return true
 
 					// eslint-disable-next-line no-console
@@ -85,9 +85,9 @@ export default class Modelizr {
 				})
 
 				/* create a normalizr union */
-				ModelData.normalizrSchema = unionOf(_.mapValues(_.mapKeys(ExistingModels, model => model), model =>
+				modelData.normalizrSchema = unionOf(_.mapValues(_.mapKeys(existingModels, model => model), model =>
 						models[model].normalizrSchema
-					), {schemaAttribute: ModelData.schemaAttribute}
+					), {schemaAttribute: modelData.schemaAttribute}
 				)
 			}
 		})
