@@ -1,13 +1,12 @@
 // @flow
+import type { ClientStateType, ConfigType, RequestResponse, RequestObject } from '../types'
 import { normalizeFunctionParameters } from '../tools/filters'
 import { createLogger } from '../tools/logger'
-import generate from '../core/QueryGeneration'
-import Normalizr from '../data/Normalization'
-import Mock from '../data/Mocks'
-import _ from 'lodash'
-
-import { ClientStateType, ConfigType, RequestResponse, RequestObject } from '../types'
+import generate from '../core/queryGeneration'
+import Normalizr from '../data/normalization'
 import type { Logger } from '../tools/logger'
+import Mock from '../data/mocks'
+import _ from 'lodash'
 
 export default (clientState: ClientStateType,
 					 queryType: string) => (queryName: String | Object,
@@ -29,7 +28,7 @@ export default (clientState: ClientStateType,
 	/* generate the query and add it to the request body. If the
 	 * requestType is 'fetch', do not mutate the body
 	 * */
-	const query: string = generate({clientState, queryModels: models, queryType, queryName: name, queryParameters: params})
+	const query: string = generate({clientState, queryModels: models, queryType, queryName: name, queryParams: params})
 	const config: ConfigType = {
 		...clientState.config,
 		body: queryType == 'fetch' ? {} : {query}

@@ -4,7 +4,7 @@ import { stripRelationships } from '../tools/filters'
 import _ from 'lodash'
 
 type GeneratorParameters = {
-	ClientState: ClientStateType,
+	clientState: ClientStateType,
 	queryModels: Array<ModelFunction>,
 	queryType: string,
 	queryName: ?string,
@@ -35,7 +35,7 @@ const buildParameters = (params: ?Object): string => {
 /**
  * Generate a GraphQL query from a collection of modelizr models.
  */
-export default ({clientState, queryModels, queryType, queryName, queryParameters}: GeneratorParameters): string => {
+export default ({clientState, queryModels, queryType, queryName, queryParams}: GeneratorParameters): string => {
 	const {models} = clientState
 
 	/* This compiles a FieldMap from a a collection of models. It is much
@@ -97,5 +97,5 @@ export default ({clientState, queryModels, queryType, queryName, queryParameters
 		)}\n${createIndent(indent - 1)}${length ? "}" : ""}`
 	}
 
-	return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParameters)} {${_.map(fieldMaps, fieldMap => generateFields(fieldMap))}\n}`
+	return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParams)} {${_.map(fieldMaps, fieldMap => generateFields(fieldMap))}\n}`
 }

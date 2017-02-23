@@ -1,13 +1,12 @@
 // @flow
+import { ModelFunction, ClientStateType, ModelDataType } from '../types'
 import { normalize, arrayOf } from 'normalizr'
 import _ from 'lodash'
 
-import { ModelFunction, ClientStateType, ModelDataType } from '../types'
-
 type NormalizationParameters = {
-	Data: Object,
-	ModelFunctions: Array<ModelFunction>,
-	ClientState: ClientStateType
+	data: Object,
+	modelFunctions: Array<ModelFunction>,
+	clientState: ClientStateType
 }
 
 type NormalizedData = {

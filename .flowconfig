@@ -1,5 +1,7 @@
 [ignore]
 
+.*/_book/.*
+
 [include]
 
 node_modules

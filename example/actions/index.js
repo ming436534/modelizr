@@ -16,7 +16,7 @@ export const fetchPeople = mock => dispatch => {
 			Animal("Pets",
 				Cat, Dog
 			),
-			// Person("Friend")
+			Person("Friend")
 		)
 	).normalize(res => dispatch({
 		type: SET_ENTITIES,

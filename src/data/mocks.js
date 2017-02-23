@@ -1,10 +1,9 @@
 // @flow
+import { ClientStateType, ModelDataType, UnionDataType, ModelFunction } from '../types'
 import { stripRelationships } from '../tools/filters'
-import { generator } from './DataGeneration'
+import { generator } from './dataGeneration'
 import { v4 } from '../tools/uuid'
 import _ from 'lodash'
-
-import { ClientStateType, ModelDataType, UnionDataType, ModelFunction } from '../types'
 
 /**
  * Given a Data Description and a collection of query models, recursively
@@ -20,7 +19,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 	const mockModels = (models: Array<ModelFunction>) => {
 		const mock = (model: ModelFunction | Object) => {
 			let currentModel = model
-			let modelData: ?ModelDataType | UnionDataType = clientState.models[model.modelName]
+			let modelData: ModelDataType | UnionDataType = clientState.models[model.modelName]
 			let schemaAttribute: ?string = null
 
 			/* If the model being mocked is a Union, then it has no actual 'fields'

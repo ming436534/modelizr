@@ -4,9 +4,9 @@ import { Schema, arrayOf, unionOf } from 'normalizr'
 import _ from 'lodash'
 
 import { normalizeModelData } from '../tools/filters'
-import requestBuilder from './RequestBuilder'
+import requestBuilder from './requestBuilder'
 import { FETCH_API } from '../tools/fetch'
-import createModel from './ModelBuilder'
+import createModel from './modelBuilder'
 
 export default class Modelizr {
 
