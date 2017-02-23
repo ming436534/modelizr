@@ -21,56 +21,20 @@ We will get the following response:
 {
     users: [
         {
-            id: 1,
+            id: "<UUID>",
             firstName: " ... ",
             lastName: " ... ",
             books: [
                 {
-                    id: 1,
+                    id: "<UUID>",
                     title: " ... ",
                     publisher: " ... "
                 },
                 ...
             ]
         },
-
-        {
-            id: 2,
-            ...,
-            books: [
-                {
-                    id: 21,
-                    ...
-                }
-            ]
-        },
         ...
     ]
-}
-```
-
-If you would rather use randomly generated id's, you can use modelizr's `UUID_V4` generator
-```javascript
-import { query, ID } from 'modelizr'
-
-query(
-    user()
-)
-    .mock(true, {
-        idType: ID.RANDOM // defaults to ID.INCREMENT
-    })
-```
-->
-```javascript
-{
-    users: {
-        c32f6a49-18ee-4786-a188-0101bf03acd1: {
-            id: "c32f6a49-18ee-4786-a188-0101bf03acd1",
-            firstName: " ... ",
-            lastName: " ... "
-        },
-        ...
-    }
 }
 ```
 

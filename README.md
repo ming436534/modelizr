@@ -25,58 +25,59 @@ Read my [medium post](https://medium.com/@julienvincent/modelizr-99e59c1c4431#.a
 import { Modelizr } from 'modelizr'
 
 const ModelData = {
-    User: {
-        normalizeAs: "users",
-        fields: {
-            id: Number,
-            firstName: String,
-            books: ["Book"]
-        }
-    },
-    
-    Book: {
-        normalizeAs: "users",
-        fields: {
-            id: Number,
-            title: String,
-            author: "User"
-        }
+  User: {
+    normalizeAs: "users",
+      fields: {
+      id: Number,
+      firstName: String,
+      books: ["Book"]
     }
+  },
+    
+  Book: {
+    normalizeAs: "users",
+    fields: {
+      id: Number,
+      title: String,
+      author: "User"
+    }
+  }
 }
 
 const {query, models: {User, Book}} = new Modelizr({
-    models: ModelData,
-    config: {
-        endpoint: "http:// ..."
-    }
+  models: ModelData,
+  config: {
+    endpoint: "http:// ..."
+  }
 })
 
 query(
-    user(book("books")),
-    book(user("author", {ids: [1, 2, 3]}))
+  User(
+    Book("Books", {ids: [1, 2]})
+  )
 ).then((res, normalize) => {
-    normalize(res.body) // -> normalized response.
+  normalize(res.body) // -> normalized response.
 })
 ```
 This will generate the following query and make a request using it.
 ```
 {
   users {
-     id,
-     firstName,
-     books {
-        id,
-        title
-     }
+    id,
+    firstName,
+    books {
+      id,
+      title
+    }
   },
   
   books(ids: [1, 2, 3]) {
-     id,
-     title,
-     author {
-        id,
-        firstName
-     }
+    id,
+    title,
+    author {
+      id,
+      firstName
+    }
   }
 }
 ```

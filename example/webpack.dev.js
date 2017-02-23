@@ -13,7 +13,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loaders: ['babel?presets=react'],
+                loaders: ['babel-loader?presets=react'],
                 exclude: /node_modules/
             }
         ]

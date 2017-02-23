@@ -3,9 +3,9 @@ import { v4 } from '../tools/uuid'
 import _ from 'lodash'
 
 let createFaker = () => {
-    // eslint-disable-next-line no-console
-    console.warn("Faker has been stripped from the production build")
-    return false
+	// eslint-disable-next-line no-console
+	console.warn("Faker has been stripped from the production build")
+	return false
 }
 if (process.env.NODE_ENV !== 'production') createFaker = () => require('faker')
 
@@ -20,50 +20,49 @@ if (process.env.NODE_ENV !== 'production') createFaker = () => require('faker')
  * delimiter "|" and select one of the resulting strings
  * */
 export const generator = (fakerInstance: Object): Function => (type: any): any => {
-    if (typeof type === 'object') {
-        const {__type, __faker, __pattern} = type
+	if (typeof type === 'object') {
+		const {__type, __faker, __pattern} = type
 
-        if (__faker) {
-            const faker = fakerInstance || createFaker() // check if a faker instance has been provided in config
-            if (!faker) return generator(fakerInstance)(__type)
-            return _.result(faker, __faker)
-        }
+		if (__faker) {
+			const faker = fakerInstance || createFaker() // check if a faker instance has been provided in config
+			if (!faker) return generator(fakerInstance)(__type)
+			return _.result(faker, __faker)
+		}
 
-        if (__pattern) {
-            const options = __pattern.split("|")
-            const result = _.sample(options)
-            switch (type) {
-                case Number:
-                case "number":
-                case "integer": {
-                    return parseInt(result)
-                }
-            }
-            return result
-        }
+		if (__pattern) {
+			const options = __pattern.split("|")
+			const result = _.sample(options)
+			switch (type) {
+				case Number:
+				case "number": {
+					return parseInt(result)
+				}
+			}
+			return result
+		}
 
-        return generator(fakerInstance)(__type)
-    } else {
-        switch (type) {
-            case String:
-            case "string": {
-                return v4().substring(0, 10)
-            }
+		return generator(fakerInstance)(__type)
+	} else {
+		switch (type) {
+			case String:
+			case "string": {
+				return v4().substring(0, 10)
+			}
 
-            case Number:
-            case "integer":
-            case "number": {
-                return _.random(-10000, 10000)
-            }
+			case Number:
+			case "integer":
+			case "number": {
+				return _.random(-10000, 10000)
+			}
 
-            case "float": {
-                return _.random(-10000, 10000, true)
-            }
+			case "float": {
+				return _.random(-10000, 10000, true)
+			}
 
-            case Boolean:
-            case "boolean": {
-                return !!_.random(1)
-            }
-        }
-    }
+			case Boolean:
+			case "boolean": {
+				return !!_.random(1)
+			}
+		}
+	}
 }

@@ -12,15 +12,15 @@ import Example from './components/Example'
 import { Provider } from 'react-redux'
 
 const App = () => (
-    <Provider store={store}>
-        <div>
-            <Example actions={actions} />
+	<Provider store={store}>
+		<div>
+			<Example actions={actions} />
 
-            <DevTools />
-        </div>
-    </Provider>
+			<DevTools />
+		</div>
+	</Provider>
 )
 
 window.onload = () => {
-    render(<App />, document.getElementById('root'))
+	render(<App />, document.getElementById('root'))
 }

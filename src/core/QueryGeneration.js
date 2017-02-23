@@ -1,21 +1,20 @@
 // @flow
-import _ from 'lodash'
-import { getPlainFields, isValidType } from '../tools/Filters'
-
 import { ClientStateType, ModelFunction, ModelDataType, UnionDataType } from '../types'
+import { stripRelationships, isValidType } from '../tools/Filters'
+import _ from 'lodash'
 
 type GeneratorParameters = {
-    ClientState: ClientStateType,
-    queryModels: Array<ModelFunction>,
-    queryType: string,
-    queryName: ?string,
-    queryParams: ?Object
+	ClientState: ClientStateType,
+	queryModels: Array<ModelFunction>,
+	queryType: string,
+	queryName: ?string,
+	queryParams: ?Object
 }
 
 type FieldMap = {
-    name: string,
-    params: ?Object,
-    fields: Array<string | FieldMap>
+	name: string,
+	params: ?Object,
+	fields: Array<string | FieldMap>
 }
 
 /**
@@ -24,104 +23,79 @@ type FieldMap = {
  */
 const SPACES = 2
 const createIndent = (spaces: number): string =>
-    _.join(_.times((spaces * SPACES) + 1, () => ""), " ")
+	_.join(_.times((spaces * SPACES) + 1, () => ""), " ")
 
 /* Construct a valid GraphQL parameter string from an object */
 const buildParameters = (params: ?Object): string => {
-    if (!params || _.isEmpty(params)) return ""
-    return `(${_.map(_.pickBy(params, param => param || param === false), (param, key) =>
-        `${key}: ${JSON.stringify(param).replace(/"([^(")"]+)":/g, "$1:")}`)})`
+	if (!params || _.isEmpty(params)) return ""
+	return `(${_.map(_.pickBy(params, param => param || param === false), (param, key) =>
+		`${key}: ${JSON.stringify(param).replace(/"([^(")"]+)":/g, "$1:")}`)})`
 }
 
 /**
  * Generate a GraphQL query from a collection of modelizr models.
  */
-export default ({ClientState, queryModels, queryType, queryName, queryParams}: GeneratorParameters): string => {
-    const {models} = ClientState
+export default ({clientState, queryModels, queryType, queryName, queryParameters}: GeneratorParameters): string => {
+	const {models} = clientState
 
-    /* This compiles a FieldMap from a a collection of models. It is much
-     * easier to generate a query from a normalized description of fields.
-     * */
-    const makeMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> =>
-        _.map(queryModels, (ModelFunction: ModelFunction): FieldMap => {
-            const ModelData: ModelDataType | UnionDataType = models[ModelFunction.ModelName]
+	/* This compiles a FieldMap from a a collection of models. It is much
+	 * easier to generate a query from a normalized description of fields.
+	 * */
+	const makeMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> => (
+		_.map(queryModels, (modelFunction: ModelFunction): FieldMap => {
+			const modelData: ModelDataType | UnionDataType = models[modelFunction.ModelName]
 
-            /* Utility that strips modifier rejected fields. */
-            const filter = fields =>
-                _.pickBy(fields, (type, field) => {
-                    const {only, without, empty} = ModelFunction.Filters
-                    if (only) return _.find(only, _field => _field == field)
-                    if (without) return !_.find(without, _field => _field == field)
-                    if (empty) return false
-                    return true
-                })
+			/* Utility that strips modifier rejected fields. */
+			const filter = fields => (
+				_.pickBy(fields, (field, fieldName: string) => {
+					const {only, without, empty} = modelFunction.Filters
+					if (only) return _.find(only, field => field == fieldName)
+					if (without) return !_.find(without, field => field == fieldName)
+					if (empty) return false
+					return true
+				})
+			)
 
-            /* Filter out fields that have been rejected via modifiers and
-             * strip any model relationships from the fields and recursively
-             * generate a FieldMap.
-             * */
-            const pruneFields = (fields: Object): Array<string | FieldMap> =>
-                _.map(filter(getPlainFields(fields)), (type, field) => {
-                        /* This variable is used to keep track of collection object-type fields.
-                         * These fields should not have a sub-selection of fields in the GraphQL
-                         * query, but should still be defined in our model for accurate mock
-                         * generation.
-                         * */
-                        let arrayType = false
+			/* Filter out fields that have been rejected via modifiers,
+			 * strip any model relationships from the fields and recursively
+			 * generate a FieldMap.
+			 * */
+			const pruneFields = (fields: Object): Array<string | FieldMap> => (
+				_.map(filter(stripRelationships(fields)), (field, fieldName: string) => {
 
-                        if (Array.isArray(type)) {
-                            type = type[0]
-                            arrayType = true
-                        }
+						/* We check for an alias property on the field type.
+						 * If one is found, use it instead of the fieldName
+						 * */
+						if (field.alias) fieldName = `${fieldName}: ${field.alias}`
+						return fieldName
+					}
+				)
+			)
 
-                        /* Utility that allows adding parameters to individual fields. */
-                        const addParams = field => {
-                            const fieldParams = ModelFunction.FieldParams
-                            const findParams = field =>
-                                _.find(fieldParams, (params, fieldName) => fieldName == field)
+			return {
+				name: `${prefix ? "... on " : ""}${modelFunction.FieldName}`,
+				params: modelFunction.Params,
+				fields: [...pruneFields(modelData.fields), ...makeMap(modelFunction.Children, modelData._unionDataType)]
+			}
+		})
+	)
 
-                            if (typeof field === 'string') {
-                                const params = findParams(field)
-                                if (params) return {fields: [], name: field, params}
-                            } else {
-                                const params = findParams(field.name)
-                                if (params) return {...field, params}
-                            }
-                            
-                            return field
-                        }
+	const FieldMaps: Array<FieldMap> = makeMap(queryModels)
 
-                        /* We check for a __alias property on the field type.
-                         * If one if found, use it instead of the fieldName
-                         * */
-                        if (typeof type === 'object' && type.__alias) field = `${field}: ${type.__alias}`
-                        return addParams(isValidType(type) || arrayType ? field : {name: field, fields: pruneFields(type)})
-                    }
-                )
+	/* Generate an indented and multi-lined GraphQL query string
+	 * from our FieldMap. The type and name of the generated
+	 * query will be determined based on the queryType and queryName
+	 * parameters.
+	 * */
+	const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string => {
+		const {name, fields, params} = FieldMap
+		const length = !!fields.length
 
-            return {
-                name: `${prefix ? "... on " : ""}${ModelFunction.FieldName}`,
-                params: ModelFunction.Params,
-                fields: [...pruneFields(ModelData.fields), ...makeMap(ModelFunction.Children, ModelData._unionDataType)]
-            }
-        })
+		return `\n${createIndent(indent - 1)}${name}${buildParameters(params)} ${length ? "{" : ""}${_.map(fields, field =>
+			typeof field === 'string' ? `\n${createIndent(indent)}${field}` :
+				`${GenerateFields(field, indent + 1)}`
+		)}\n${createIndent(indent - 1)}${length ? "}" : ""}`
+	}
 
-    const FieldMaps: Array<FieldMap> = makeMap(queryModels)
-
-    /* Generate an indented and multi-lined GraphQL query string
-     * from our FieldMap. The type and name of the generated
-     * query will be determined based on the queryType and queryName
-     * parameters.
-     * */
-    const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string => {
-        const {name, fields, params} = FieldMap
-        const length = !!fields.length
-
-        return `\n${createIndent(indent - 1)}${name}${buildParameters(params)} ${length ? "{" : ""}${_.map(fields, field =>
-            typeof field === 'string' ? `\n${createIndent(indent)}${field}` :
-                `${GenerateFields(field, indent + 1)}`
-        )}\n${createIndent(indent - 1)}${length ? "}" : ""}`
-    }
-
-    return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParams)} {${_.map(FieldMaps, FieldMap => GenerateFields(FieldMap))}\n}`
+	return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParameters)} {${_.map(FieldMaps, FieldMap => GenerateFields(FieldMap))}\n}`
 }
