@@ -8,11 +8,8 @@ import type { Logger } from '../tools/logger'
 import Mock from '../data/mocks'
 import _ from 'lodash'
 
-export default (clientState: ClientStateType,
-					 queryType: string) => (queryName: String | Object,
-													queryParams: Object,
-													...queryModels: Array<Object>): RequestObject => {
-	const {name, params, models} = normalizeFunctionParameters(queryName, queryParams, queryModels)
+export default (clientState: ClientStateType, queryType: string) => (queryName: string, queryParams: Object, ...children: Array<Function>): RequestObject => {
+	const {name, params, models} = normalizeFunctionParameters(queryName, queryParams, children)
 
 	/* If debugging is enabled, create a logger instance, else
 	 * create a noop debugger

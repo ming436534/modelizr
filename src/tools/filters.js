@@ -24,9 +24,7 @@ type NormalizedParameters = {
 /* Given three parameters, figure out the type of each param and return
  * a corrected set of parameters.
  * */
-export const normalizeFunctionParameters = (name: string | Object | ModelFunction,
-														  params: Object | ModelFunction,
-														  models: Array<ModelFunction>): NormalizedParameters => {
+export const normalizeFunctionParameters = (name: string | Object | ModelFunction, params: Object | ModelFunction, models: Array<ModelFunction>): NormalizedParameters => {
 	const trueModels = models
 	let trueName,
 		trueParams = {}
