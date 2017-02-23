@@ -1,6 +1,6 @@
 // @flow
 import { ClientStateType, ModelFunction, ModelDataType, UnionDataType } from '../types'
-import { stripRelationships, isValidType } from '../tools/Filters'
+import { stripRelationships } from '../tools/Filters'
 import _ from 'lodash'
 
 type GeneratorParameters = {
@@ -41,7 +41,7 @@ export default ({clientState, queryModels, queryType, queryName, queryParameters
 	/* This compiles a FieldMap from a a collection of models. It is much
 	 * easier to generate a query from a normalized description of fields.
 	 * */
-	const makeMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> => (
+	const createMap = (queryModels: Array<ModelFunction>, prefix: boolean = false): Array<FieldMap> => (
 		_.map(queryModels, (modelFunction: ModelFunction): FieldMap => {
 			const modelData: ModelDataType | UnionDataType = models[modelFunction.ModelName]
 
@@ -75,27 +75,27 @@ export default ({clientState, queryModels, queryType, queryName, queryParameters
 			return {
 				name: `${prefix ? "... on " : ""}${modelFunction.FieldName}`,
 				params: modelFunction.Params,
-				fields: [...pruneFields(modelData.fields), ...makeMap(modelFunction.Children, modelData._unionDataType)]
+				fields: [...pruneFields(modelData.fields), ...createMap(modelFunction.Children, modelData._unionDataType)]
 			}
 		})
 	)
 
-	const FieldMaps: Array<FieldMap> = makeMap(queryModels)
+	const fieldMaps: Array<FieldMap> = createMap(queryModels)
 
 	/* Generate an indented and multi-lined GraphQL query string
 	 * from our FieldMap. The type and name of the generated
 	 * query will be determined based on the queryType and queryName
 	 * parameters.
 	 * */
-	const GenerateFields = (FieldMap: FieldMap, indent: number = 2): string => {
+	const generateFields = (FieldMap: FieldMap, indent: number = 2): string => {
 		const {name, fields, params} = FieldMap
 		const length = !!fields.length
 
 		return `\n${createIndent(indent - 1)}${name}${buildParameters(params)} ${length ? "{" : ""}${_.map(fields, field =>
 			typeof field === 'string' ? `\n${createIndent(indent)}${field}` :
-				`${GenerateFields(field, indent + 1)}`
+				`${generateFields(field, indent + 1)}`
 		)}\n${createIndent(indent - 1)}${length ? "}" : ""}`
 	}
 
-	return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParameters)} {${_.map(FieldMaps, FieldMap => GenerateFields(FieldMap))}\n}`
+	return `${queryType} ${queryName || `modelizr_${queryType}`}${buildParameters(queryParameters)} {${_.map(fieldMaps, fieldMap => generateFields(fieldMap))}\n}`
 }

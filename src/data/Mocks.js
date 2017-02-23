@@ -17,7 +17,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 
 	const generate = generator(clientState.config.faker)
 
-	const MockModels = (models: Array<ModelFunction>) => {
+	const mockModels = (models: Array<ModelFunction>) => {
 		const mock = (Model: ModelFunction | Object) => {
 			let CurrentModel = Model
 			let fieldsToMock = {}
@@ -108,7 +108,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 
 	return new Promise(resolve => resolve({
 		server_response: {},
-		data: MockModels(queryModels),
+		data: mockModels(queryModels),
 		errors: null
 	}))
 }
