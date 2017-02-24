@@ -12,18 +12,21 @@ In this usage example we will be creating 4 models:
 
 Models are defined by creating schemas. These schemas are then converted into Modelizr models and can be then used in queries. When creating these schemas we need to describe:
 
-+ The model's **normalization key**. This is a string that all variations of the model will be normalized under.
++ The model's **normalization key**. This is a string that all variations of the model will be normalized as.
 + The model's **fields** and **field types**. These are used when generating the GraphQL request and mocking a response.
-+ Relationships that are associated with the model.
++ Other model relationships that are associated with the model.
 
 ```javascript
 const Person = {
   normalizeAs: "People",
   fields: {
-    id: String,
+    id: {
+      type: String,
+      alias: "ID" // The generated query will contain the alias ID
+    },
     firstName: String,
     age: Number,
-    Friend: "Person",
+    Friend: "Person", // Reference the 'Person' model as a relationship
     Pets: ["Animals"]
   },
   primaryKey: "id" // Which field to use as the primary key. Defaults to 'id'

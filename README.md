@@ -54,7 +54,9 @@ const {query, models: {User, Book}} = new Modelizr({
 query(
   User(
     Book("Books", {ids: [1, 2]})
-  )
+  ),
+  
+  Book("Books", {ids: [4, 5]})
 ).then((res, normalize) => {
   normalize(res.body) // -> normalized response.
 })
@@ -65,13 +67,13 @@ This will generate the following query and make a request using it.
   users {
     id,
     firstName,
-    books {
+    books(ids: [1, 2]) {
       id,
       title
     }
   },
   
-  books(ids: [1, 2, 3]) {
+  books(ids: [4, 5]) {
     id,
     title,
     author {

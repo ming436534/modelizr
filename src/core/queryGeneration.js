@@ -67,6 +67,16 @@ export default ({clientState, queryModels, queryType, queryName, queryParams}: G
 						 * If one is found, use it instead of the fieldName
 						 * */
 						if (field.alias) fieldName = `${fieldName}: ${field.alias}`
+
+						let type = field.type
+						if (Array.isArray(type)) type = type[0]
+						if (type === Object) {
+							return {
+								name: fieldName,
+								fields: pruneFields(field.properties || {})
+							}
+						}
+
 						return fieldName
 					}
 				)

@@ -21,4 +21,6 @@ const client = new Modelizr({
 	}
 })
 
+console.log(client.clientState)
+
 export default client

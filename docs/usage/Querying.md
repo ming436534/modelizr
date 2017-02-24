@@ -2,23 +2,31 @@
 
 Models can be used inside of **query tools** to generate a GraphQL query and send it off to the server.
 
-#### `query`
+#### `query` and `mutate`
 
-If we want to generate a query that will fetch a users with ids `[1, 2, 3]` and their respective books, then we can use the exported `query()` tool. Both this tool and the models used
-can have [modifiers](../modifiers/README.md) applied to them.
+These two query tools are used for making mutations or queries and are used identically to each other.
+
+Lets use them to query for some users and their pets
 
 ```javascript
-import { query } from 'modelizr'
 
-query.path('http://path.to.api/graphql')
+...
+
+const {models, query, mutate, fetch} = new Modelizr({
+  models: { ... },
+  config: { ... }
+})
+
+const {User, Dog, Cat, Animal} = models
 
 query(
-    user(
-        book()
-    ).params({ids: [1, 2, 3]})
+	User(
+		Animal(
+			Dog, Cat
+		)
+	)
 ).then((res, normalize) => {
-    // res -> the response from the server
-    // normalize(res.body) // normalized response
+	
 })
 ```
 

@@ -46,16 +46,31 @@ export const normalizeFunctionParameters = (name: string | Object | ModelFunctio
 
 export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCollection => (
 	_.mapValues(modelData, (model: ModelDataType) => {
+		const normalize = fields => (
+			_.mapValues(fields, field => {
+				if (typeof field === "object" && !Array.isArray(field)) {
+					let type = field.type
+					if (Array.isArray(type)) type = type[0]
+
+					if (type === Object) {
+						return {
+							...field,
+							properties: normalize(field.properties)
+						}
+					}
+					return field
+				}
+
+				return {
+					type: field
+				}
+			})
+		)
+
 		if (model.fields) {
 			return {
 				...model,
-				fields: _.mapValues(model.fields, field => {
-					if (typeof field === "object" && !Array.isArray(field)) return field
-
-					return {
-						type: field
-					}
-				})
+				fields: normalize(model.fields)
 			}
 		}
 

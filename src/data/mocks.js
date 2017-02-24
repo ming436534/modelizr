@@ -17,7 +17,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 	const generate = generator(clientState.config.faker)
 
 	const mockModels = (models: Array<ModelFunction>) => {
-		const mock = (model: ModelFunction | Object) => {
+		const mockModel = (model: ModelFunction | Object) => {
 			let currentModel = model
 			let modelData: ModelDataType | UnionDataType = clientState.models[model.modelName]
 			let schemaAttribute: ?string = null
@@ -44,13 +44,24 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			 * based on their data type. If the field is a nested set of fields,
 			 * pass that field back into our mock function.
 			 * */
-			let mockedFields = _.mapValues(fieldsToMock, field => {
-				if (Array.isArray(field.type)) {
-					return _.map(_.times(10), () => generate(field))
-				}
+			const mockFields = fields => (
+				_.mapValues(fields, field => {
+					const generateOrMock = field => {
+						if (field.type === Object) {
+							return mockFields(stripRelationships(field.properties || {}))
+						}
+						return generate(field)
+					}
 
-				return generate(field)
-			})
+					if (Array.isArray(field.type)) {
+						return _.map(_.times(10), () => generateOrMock({...field, type: field.type[0]}))
+					}
+
+					return generateOrMock(field)
+				})
+			)
+
+			let mockedFields = mockFields(fieldsToMock)
 
 			/* If this model is querying child models, then they also need
 			 * to be mocked. We first check their relationship description
@@ -60,8 +71,8 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			const keyedFunctions = _.mapKeys(currentModel.children, (model: ModelFunction) => model.fieldName)
 			const mockedChildren = _.mapValues(keyedFunctions, (model: ModelFunction, fieldName: string) => {
 				if (modelData && modelData.fields && Array.isArray(modelData.fields[fieldName].type))
-					return _.map(_.times(10), () => mock(model))
-				return mock(model)
+					return _.map(_.times(10), () => mockModel(model))
+				return mockModel(model)
 			})
 
 			mockedFields = {
@@ -85,9 +96,9 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 		return _.mapValues(keyedFunctions, (model, field) => {
 			if (typeof mockConfig === 'object') {
 				if (mockConfig[field] && mockConfig[field] === Array)
-					return _.map(_.times(10), () => mock(model))
+					return _.map(_.times(10), () => mockModel(model))
 			}
-			return mock(model)
+			return mockModel(model)
 		})
 	}
 

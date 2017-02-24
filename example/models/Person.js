@@ -3,6 +3,14 @@ export default {
 	fields: {
 		id: String,
 		isFunny: Boolean,
+		ok: {
+			type: [Object],
+			properties: {
+				prop1: {type: [String]},
+				p2: Number
+			}
+		},
+		next: [Object],
 		// things: [String],
 		// ok: [{a: String, b: "float"}],
 		// firstName: {__type: String, __faker: "name.firstName"},
