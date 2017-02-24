@@ -86,7 +86,7 @@ This will generate the following query and make a request using it.
 
 ## Documentation
 
-**NOTE:** documentation is in the process of being updated.
+**NOTE:** Documentation for pre-`v1.0.0` can be found [Here](https://github.com/julienvincent/modelizr/tree/master/docs/v0.7.x)
 
 All documentation is located at [julienvincent.github.io/modelizr](http://julienvincent.github.io/modelizr)
 

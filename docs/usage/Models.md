@@ -27,7 +27,7 @@ const Person = {
     firstName: String,
     age: Number,
     Friend: "Person", // Reference the 'Person' model as a relationship
-    Pets: ["Animals"]
+    Pets: ["Animal"] // Wrapping a reference in an array indicates a collection
   },
   primaryKey: "id" // Which field to use as the primary key. Defaults to 'id'
 }
@@ -40,6 +40,7 @@ const Dog = {
     __type: String,
     id: String,
     breed: String,
+    name: String,
     Owner: "Person"
   }
 }
@@ -51,7 +52,7 @@ const Cat = {
   fields: {
     __type: String,
     id: String,
-    type: String,
+    name: String,
     Owner: "Person"
   }
 }
@@ -76,7 +77,7 @@ import { Modelizr } from 'modelizr'
 
 const {models, query, mutate, fetch} = new Modelizr({
   models: {
-    User,
+    Person,
     Dog,
     Cat,
     Animal
@@ -86,5 +87,5 @@ const {models, query, mutate, fetch} = new Modelizr({
   }
 })
 
-const {User, Dog, Cat, Animal} = models
+const {Person, Dog, Cat, Animal} = models
 ```

@@ -17,7 +17,7 @@ export const fetchPeople = mock => dispatch => {
 				Cat, Dog
 			),
 			Person("Friend")
-		)
+		).only(["id"])
 	).normalize(res => dispatch({
 		type: SET_ENTITIES,
 		payload: res.entities

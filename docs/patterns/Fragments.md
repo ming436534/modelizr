@@ -2,25 +2,59 @@
 
 A useful pattern when making multiple queries that use the same sequence of models is to pre-define a query fragment. Something like this:
 
-fragments.js
 ```javascript
-const {models} = new Modelizr({})
+const {models, query} = new Modelizr({ ... })
 
-const {User, Dog} = models
+const {Person, Animal, Cat, Dog} = models
 
-const DogFragment = Dog(
-    user("Owner")
+const PersonFragment = Person(
+  Animal("Pets",
+    Dog, Cat
+  )
 )
 
-export { DogFragment }
+query(
+  PersonFragment
+).then(res => { ... })
 ```
 
-actions.js
+A fragment can even be executed again without losing it's previous children
+
 ```javascript
-import { query } from 'modelizr'
-import { BookFragment } from './fragments'
+...
 
 query(
-    BookFragment
-).then(res => { ... })
+  PersonFragment("People",
+    Person("Friend")
+  )
+)
+
+/* Resulting query will look as follows */
+{
+  People {
+    id,
+    name,
+    ...,
+    Friend {
+      id,
+      name,
+      ...
+    },
+    Pets {
+      ... on Dog {
+        __type,
+        id,
+        breed,
+        ...
+      },
+      
+      ... on Cat {
+        __type,
+        id,
+        name,
+        ...
+      }
+    }
+  }
+}
 ```

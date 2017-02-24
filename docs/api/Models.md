@@ -1,48 +1,127 @@
 # Models
 
-The created model. This can be given to query tools to generate queries, mock data and normalize responses. Can also be used to validate entities.
+Modelizr model functions are generated from schemas. These model functions are what is used when constructing GraphQL queries and mutations. They have various
+properties to make it more convenient to work with them.
 
-> Entity validation does not yet exist, but it is coming.
+Model functions are a type of `Builder Function` that means they always return another model function when called or chained. Although they are functions, they do
+not need to be executed in order to be used in queries, but more on that later.
 
-Please note that this documentation also applies to **unions**.
+#### Execution `<Model>([fieldName: string, params: object, ...children: Model])`
 
-### `model([key, params ,] ...models)`
+All models can be executed with three optional parameters. When executed, the model function returns a new model function.
 
-Define a nested query that can be generated or mocked. If nothing is given to the model, the resulting query will just contain the model key.
+###### fieldName `string`
 
-`params [object]` - (optional) Parameters that get added to the generated request.
-
-`key [string]` - (optional) Pass an alternative key to use for the model. Can use this syntax as a replacement to `aliases` or the `.as()` modifier.
-Reference: [#2](https://github.com/julienvincent/modelizr/issues/2)
-
-**Note** When mocking, parameters that are specified as `primaryKeys` are used when mocking to create entities with expected ids. A single `param<primaryKey>`
-will generate a single mocked entity, and an array of `[param<primaryKey>]` will generate an array of entities
+If specified, this changes the fieldName in the generated query. As an example, A model with `name: Person` would generate the following query:
 
 ```javascript
-query(
-    user(
-        book()
-    ).params({id: 2}),
-
-    book({ids: [1, 2, 3]},
-        user().as("author")
-    )
-).then( ... )
+{
+  Person {
+    id,
+    name,
+    ...
+  }
+}
 ```
 
-### `alias(model|union, key)`
-
-Create an alias of a **model** or a **union** to improve query readability. Functionally the same as `model().as(key)`
+Specifying the fieldName as friend - `Person("Friend")` - would generate the following:
 
 ```javascript
-import { alias, query } from 'modelizr'
-import { book, user } from './models'
+{
+  Friend {
+    id,
+    name,
+    ...
+  }
+}
+```
 
-const author = alias(user, "author")
+###### params `object`
 
+If specified, this adds parameters to the generated query. As an example, `Person({id: 1})` would generate the following query:
+
+```javascript
+{
+  Person(id: 1) {
+    id,
+    name,
+    ...
+  }
+}
+```
+
+###### children `...Model`
+
+All additional arguments may be Model children and will result in the children model's fields being added as sub-fields. As an example, `Person(Dog)` will
+generate the following query:
+
+```javascript
+{
+  Person {
+    id,
+    name,
+    ...,
+    Dog {
+      id,
+      ...
+    }
+  }
+}
+```
+
+#### Modifiers
+
+In addition to execution parameters, there are a few modifiers which can be applied to models. Modifiers also return a new Model Function when called.
+
+###### `.only(fields: Array<string>)`
+
+Limits the generated fields to only contain fields
+
+```javascript
 query(
-    book(
-        author()
-    )
-).then( ... )
+  Person.only(["name"])
+)
+
+...
+
+{
+  Person {
+    name
+  }
+}
+```
+
+###### `.without(fields: Array<string>)`
+
+Limits the generated fields to not contain certain fields
+
+```javascript
+query(
+  Person.without(["name"])
+)
+
+...
+
+{
+  Person {
+    id,
+    ...
+  }
+}
+```
+
+###### `.empty()`
+
+Remove all fields from the generated query. Commonly used when making empty mutations
+
+```javascript
+mutate(
+  Person({id: 1, name: "James"}).empty()
+)
+
+...
+
+mutation modelizr_mutation {
+  Person(id: 1, name: "James")
+}
 ```

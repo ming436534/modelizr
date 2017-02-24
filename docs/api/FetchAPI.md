@@ -1,6 +1,7 @@
 # Fetch API
 
-The internal Fetch API used by modelizr. The API is a function that accepts all modifications made to the query tool calling it, and returns a promise containing the server result.
+The internal Fetch API used by Modelizr. The API is a function that accepts all modifications made to the query tool calling it, and returns a promise 
+containing the server result.
 
 Basic structure of the API
 ```javascript

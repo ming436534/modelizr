@@ -1,87 +1,93 @@
 # Mocking
 
-Once you have created your models and setup your queries, you essentially get mocking for free. All you need to do is hack on a `.mock()` modifier, and the query will return a
-response that matches the structure of your query.
+The goal with mocking is to produce data that is structured in the exact same way as an actual GraphQL response.
 
-When mocking, you will never get conflicting id's on entities, no matter how deeply nested they are. Even if you explicitly reference the same id on a model in multiple places, you
-will still only get a single mocked entity in return.
+Lets mock the query for a Person we made in the previous step:
 
-For instance, given the following mocked query:
 ```javascript
 query(
-    user(
-        book()
+  Person({id: 1},
+    Animal("Pets"
+      Dog, Cat
     )
-)
-    .mock()
-    .then( ... )
+  )
+).mock() // => Appending the 'mock' results in a mocked response
+.then((res, normalize) => {
+  ...
+})
 ```
-We will get the following response:
+
+Our mocked response will now look something like this:
+
 ```javascript
-{
-    users: [
+const res = {
+  data: {
+    Person: {
+      id: "05438a43-00e5-4e2d-9720-ecb1bc9093b9",
+      firstName: "0bf14db1",
+      age: 50123,
+      Friend: {
+        id: "8a008933-b5c3-4809-aef7-5a3c34c1c3b6",
+        firstName: "c6187c73",
+        age: 45674
+      },
+      Pets: [
         {
-            id: "<UUID>",
-            firstName: " ... ",
-            lastName: " ... ",
-            books: [
-                {
-                    id: "<UUID>",
-                    title: " ... ",
-                    publisher: " ... "
-                },
-                ...
-            ]
+          __type: "Cat",
+          id: "efaaa503-d453-4191-a177-307774d2ab10",
+          name: "f0b2b542"
+        },
+        {
+          __type: "Dog",
+          id: "6a146a9c-779b-486a-bc13-25b72c6d555e,
+          breed: "6a146a9c",
+          name: "b245d540"
         },
         ...
-    ]
-}
-```
-
-As there is no way for modelizr to determine if the top level model should be mocked as values, elements in an array or simple a lone entity (**Note** modelizr can determine
-this information __after__ the request has completed by examining the response.), you will need to use the modifiers `.valuesOf(schemaAttribute)` and `.arrayOf(schemaAttribute)`
-to infer the way in which it should be mocked.
-
-> **Do not use these modifiers on child models.**
-
-Here is how it is used:
-```javascript
-query(
-    user(
-        book()
-    ).valuesOf("type")
-)
-```
-->
-```javascript
-{
-    users: {
-        1: {
-            id: 1,
-            firstName: " ... ",
-            lastName: " ... ",
-            type: "users",
-            books: [ ... ]
-        },
-        ...
+      ]
     }
+  }
 }
 ```
 
-If you would like to more precisely configure mock generation, there is a `.mockConfig()` modifier that can be applied to any query tool.
+All the generated data is in the correct format in this example, but it isn't very human readable - for example, the persons name is `0bf14db1`. We can 
+improve the quality of the mocked data by adding more information to our models.
 
 ```javascript
-query( ... )
-    .mockConfig({
-        extensions: {
-            faker: faker => {}
-        },
-        quantity: 25,
-        delay: 200,
-        error: false
-    })
+const Person = {
+  normalizeAs: "People",
+  fields: {
+    id: {
+      type: String,
+      alias: "ID" // The generated query will contain the alias ID
+    },
+    firstName: {
+      type: String,
+      faker: "name.firstName"
+    },
+    age: {
+      type: Number,
+      min: 1,
+      max: 100
+    },
+    Friend: "Person", // Reference the 'Person' model as a relationship
+    Pets: ["Animal"] // Wrapping a reference in an array indicates a collection
+  },
+  primaryKey: "id" // Which field to use as the primary key. Defaults to 'id'
+}
 ```
 
-Check out the entire configuration object [here](../api/Mocks.md#mock-configuration)
+Now when queries are mocked, the data generated will be much more accurate. here is an example of a mocked Person after updating the model:
 
-Please refer to [json-schema-faker](https://github.com/json-schema-faker/json-schema-faker#custom-formats) to learn about these different options
+```javascript
+const res = {
+  data: {
+    Person: {
+      id: "05438a43-00e5-4e2d-9720-ecb1bc9093b9",
+      firstName: "James",
+      age: 32,
+      ...
+    }
+  }
+}
+```

@@ -12,7 +12,7 @@ export default (clientState: ClientStateType, queryType: string) => (queryName: 
 	const {name, params, models} = normalizeFunctionParameters(queryName, queryParams, children)
 
 	/* If debugging is enabled, create a logger instance, else
-	 * create a noop debugger
+	 * create a no-op debugger
 	 * */
 	const logger: Logger = clientState.config.debug ?
 		createLogger(`[${queryType}: ${_.map(models, model => model.FieldName)}`) : {
@@ -104,23 +104,21 @@ export default (clientState: ClientStateType, queryType: string) => (queryName: 
 		},
 
 		then(cb): Promise<RequestResponse> {
-			return MAKE_REQUEST()
-				.then(res => {
-					logger.print()
-					return cb(res, normalize)
-				})
+			return MAKE_REQUEST().then(res => {
+				logger.print()
+				return cb(res, normalize)
+			})
 		},
 		normalize(cb): Promise<RequestResponse> {
-			return MAKE_REQUEST()
-				.then(res => {
-					const normalizedResponse = normalize(res.data)
-					logger.add("Normalized Response", normalizedResponse)
-					logger.print()
-					return cb({
-						...res,
-						...normalizedResponse
-					})
+			return MAKE_REQUEST().then(res => {
+				const normalizedResponse = normalize(res.data)
+				logger.add("Normalized Response", normalizedResponse)
+				logger.print()
+				return cb({
+					...res,
+					...normalizedResponse
 				})
+			})
 		}
 	}
 
