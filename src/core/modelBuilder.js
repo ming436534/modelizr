@@ -57,7 +57,7 @@ const createModel = (modelName: string) => {
 		return model
 	}
 
-	model.only = () => {
+	model.empty = () => {
 		model.filters.empty = true
 		return model
 	}

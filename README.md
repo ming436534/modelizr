@@ -92,7 +92,6 @@ All documentation is located at [julienvincent.github.io/modelizr](http://julien
 
 * [Usage](http://julienvincent.github.io/modelizr/docs/usage)
 * [Patterns](http://julienvincent.github.io/modelizr/docs/patterns)
-* [Modifiers](http://julienvincent.github.io/modelizr/docs/modifiers)
 * [API Reference](http://julienvincent.github.io/modelizr/docs/api)
 * [Todo](http://julienvincent.github.io/modelizr/docs/Todo.html)
 * [Changelog](http://julienvincent.github.io/modelizr/changelog.html)

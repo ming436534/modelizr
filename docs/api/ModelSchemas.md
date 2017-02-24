@@ -99,7 +99,7 @@ const Cat = {
   primaryKey: "ID"
 }
 
-const Cat = {
+const Dog = {
   name: "Dog",
   normalizeAs: "Dogs",
   fields: {
