@@ -54,7 +54,7 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 					}
 
 					if (Array.isArray(field.type)) {
-						return _.map(_.times(10), () => generateOrMock({...field, type: field.type[0]}))
+						return _.map(_.times(field.quantity || 10), () => generateOrMock({...field, type: field.type[0]}))
 					}
 
 					return generateOrMock(field)
@@ -70,8 +70,9 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			 * */
 			const keyedFunctions = _.mapKeys(currentModel.children, (model: ModelFunction) => model.fieldName)
 			const mockedChildren = _.mapValues(keyedFunctions, (model: ModelFunction, fieldName: string) => {
-				if (modelData && modelData.fields && Array.isArray(modelData.fields[fieldName].type))
-					return _.map(_.times(10), () => mockModel(model))
+				if (modelData && modelData.fields && Array.isArray(modelData.fields[fieldName].type)) {
+					return _.map(_.times(modelData.fields[fieldName].quantity || 10), () => mockModel(model))
+				}
 				return mockModel(model)
 			})
 

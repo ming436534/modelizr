@@ -21,7 +21,7 @@ if (process.env.NODE_ENV !== 'production') createFaker = () => require('faker')
  * delimiter "|" and select one of the resulting strings
  * */
 export const generator = (fakerInstance: Object): Function => (field: ModelDatatypeField): any => {
-	const {type, faker, pattern} = field
+	const {type, faker, pattern, min, max, decimal} = field
 
 	if (faker) {
 		fakerInstance = fakerInstance || createFaker()
@@ -44,7 +44,7 @@ export const generator = (fakerInstance: Object): Function => (field: ModelDatat
 		}
 
 		case Number: {
-			return _.random(-10000, 10000)
+			return _.random(min || -10000, max || 10000, decimal || false)
 		}
 
 		case Boolean: {
