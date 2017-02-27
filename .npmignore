@@ -11,5 +11,8 @@ coverage
 .flowconfig
 .travis.yml
 
+yarn-error.log
+npm-debug.log
+
 _book
 example

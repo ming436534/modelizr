@@ -26,26 +26,26 @@ Read my [medium post](https://medium.com/@julienvincent/modelizr-99e59c1c4431#.a
 import { Modelizr } from 'modelizr'
 
 const ModelData = {
-  User: {
-    normalizeAs: "users",
-      fields: {
+  Person: {
+    normalizeAs: "People",
+    fields: {
       id: Number,
       firstName: String,
-      books: ["Book"]
+      Books: ["Book"]
     }
   },
     
   Book: {
-    normalizeAs: "users",
+    normalizeAs: "Books",
     fields: {
       id: Number,
       title: String,
-      author: "User"
+      Author: "Person"
     }
   }
 }
 
-const {query, models: {User, Book}} = new Modelizr({
+const {query, models: {Person, Book}} = new Modelizr({
   models: ModelData,
   config: {
     endpoint: "http:// ..."
@@ -53,8 +53,8 @@ const {query, models: {User, Book}} = new Modelizr({
 })
 
 query(
-  User(
-    Book("Books", {ids: [1, 2]})
+  Person({id: 1}
+    Book("Books")
   ),
   
   Book("Books", {ids: [4, 5]})
@@ -65,19 +65,19 @@ query(
 This will generate the following query and make a request using it.
 ```
 {
-  users {
+  Person(id: 1) {
     id,
     firstName,
-    books(ids: [1, 2]) {
+    Books {
       id,
       title
     }
   },
   
-  books(ids: [4, 5]) {
+  Books(ids: [4, 5]) {
     id,
     title,
-    author {
+    Author {
       id,
       firstName
     }
