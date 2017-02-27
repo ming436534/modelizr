@@ -9,10 +9,10 @@ const client = new Modelizr({
 		Person,
 		Cat,
 		Dog,
-		Animal: union({
+		Animal: {
 			models: ["Cat", "Dog"],
 			schemaAttribute: "__type"
-		}),
+		},
 	},
 	config: {
 		endpoint: "http://localhost:8000/graphql",
@@ -20,5 +20,7 @@ const client = new Modelizr({
 		debug: true
 	}
 })
+
+console.log(client.clientState)
 
 export default client

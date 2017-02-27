@@ -74,9 +74,17 @@ export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCol
 			}
 		}
 
+		/* Describe the model schema as a union */
+		if (model.models && model.schemaAttribute) {
+			return {
+				...model,
+				_unionDataType: true
+			}
+		}
+
 		return model
 	})
-	
+
 	return _.mapKeys(normalizedData, (model: ModelDataType, modelName: string) => {
 		if (model.name) return model.name
 		return modelName
