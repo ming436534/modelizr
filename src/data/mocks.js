@@ -88,7 +88,13 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			/* Replace the generated primaryKey data with a V4 UUID string and, if
 			 * the model is a union type, set its schemaAttribute accordingly.
 			 * */
-			if (modelData && mockedFields[modelData.primaryKey]) mockedFields[modelData.primaryKey] = v4()
+			if (modelData && mockedFields[modelData.primaryKey]) {
+				let pk = v4()
+				if (modelData.fields[modelData.primaryKey].type === Number) {
+					pk = _.random(10000, 99999)
+				}
+				mockedFields[modelData.primaryKey] = pk
+			}
 			if (schemaAttribute) mockedFields[schemaAttribute] = currentModel.modelName
 
 			return mockedFields

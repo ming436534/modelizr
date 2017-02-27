@@ -2,7 +2,7 @@ export default {
 	normalizeAs: "Dogs",
 	fields: {
 		__type: String,
-		ID: String,
+		ID: Number,
 		name: String,
 		breed: {
 			type: String,

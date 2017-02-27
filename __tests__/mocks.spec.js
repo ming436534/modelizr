@@ -1,7 +1,7 @@
 import { models, query } from './client'
 import { PersonWithFriend, PersonWithPets } from './client/fragments'
 
-const {Person} = models
+const {Person, Dog} = models
 
 const personChecks = (person) => {
 	expect(person).toBeDefined()
@@ -21,6 +21,14 @@ it("Generates data with the correct structure and data", () => {
 		.mock()
 		.then(res => {
 			return personChecks(res.data.Person)
+		})
+})
+
+it("Generates an integer primary key for Number type models", () => {
+	return query(Dog)
+		.mock()
+		.then(res => {
+			expect(typeof res.data.Dog.ID).toBe("number")
 		})
 })
 
