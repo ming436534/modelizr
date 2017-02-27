@@ -40,7 +40,7 @@ export const generator = (fakerInstance: Object): Function => (field: ModelDatat
 
 	switch (type) {
 		case String: {
-			return v4().substring(0, 10)
+			return v4().substring(0, 7)
 		}
 
 		case Number: {

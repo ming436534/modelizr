@@ -44,8 +44,8 @@ export const normalizeFunctionParameters = (name: string | Object | ModelFunctio
 	return {name: trueName, params: trueParams, models: trueModels}
 }
 
-export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCollection => (
-	_.mapValues(modelData, (model: ModelDataType) => {
+export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCollection => {
+	const normalizedData = _.mapValues(modelData, (model: ModelDataType) => {
 		const normalize = fields => (
 			_.mapValues(fields, field => {
 				if (typeof field === "object" && !Array.isArray(field)) {
@@ -76,4 +76,9 @@ export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCol
 
 		return model
 	})
-)
+	
+	return _.mapKeys(normalizedData, (model: ModelDataType, modelName: string) => {
+		if (model.name) return model.name
+		return modelName
+	})
+}
