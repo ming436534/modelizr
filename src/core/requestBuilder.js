@@ -43,24 +43,6 @@ export default (clientState: ClientStateType, queryType: string) => (queryName: 
 		clientState
 	})
 
-	// eslint-disable-next-line prefer-const
-	let REQUEST: RequestObject
-
-	/* A utility method that mutates config properties and returns the REQUEST object.
-	 * This is to allow for chaining config modifiers (.api().headers() ...)
-	 * */
-	const setConfig: Function = _.curry((key: string, useDefault: Boolean, value: ?any): RequestObject => {
-		if (!value && value !== false) {
-			if (useDefault) {
-				value = useDefault
-			} else {
-				throw new Error(`Please provide a value for the modifier '${key}()'`)
-			}
-		}
-		config[key] = value
-		return REQUEST
-	})
-
 	/* A utility method that calls the configured api and
 	 * adds the response to the debugger instance.
 	 * */
@@ -86,7 +68,7 @@ export default (clientState: ClientStateType, queryType: string) => (queryName: 
 	 * contains all modifier methods as well the request catalysts,
 	 * .normalize() and .then()
 	 * */
-	REQUEST = {
+	const REQUEST = {
 		api: api => {
 			if (api) config.api = api
 			return REQUEST
