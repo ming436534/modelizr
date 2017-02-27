@@ -48,18 +48,21 @@ const createModel = (modelName: string) => {
 	 * black-listing model fields on a per-query basis.
 	 * */
 	model.only = (fields: Array<string>) => {
-		model.filters.only = [...model.filters.only || [], ...fields]
-		return model
+		const newModel = model()
+		newModel.filters.only = [...model.filters.only || [], ...fields]
+		return newModel
 	}
 
 	model.without = (fields: Array<string>) => {
-		model.filters.without = [...model.filters.without || [], ...fields]
-		return model
+		const newModel = model()
+		newModel.filters.without = [...model.filters.without || [], ...fields]
+		return newModel
 	}
 
 	model.empty = () => {
-		model.filters.empty = true
-		return model
+		const newModel = model()
+		newModel.filters.empty = true
+		return newModel
 	}
 
 	return model

@@ -1,0 +1,104 @@
+exports[`test Query generation for Model with a Union 1`] = `
+"query modelizr_query {
+  Person {
+    id,
+    name,
+    age,
+    Pets {
+      ... on Cat {
+        __type,
+        id,
+        name
+      },
+      ... on Dog {
+        __type,
+        ID,
+        name,
+        breed
+      }
+    }
+  }
+}"
+`;
+
+exports[`test Query generation for Model with children 1`] = `
+"query modelizr_query {
+  Person {
+    id,
+    name,
+    age,
+    Friend {
+      id,
+      name,
+      age
+    }
+  }
+}"
+`;
+
+exports[`test Query generation for a modified fragment 1`] = `
+"query modelizr_query {
+  Person {
+    id,
+    name,
+    age,
+    Pets {
+      ... on Cat {
+        __type,
+        id,
+        name
+      },
+      ... on Dog {
+        __type,
+        ID,
+        name,
+        breed
+      }
+    },
+    Friend {
+      id,
+      name,
+      age
+    }
+  }
+}"
+`;
+
+exports[`test Query generation for model using .empty 1`] = `
+"query modelizr_query {
+  Person 
+  
+}"
+`;
+
+exports[`test Query generation for model using .only 1`] = `
+"query modelizr_query {
+  Person {
+    id
+  }
+}"
+`;
+
+exports[`test Query generation for model using .without 1`] = `
+"query modelizr_query {
+  Person {
+    id,
+    age
+  }
+}"
+`;
+
+exports[`test Query generation for query and Model with parameters 1`] = `
+"query modelizr_query(parameter: 1,nestedParameter: {stringParameter:\"\"}) {
+  Person(id: 1,arrayParameter: [1,\"2\"]) {
+    id,
+    name,
+    age,
+    Friend {
+      id,
+      name,
+      age
+    }
+  }
+}"
+`;

@@ -1,7 +1,9 @@
 export default {
-    normalizeAs: "cats",
-    fields: {
-        name: String,
-        Owner: "User"
-    }
+	normalizeAs: "Cats",
+	fields: {
+		__type: String,
+		id: String,
+		name: String,
+		Owner: "Person"
+	}
 }
