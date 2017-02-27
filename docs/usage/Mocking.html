@@ -1,0 +1,526 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Mocking · Modelizr</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        <meta name="author" content="Julien Vincent">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../styles/website.css">
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Production.html" />
+    
+    
+    <link rel="prev" href="Querying.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Read Me
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../Introduction.html">
+            
+                <a href="../Introduction.html">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Usage
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="Models.html">
+            
+                <a href="Models.html">
+            
+                    
+                    Creating Models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="Querying.html">
+            
+                <a href="Querying.html">
+            
+                    
+                    Querying
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.3" data-path="Mocking.html">
+            
+                <a href="Mocking.html">
+            
+                    
+                    Mocking
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="Production.html">
+            
+                <a href="Production.html">
+            
+                    
+                    Production
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../patterns/">
+            
+                <a href="../patterns/">
+            
+                    
+                    Patterns
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../patterns/Fragments.html">
+            
+                <a href="../patterns/Fragments.html">
+            
+                    
+                    Fragments
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../api/">
+            
+                <a href="../api/">
+            
+                    
+                    API Reference
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../api/ModelSchemas.html">
+            
+                <a href="../api/ModelSchemas.html">
+            
+                    
+                    Model Schemas
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../api/Modelizr.html">
+            
+                <a href="../api/Modelizr.html">
+            
+                    
+                    Modelizr
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../api/Models.html">
+            
+                <a href="../api/Models.html">
+            
+                    
+                    Models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../api/QueryTools.html">
+            
+                <a href="../api/QueryTools.html">
+            
+                    
+                    Query Tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../api/FetchAPI.html">
+            
+                <a href="../api/FetchAPI.html">
+            
+                    
+                    Fetch API
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../CHANGELOG.html">
+            
+                <a href="../CHANGELOG.html">
+            
+                    
+                    Changelog
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Mocking</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="mocking"><a name="mocking" class="plugin-anchor" href="#mocking"><i class="fa fa-link" aria-hidden="true"></i></a>Mocking</h1>
+<p>The goal with mocking is to produce data that is structured in the exact same way as an actual GraphQL response.</p>
+<p>Lets mock the query for a Person we made in the previous step:</p>
+<pre class="language-"><code class="lang-javascript"><span class="token function">query</span><span class="token punctuation">(</span>
+  <span class="token function">Person</span><span class="token punctuation">(</span><span class="token punctuation">{</span>id<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function">Animal</span><span class="token punctuation">(</span><span class="token string">&quot;Pets&quot;</span>
+      Dog<span class="token punctuation">,</span> Cat
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// =&gt; Appending the &apos;mock&apos; results in a mocked response</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> normalize<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Our mocked response will now look something like this:</p>
+<pre class="language-"><code class="lang-javascript"><span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">{</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    Person<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      id<span class="token punctuation">:</span> <span class="token string">&quot;05438a43-00e5-4e2d-9720-ecb1bc9093b9&quot;</span><span class="token punctuation">,</span>
+      firstName<span class="token punctuation">:</span> <span class="token string">&quot;0bf14db1&quot;</span><span class="token punctuation">,</span>
+      age<span class="token punctuation">:</span> <span class="token number">50123</span><span class="token punctuation">,</span>
+      Friend<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        id<span class="token punctuation">:</span> <span class="token string">&quot;8a008933-b5c3-4809-aef7-5a3c34c1c3b6&quot;</span><span class="token punctuation">,</span>
+        firstName<span class="token punctuation">:</span> <span class="token string">&quot;c6187c73&quot;</span><span class="token punctuation">,</span>
+        age<span class="token punctuation">:</span> <span class="token number">45674</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      Pets<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          __type<span class="token punctuation">:</span> <span class="token string">&quot;Cat&quot;</span><span class="token punctuation">,</span>
+          id<span class="token punctuation">:</span> <span class="token string">&quot;efaaa503-d453-4191-a177-307774d2ab10&quot;</span><span class="token punctuation">,</span>
+          name<span class="token punctuation">:</span> <span class="token string">&quot;f0b2b542&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          __type<span class="token punctuation">:</span> <span class="token string">&quot;Dog&quot;</span><span class="token punctuation">,</span>
+          id<span class="token punctuation">:</span> &quot;6a146a9c<span class="token operator">-</span>779b<span class="token operator">-</span>486a<span class="token operator">-</span>bc13<span class="token operator">-</span>25b72c6d555e<span class="token punctuation">,</span>
+          breed<span class="token punctuation">:</span> <span class="token string">&quot;6a146a9c&quot;</span><span class="token punctuation">,</span>
+          name<span class="token punctuation">:</span> <span class="token string">&quot;b245d540&quot;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>All the generated data is in the correct format in this example, but it isn&apos;t very human readable - for example, the persons name is <code>0bf14db1</code>. We can 
+improve the quality of the mocked data by adding more information to our models.</p>
+<pre class="language-"><code class="lang-javascript"><span class="token keyword">const</span> Person <span class="token operator">=</span> <span class="token punctuation">{</span>
+  normalizeAs<span class="token punctuation">:</span> <span class="token string">&quot;People&quot;</span><span class="token punctuation">,</span>
+  fields<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      type<span class="token punctuation">:</span> String<span class="token punctuation">,</span>
+      alias<span class="token punctuation">:</span> <span class="token string">&quot;ID&quot;</span> <span class="token comment" spellcheck="true">// The generated query will contain the alias ID</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    firstName<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      type<span class="token punctuation">:</span> String<span class="token punctuation">,</span>
+      faker<span class="token punctuation">:</span> <span class="token string">&quot;name.firstName&quot;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    age<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      type<span class="token punctuation">:</span> Number<span class="token punctuation">,</span>
+      min<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      max<span class="token punctuation">:</span> <span class="token number">100</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    Friend<span class="token punctuation">:</span> <span class="token string">&quot;Person&quot;</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">// Reference the &apos;Person&apos; model as a relationship</span>
+    Pets<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&quot;Animal&quot;</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true">// Wrapping a reference in an array indicates a collection</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  primaryKey<span class="token punctuation">:</span> <span class="token string">&quot;id&quot;</span> <span class="token comment" spellcheck="true">// Which field to use as the primary key. Defaults to &apos;id&apos;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Now when queries are mocked, the data generated will be much more accurate. here is an example of a mocked Person after updating the model:</p>
+<pre class="language-"><code class="lang-javascript"><span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">{</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    Person<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      id<span class="token punctuation">:</span> <span class="token string">&quot;05438a43-00e5-4e2d-9720-ecb1bc9093b9&quot;</span><span class="token punctuation">,</span>
+      firstName<span class="token punctuation">:</span> <span class="token string">&quot;James&quot;</span><span class="token punctuation">,</span>
+      age<span class="token punctuation">:</span> <span class="token number">32</span><span class="token punctuation">,</span>
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Querying.html" class="navigation navigation-prev " aria-label="Previous page: Querying">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Production.html" class="navigation navigation-next " aria-label="Next page: Production">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Mocking","level":"1.3.3","depth":2,"next":{"title":"Production","level":"1.3.4","depth":2,"path":"docs/usage/Production.md","ref":"docs/usage/Production.md","articles":[]},"previous":{"title":"Querying","level":"1.3.2","depth":2,"path":"docs/usage/Querying.md","ref":"docs/usage/Querying.md","articles":[]},"dir":"ltr"},"config":{"plugins":["prism","-highlight","github","anchors","ga"],"styles":{"website":"docs/styles/website.css"},"pluginsConfig":{"prism":{},"github":{"url":"https://github.com/julienvincent/modelizr"},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"ga":{"configuration":"auto","token":"UA-53097839-2"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"theme":"default","author":"Julien Vincent","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Modelizr","gitbook":"3.2.2"},"file":{"path":"docs/usage/Mocking.md","mtime":"2017-02-24T09:33:48.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-02-27T11:20:33.026Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-ga/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
