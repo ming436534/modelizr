@@ -3,6 +3,8 @@ exports[`test Query generation for Model with a Union 1`] = `
   Person {
     id,
     name,
+    otherName: middleName,
+    aliases,
     age,
     Pets {
       ... on Cat {
@@ -26,10 +28,14 @@ exports[`test Query generation for Model with children 1`] = `
   Person {
     id,
     name,
+    otherName: middleName,
+    aliases,
     age,
     Friend {
       id,
       name,
+      otherName: middleName,
+      aliases,
       age
     }
   }
@@ -41,6 +47,8 @@ exports[`test Query generation for a modified fragment 1`] = `
   Person {
     id,
     name,
+    otherName: middleName,
+    aliases,
     age,
     Pets {
       ... on Cat {
@@ -58,6 +66,8 @@ exports[`test Query generation for a modified fragment 1`] = `
     Friend {
       id,
       name,
+      otherName: middleName,
+      aliases,
       age
     }
   }
@@ -83,6 +93,8 @@ exports[`test Query generation for model using .without 1`] = `
 "query modelizr_query {
   Person {
     id,
+    otherName: middleName,
+    aliases,
     age
   }
 }"
@@ -93,10 +105,14 @@ exports[`test Query generation for query and Model with parameters 1`] = `
   Person(id: 1,arrayParameter: [1,\"2\"]) {
     id,
     name,
+    otherName: middleName,
+    aliases,
     age,
     Friend {
       id,
       name,
+      otherName: middleName,
+      aliases,
       age
     }
   }

@@ -70,9 +70,13 @@ export default (clientState: ClientStateType, queryModels: Array<ModelFunction>)
 			 * */
 			const keyedFunctions = _.mapKeys(currentModel.children, (model: ModelFunction) => model.fieldName)
 			const mockedChildren = _.mapValues(keyedFunctions, (model: ModelFunction, fieldName: string) => {
-				if (modelData && modelData.fields && Array.isArray(modelData.fields[fieldName].type)) {
-					return _.map(_.times(modelData.fields[fieldName].quantity || 10), () => mockModel(model))
+				if (modelData.fields[fieldName]) {
+					const {type, quantity} = modelData.fields[fieldName]
+					if (Array.isArray(type)) {
+						return _.map(_.times(quantity || 10), () => mockModel(model))
+					}
 				}
+
 				return mockModel(model)
 			})
 

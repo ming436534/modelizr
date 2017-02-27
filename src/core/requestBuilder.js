@@ -87,14 +87,41 @@ export default (clientState: ClientStateType, queryType: string) => (queryName: 
 	 * .normalize() and .then()
 	 * */
 	REQUEST = {
-		api: setConfig("api", false),
-		endpoint: setConfig("endpoint", false),
-		headers: headers => setConfig("headers", false)({...config.headers, ...headers}),
-		method: setConfig("method", "POST"),
-		mock: setConfig("mock", true),
-		debug: setConfig("debug", true),
-		body: setConfig("body", {}),
-		throwOnErrors: setConfig("throwOnErrors", true),
+		api: api => {
+			if (api) config.api = api
+			return REQUEST
+		},
+		endpoint: (value) => {
+			if (value) config.endpoint = value
+			return REQUEST
+		},
+		headers: (headers) => {
+			config.headers = {
+				...config.headers,
+				...headers
+			}
+			return REQUEST
+		},
+		method: (value) => {
+			config.method = value || "POST"
+			return REQUEST
+		},
+		mock: (value) => {
+			config.mock = value === undefined ? true : value
+			return REQUEST
+		},
+		debug: value => {
+			config.debug = value === undefined ? true : value
+			return REQUEST
+		},
+		body: body => {
+			if (body) config.body = body
+			return REQUEST
+		},
+		throwOnErrors: value => {
+			config.throwOnErrors = value === undefined ? true : value
+			return REQUEST
+		},
 
 		/* give the generated query to the provided callback and return the REQUEST object */
 		generate: (cb: (q: string) => any): RequestObject => {
