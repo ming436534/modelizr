@@ -1,6 +1,7 @@
 # modelizr
 [![Coverage Status](https://coveralls.io/repos/github/julienvincent/modelizr/badge.svg?branch=master)](https://coveralls.io/github/julienvincent/modelizr?branch=master)
 [![Build Status](https://travis-ci.org/julienvincent/modelizr.svg?branch=master)](https://travis-ci.org/julienvincent/modelizr)
+[![npm version](https://badge.fury.io/js/modelizr.svg)](https://badge.fury.io/js/modelizr)
 [![Gitter](https://badges.gitter.im/julienvincent/modelizr.svg)](https://gitter.im/julienvincent/modelizr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 A Combination of normalizr, fakerjs and GraphQL that allows you to define multipurpose models that can generate GraphQL queries, mock deeply nested data and normalize
