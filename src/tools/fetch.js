@@ -42,7 +42,7 @@ export const FETCH_API = (config: ConfigType) => {
 
 			return {
 				server_response,
-				...res
+				data: res.data ? res.data : res
 			}
 		})
 }

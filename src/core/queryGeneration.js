@@ -46,7 +46,7 @@ export default ({clientState, queryModels, queryType, queryName, queryParams}: G
 			const modelData: ModelDataType | UnionDataType = models[modelFunction.modelName]
 
 			/* Utility that strips modifier rejected fields. */
-			const filter = fields => (
+			const filter = (fields, filterFields?: boolean) => filterFields === false ? fields : (
 				_.pickBy(fields, (field, fieldName: string) => {
 					const {only, without, empty} = modelFunction.filters
 					if (only) return _.find(only, field => field == fieldName)
@@ -60,8 +60,8 @@ export default ({clientState, queryModels, queryType, queryName, queryParams}: G
 			 * strip any model relationships from the fields and recursively
 			 * generate a FieldMap.
 			 * */
-			const pruneFields = (fields: Object): Array<string | FieldMap> => (
-				_.map(filter(stripRelationships(fields)), (field, fieldName: string) => {
+			const pruneFields = (fields: Object, filterFields?: boolean): Array<string | FieldMap> => (
+				_.map(filter(stripRelationships(fields), filterFields), (field, fieldName: string) => {
 
 						/* We check for an alias property on the field type.
 						 * If one is found, use it instead of the fieldName
@@ -73,7 +73,7 @@ export default ({clientState, queryModels, queryType, queryName, queryParams}: G
 						if (type === Object) {
 							return {
 								name: fieldName,
-								fields: pruneFields(field.properties || {})
+								fields: pruneFields(field.properties || {}, false)
 							}
 						}
 

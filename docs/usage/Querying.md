@@ -131,28 +131,28 @@ const entities = {
         },
         ...
       ]
-     },
-     2: {
-       id: 2,
-       firstName: "Jimmy",
-       age: 21
-     }
-	},
-	
-	Cats: {
-  	  1: {
-  	    id: 1,
-  	    name: "James"
-  	  }
-	},
-	
-	Dogs: {
-     3: {
-     	 id: 3,
-     	 name: "Brad",
-     	 breed: "Labrador"
-     } 
-	}
+    },
+    2: {
+      id: 2,
+      firstName: "Jimmy",
+      age: 21
+    }
+  },
+
+  Cats: {
+    1: {
+      id: 1,
+  	   name: "James"
+  	 }
+  },
+
+  Dogs: {
+    3: {
+     	id: 3,
+     	name: "Brad",
+     	breed: "Labrador"
+    } 
+  }
 }
 ```
 
