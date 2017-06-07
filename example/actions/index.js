@@ -16,6 +16,7 @@ export const fetchPeople = mock => dispatch => {
 			Animal("Pets",
 				Cat, Dog
 			),
+			undefined,
 			Person("Friend")
 		).without(["ok"])
 	).normalize(res => dispatch({

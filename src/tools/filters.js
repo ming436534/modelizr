@@ -41,7 +41,7 @@ export const normalizeFunctionParameters = (name: string | Object | ModelFunctio
 		if (typeof name === 'object') trueParams = name
 	}
 
-	return {name: trueName, params: trueParams, models: trueModels}
+	return {name: trueName, params: trueParams, models: _.filter(trueModels, model => model)}
 }
 
 export const normalizeModelData = (modelData: ModelDataCollection): ModelDataCollection => {
