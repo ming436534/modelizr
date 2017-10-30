@@ -29,7 +29,7 @@ const createIndent = (spaces: number): string =>
 const buildParameters = (params: ?Object): string => {
 	params = _.pickBy(params || {}, value => value !== null && value !== undefined && !Object.is(value, NaN))
 	if (_.isEmpty(params)) return ""
-	return `(${_.map(_.pickBy(params, param => param || param === false), (param, key) =>
+	return `(${_.map(params, (param, key) =>
 		`${key}: ${JSON.stringify(param).replace(/"([^(")"]+)":/g, "$1:")}`)})`
 }
 
