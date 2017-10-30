@@ -1,7 +1,6 @@
 // @flow
 import { GraphQLError } from './public'
 import { ConfigType } from '../types'
-import fetch from 'isomorphic-fetch'
 
 /**
  * The fetch implementation that is used to make requests.
