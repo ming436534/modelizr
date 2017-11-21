@@ -27,7 +27,7 @@ const createIndent = (spaces: number): string =>
 
 /* Construct a valid GraphQL parameter string from an object */
 const buildParameters = (params: ?Object): string => {
-	params = _.pickBy(params || {}, value => value !== null && value !== undefined && !isNaN(value))
+	params = _.pickBy(params || {}, value => value !== null && value !== undefined && value !== NaN)
 	if (_.isEmpty(params)) return ""
 	return `(${_.map(params, (param, key) =>
 		`${key}: ${JSON.stringify(param).replace(/"([^(")"]+)":/g, "$1:")}`)})`
